@@ -21,7 +21,7 @@
   padding: 0 !important;
   outline: none !important;
   left: auto !important;
-  top: 10% !important;
+  top: 6% !important;
   position: relative;
   margin: 0 auto;
   background: white;
@@ -41,7 +41,7 @@
     padding: 0 !important;
     outline: none !important;
     left: auto !important;
-    top: 10% !important;
+    top: 7% !important;
     position: relative;
     margin: 0 auto;
     background: white;
@@ -61,7 +61,7 @@
     padding: 0 !important;
     outline: none !important;
     left: auto !important;
-    top: 10% !important;
+    top: 7% !important;
     position: relative;
     margin: 0 auto;
     background: white;
@@ -172,4 +172,13 @@ height: 150px;
 
 .Toastify__toast-container {
   z-index: 200000 !important;
+}
+
+.border-none{
+  border: none !important;
+}
+
+.custom-modal-height{
+  max-height: 500px;
+  overflow: auto;
 }

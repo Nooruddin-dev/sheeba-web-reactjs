@@ -107,7 +107,7 @@ const SidebarMenuMain = () => {
         fontIcon='bi-archive'
         icon='handcart'
       >
-        <SidebarMenuItem to='/site/orders-list' title='Purchase Orders List' hasBullet={true} />
+        <SidebarMenuItem to='/site/purchase-orders-list' title='Purchase Orders List' hasBullet={true} />
         <SidebarMenuItem to='/site/create-order' title='Create Order' hasBullet={true} />
 
       </SidebarMenuItemWithSub>

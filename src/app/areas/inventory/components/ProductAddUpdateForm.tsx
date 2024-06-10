@@ -11,6 +11,7 @@ interface ProductAddUpdateFormInterface {
     closeModal: any,
     defaultValues: any,
     onSubmit: any,
+    allUnitsList: any
 
 }
 
@@ -21,6 +22,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
     closeModal,
     defaultValues,
     onSubmit,
+    allUnitsList
 
 }) => {
 
@@ -35,7 +37,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
     };
 
     useEffect(() => {
-        if (defaultValues && defaultValues.productIdEditForm && defaultValues.productIdEditForm > 0) {
+        if (defaultValues && defaultValues.productidEditForm && defaultValues.productidEditForm > 0) {
             setIsEditCase(true);
         }
     }, [])
@@ -75,7 +77,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                         <div className='row'>
 
 
-                            <input type='hidden' id="productIdEditForm" {...register("productIdEditForm", { required: false })} />
+                            <input type='hidden' id="productidEditForm" {...register("productidEditForm", { required: false })} />
 
                             <div className='col-lg-6'>
                                 <div className="mb-10">
@@ -83,12 +85,12 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                     <input
                                         type="text"
 
-                                        className={`form-control form-control-solid ${formSubmitted ? (errors.productName ? 'is-invalid' : 'is-valid') : ''}`}
-                                        id="productName" {...register("productName", { required: true })}
+                                        className={`form-control form-control-solid ${formSubmitted ? (errors.product_name ? 'is-invalid' : 'is-valid') : ''}`}
+                                        id="product_name" {...register("product_name", { required: true })}
 
                                         placeholder="Enter product name"
                                     />
-                                    {errors.productName && <SiteErrorMessage errorMsg='Product name is required' />}
+                                    {errors.product_name && <SiteErrorMessage errorMsg='Product name is required' />}
                                 </div>
                             </div>
 
@@ -98,12 +100,12 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                     <input
                                         type="text"
 
-                                        className={`form-control form-control-solid ${formSubmitted ? (errors.shortDescription ? 'is-invalid' : 'is-valid') : ''}`}
-                                        id="shortDescription" {...register("shortDescription", { required: false })}
+                                        className={`form-control form-control-solid ${formSubmitted ? (errors.short_description ? 'is-invalid' : 'is-valid') : ''}`}
+                                        id="short_description" {...register("short_description", { required: false })}
                                         readOnly={isEditCase}
                                         placeholder="Enter product name"
                                     />
-                                    {errors.shortDescription && <SiteErrorMessage errorMsg='Short description is required' />}
+                                    {errors.short_description && <SiteErrorMessage errorMsg='Short description is required' />}
                                 </div>
                             </div>
 
@@ -130,12 +132,12 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                     <input
                                         type="number"
                                         min={0}
-                                        className={`form-control form-control-solid ${formSubmitted ? (errors.stockQuantity ? 'is-invalid' : 'is-valid') : ''}`}
-                                        id="stockQuantity" {...register("stockQuantity", { required: true })}
+                                        className={`form-control form-control-solid ${formSubmitted ? (errors.stockquantity ? 'is-invalid' : 'is-valid') : ''}`}
+                                        id="stockquantity" {...register("stockquantity", { required: true })}
                                         readOnly={isEditCase}
                                         placeholder="Enter stock quantity"
                                     />
-                                    {errors.stockQuantity && <SiteErrorMessage errorMsg='Stock quantity is required!' />}
+                                    {errors.stockquantity && <SiteErrorMessage errorMsg='Stock quantity is required!' />}
                                 </div>
                             </div>
 
@@ -158,8 +160,8 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                 <div className="mb-10">
                                     <label className="form-label required ">Status </label>
                                     <select aria-label="Select example"
-                                        className={`form-select form-select-solid ${formSubmitted ? (errors.isActive ? 'is-invalid' : 'is-valid') : ''}`}
-                                        id="isActive" {...register("isActive", { required: true })}
+                                        className={`form-select form-select-solid ${formSubmitted ? (errors.is_active ? 'is-invalid' : 'is-valid') : ''}`}
+                                        id="is_active" {...register("is_active", { required: true })}
                                         disabled={isEditCase}
                                     >
 
@@ -167,9 +169,47 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                         <option value="0">In Active</option>
 
                                     </select>
-                                    {errors.isActive && <SiteErrorMessage errorMsg='Status is required' />}
+                                    {errors.is_active && <SiteErrorMessage errorMsg='Status is required' />}
                                 </div>
                             </div>
+
+                            <div className='col-lg-6'>
+                                <div className="mb-10">
+                                    <label className="form-label required">Unit </label>
+                                    <select
+                                        className={`form-select form-select-solid ${formSubmitted ? (errors.unit_id ? 'is-invalid' : 'is-valid') : ''}`}
+
+                                        aria-label="Select example"
+                                        id="unit_id" {...register("unit_id", { required: true })}
+                                        disabled={isEditCase}
+                                    >
+                                        <option value=''>--Select--</option>
+
+                                        {allUnitsList?.map((item: any, index: any) => (
+                                            <option key={index} value={item.unit_id}>
+                                                {item.unit_short_name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {errors.unit_id && <SiteErrorMessage errorMsg='Unit is required' />}
+                                </div>
+                            </div>
+
+                            <div className='col-lg-6'>
+                                <div className="mb-10">
+                                    <label className="form-label required ">Size</label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        className={`form-control form-control-solid ${formSubmitted ? (errors.size ? 'is-invalid' : 'is-valid') : ''}`}
+                                        id="size" {...register("size", { required: true })}
+                                        readOnly={isEditCase}
+                                        placeholder="Enter size"
+                                    />
+                                    {errors.size && <SiteErrorMessage errorMsg='Size is required!' />}
+                                </div>
+                            </div>
+
 
 
                         </div>

@@ -16,10 +16,10 @@ export const cartItemsSlice = createSlice({
             state.cartItems.push(action.payload);
         },
         removeCartItemFromRedux: (state, action) => {
-            state.cartItems = state.cartItems.filter(item => item.productId !== action.payload.productId);
+            state.cartItems = state.cartItems.filter(item => item.productid !== action.payload.productid);
         },
         updateCartItemInRedux: (state, action) => {
-            const index = state.cartItems.findIndex(item => item.productId === action.payload.productId);
+            const index = state.cartItems.findIndex(item => item.productid === action.payload.productid);
             if (index !== -1) {
                 state.cartItems[index] = action.payload;
             }

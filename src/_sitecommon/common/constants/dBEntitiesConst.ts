@@ -6,7 +6,7 @@ const dBEntitiesConst: any = {
 
   Products: {
     tableName: "Products",
-    primaryKeyColumnName: "productId",
+    primaryKeyColumnName: "productid",
   },
   Machines: {
     tableName: "machines",

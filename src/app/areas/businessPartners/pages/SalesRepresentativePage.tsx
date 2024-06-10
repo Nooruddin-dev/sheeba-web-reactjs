@@ -254,7 +254,7 @@ export default function SalesRepresentativePage() {
 
         const pageBasicInfoAllVendors: any = {
             pageNo: 1,
-            pageSize: 350
+            pageSize: 600
         }
         let pageBasicInfoVendorRequestParams = new URLSearchParams(pageBasicInfoAllVendors).toString();
         pageBasicInfoVendorRequestParams = `${pageBasicInfoVendorRequestParams}&busnPartnerTypeId=${BusinessPartnerTypesEnum.Vendor}`;

@@ -56,3 +56,47 @@ export const getAllMachinesListApi = (queryUrl: string) => {
         `${API_ENDPOINTS.GET_ALL_MACHINES}?${queryUrl}`
     );
 }
+
+export const gerProductsListBySearchTermApi = (searchQueryProduct: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_PRODUCTS_LIST_BY_SEARCH_TERM}/${searchQueryProduct}`
+    );
+}
+
+export const getProductDetailById = (productId: number) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_PRODUCT_DETAIL_BY_ID}/${productId}`
+    );
+}
+
+
+export const getAllTaxRulesApi = (queryUrl: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_TAX_RULES}?${queryUrl}`
+    );
+}
+
+export const createPurchaseOrderApi = (body: any) => {
+    return apiRequest.post(API_ENDPOINTS.CREATE_PURCHASER_ORDER, body);
+};
+
+export const getAllPurchaseOrdersListApi = (queryUrl: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_ALL_PURCHASE_ORDERS}?${queryUrl}`
+    );
+}
+
+
+
+export const getPurchaseOrderDetailsByIdApi = (purchase_order_id: any) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_PURCHASE_ORDER_DETAILS_BY_ID}/${purchase_order_id}`
+    );
+}
+
+
+export const getUnitsListApi = (queryUrl: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_UNITS_LIST}?${queryUrl}`
+    );
+}

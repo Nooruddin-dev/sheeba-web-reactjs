@@ -21,6 +21,9 @@ import SalesRepresentativePage from '../areas/businessPartners/pages/SalesRepres
 import ProductsListPage from '../areas/inventory/pages/ProductsListPage';
 import MachineTypesPage from '../areas/machines/pages/MachineTypesPage';
 import MachinesListPage from '../areas/machines/pages/MachinesListPage';
+import CreateOrderPage from '../areas/orders/pages/CreateOrderPage';
+import PurchaseOrdersListPage from '../areas/orders/pages/PurchaseOrdersListPage';
+import PurchaseOrderDetailPage from '../areas/orders/pages/PurchaseOrderDetailPage';
 
 
 
@@ -73,8 +76,21 @@ export default function RouteConfig() {
           <LoginProtectedRoute> <MachinesListPage /> </LoginProtectedRoute>
         } />
 
+        <Route path="/site/create-order" element={
+          <LoginProtectedRoute> <CreateOrderPage /> </LoginProtectedRoute>
+        } />
 
 
+        <Route path="/site/purchase-orders-list" element={
+          <LoginProtectedRoute> <PurchaseOrdersListPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/site/purchase-order-detail/:purchase_order_id" element={
+          <LoginProtectedRoute> <PurchaseOrderDetailPage /> </LoginProtectedRoute>
+        } />
+
+
+     
 
 
         {/* Common routes area starts here */}

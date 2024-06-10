@@ -16,7 +16,7 @@ import { sqlDeleteTypesConst } from '../../../../_sitecommon/common/enums/Global
 import CommonListPagination from '../../common/components/layout/CommonListPagination';
 import TableListLoading from '../../common/components/shared/TableListLoading';
 import BusinessPartnerTypesEnum from '../../../../_sitecommon/common/enums/BusinessPartnerTypesEnum';
-import { getAllProductsListApi, insertUpdateProductApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
+import { getAllProductsListApi, getUnitsListApi, insertUpdateProductApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
 import ProductAddUpdateForm from '../components/ProductAddUpdateForm';
 import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 
@@ -24,6 +24,7 @@ import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppenDots } from '..
 export default function ProductsListPage() {
     const isLoading = false;
 
+    const [allUnitsList, setAllUnitsList] = useState<any>([]);
 
     // ✅-- Starts: necessary varaibles for the page
     const [isOpenAddNewForm, setIsOpenAddNewForm] = useState<boolean>(false);
@@ -41,9 +42,9 @@ export default function ProductsListPage() {
     const [searchFieldValues, setSearchFieldValues] = useState<{ [key: string]: string }>({});
 
     const HtmlSearchFields: HtmlSearchFieldConfig[] = [
-        { inputId: 'productIdSearch', inputName: 'productIdSearch', labelName: 'Product ID', placeHolder: 'Product ID', type: 'number', defaultValue: '', iconClass: 'fa fa-search' },
+        { inputId: 'productidSearch', inputName: 'productidSearch', labelName: 'Product ID', placeHolder: 'Product ID', type: 'number', defaultValue: '', iconClass: 'fa fa-search' },
         { inputId: 'skuSearch', inputName: 'skuSearch', labelName: 'SKU', placeHolder: 'SKU', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
-        { inputId: 'productNameSearch', inputName: 'productNameSearch', labelName: 'Product Name', placeHolder: 'Product Name', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
+        { inputId: 'product_nameSearch', inputName: 'product_nameSearch', labelName: 'Product Name', placeHolder: 'Product Name', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
 
     ];
     const [userEditForm, setUserEditForm] = useState<any>(null); // Data of the user being edited
@@ -82,21 +83,23 @@ export default function ProductsListPage() {
 
     const handleUserEditClick = (e: Event, id: number) => {
         e.preventDefault();
-        const recordForEdit = allProductsList?.find((x: { productId: number }) => x.productId == id);
+        const recordForEdit = allProductsList?.find((x: { productid: number }) => x.productid == id);
 
-
+   debugger
 
         setUserEditForm({
-            productIdEditForm: recordForEdit?.productId,
-            productName: recordForEdit?.productName,
-            shortDescription: recordForEdit?.shortDescription,
+            productidEditForm: recordForEdit?.productid,
+            product_name: recordForEdit?.product_name,
+            short_description: recordForEdit?.short_description,
             sku: recordForEdit?.sku,
 
-            stockQuantity: recordForEdit?.stockQuantity,
-            isActive: (recordForEdit?.isActive == true || recordForEdit?.isActive == 1) ? '1' : '0',
+            stockquantity: recordForEdit?.stockquantity,
+            is_active: (recordForEdit?.is_active == true || recordForEdit?.is_active == 1) ? '1' : '0',
 
             price: recordForEdit?.price,
-            oldPrice: recordForEdit?.oldPrice,
+            oldprice: recordForEdit?.oldprice,
+            unit_id: recordForEdit?.unit_id,
+            size: recordForEdit?.size,
 
         });
 
@@ -117,35 +120,39 @@ export default function ProductsListPage() {
 
 
         console.log('data product: ', data); // Handle form submission here
-        const { productIdEditForm, productName, shortDescription, sku, stockQuantity, isActive, price } = data;
-        if (stringIsNullOrWhiteSpace(productName) || stringIsNullOrWhiteSpace(sku)) {
+        const { productidEditForm, product_name, short_description, sku, stockquantity, is_active, price , unit_id, size} = data;
+        if (stringIsNullOrWhiteSpace(product_name) || stringIsNullOrWhiteSpace(sku)) {
             showErrorMsg('Please fill all required fields');
             return false;
         }
 
-        if (stringIsNullOrWhiteSpace(isActive)) {
+        if (stringIsNullOrWhiteSpace(is_active)) {
             showErrorMsg('Status is required!');
             return false;
         }
 
+     
 
-        const productIdLocal = stringIsNullOrWhiteSpace(productIdEditForm) ? 0 : productIdEditForm;
+
+        const productidLocal = stringIsNullOrWhiteSpace(productidEditForm) ? 0 : productidEditForm;
 
         let productFormData: any = {}
 
         //--in case of edit form, not allow email address to edit
-        if (productIdLocal && productIdLocal > 0) {
-            let currentEditProduct = allProductsList?.find((x: { productId: any; }) => x.productId == productIdLocal);
+        if (productidLocal && productidLocal > 0) {
+            let currentEditProduct = allProductsList?.find((x: { productid: any; }) => x.productid == productidLocal);
 
-            productFormData.productId = productIdLocal;
-            productFormData.productName = productName ?? '';
-            productFormData.shortDescription = currentEditProduct.productName;
+            productFormData.productid = productidLocal;
+            productFormData.product_name = product_name ?? '';
+            productFormData.short_description = currentEditProduct.product_name;
             productFormData.sku = currentEditProduct.sku;
-            productFormData.stockQuantity = currentEditProduct.stockQuantity;
-            productFormData.isActive = currentEditProduct.isActive;
+            productFormData.stockquantity = currentEditProduct.stockquantity;
+            productFormData.is_active = currentEditProduct.is_active;
             productFormData.price = currentEditProduct.price;
+            productFormData.unit_id = currentEditProduct.unit_id;
+            productFormData.size = currentEditProduct.size;
         } else {
-            if (stringIsNullOrWhiteSpace(stockQuantity) || stockQuantity < 0) {
+            if (stringIsNullOrWhiteSpace(stockquantity) || stockquantity < 0) {
                 showErrorMsg('Please define stock quantity');
                 return false;
             }
@@ -155,24 +162,38 @@ export default function ProductsListPage() {
                 return false;
             }
 
-            productFormData.productId = productIdLocal;
-            productFormData.productName = productName ?? '';
-            productFormData.shortDescription = shortDescription ?? '';
+            if (stringIsNullOrWhiteSpace(unit_id) || unit_id < 1) {
+                showErrorMsg('Unit is required!');
+                return false;
+            }
+    
+            if (stringIsNullOrWhiteSpace(size) || size < 1) {
+                showErrorMsg('Size is required!');
+                return false;
+            }
+
+            productFormData.productid = productidLocal;
+            productFormData.product_name = product_name ?? '';
+            productFormData.short_description = short_description ?? '';
             productFormData.sku = sku ?? '';
-            productFormData.stockQuantity = stockQuantity ?? 0;
-            productFormData.isActive = isActive?.toString() == "1" ? 'true' : 'false';
+            productFormData.stockquantity = stockquantity ?? 0;
+            productFormData.is_active = is_active?.toString() == "1" ? 'true' : 'false';
             productFormData.price = price ?? 0;
+            productFormData.unit_id = unit_id;
+            productFormData.size = size;
 
 
         }
         const formData = {
-            productId: productFormData.productId,
-            productName: productFormData.productName,
-            shortDescription: productFormData.shortDescription,
+            productid: productFormData.productid,
+            product_name: productFormData.product_name,
+            short_description: productFormData.short_description,
             sku: productFormData.sku,
-            stockQuantity: productFormData.stockQuantity,
-            isActive: productFormData.isActive,
-            price: productFormData.price
+            stockquantity: productFormData.stockquantity,
+            is_active: productFormData.is_active,
+            price: productFormData.price,
+            unit_id: productFormData.unit_id,
+            size: productFormData.size,
         };
 
 
@@ -258,6 +279,34 @@ export default function ProductsListPage() {
     };
 
 
+    useEffect(() => {
+        getUnitsListService();
+    }, []);
+
+    const getUnitsListService = () => {
+
+        const pageBasicInfoUnits: any = {
+            pageNo: 1,
+            pageSize: 50
+        }
+        let pageBasicInfoUnitsRequestParams = new URLSearchParams(pageBasicInfoUnits).toString();
+    
+        getUnitsListApi(pageBasicInfoUnitsRequestParams)
+            .then((res: any) => {
+                const { data } = res;
+                if (data && data.length > 0) {
+                    setAllUnitsList(res?.data);
+                }else{
+                    setAllUnitsList([]);
+                }
+
+            })
+            .catch((err: any) => console.log(err, "err"));
+    };
+
+
+
+
 
 
 
@@ -313,7 +362,7 @@ export default function ProductsListPage() {
                                             ?
                                             allProductsList?.map((record: any, index: number) => (
                                                 <tr role='row' key={index}>
-                                                    <td role="cell" className="ps-3">{record.productId}</td>
+                                                    <td role="cell" className="ps-3">{record.productid}</td>
 
 
 
@@ -330,7 +379,7 @@ export default function ProductsListPage() {
 
                                                             <div className="ms-5">
 
-                                                                <a href="#" className="text-gray-800 text-hover-primary fs-5 fw-bold" data-kt-ecommerce-product-filter="product_name">{makeAnyStringShortAppenDots(record.productName, 110)}</a>
+                                                                <a href="#" className="text-gray-800 text-hover-primary fs-5 fw-bold" data-kt-ecommerce-product-filter="product_name">{makeAnyStringShortAppenDots(record.product_name, 110)}</a>
 
                                                             </div>
                                                         </div>
@@ -340,7 +389,7 @@ export default function ProductsListPage() {
 
 
                                                     <td role="cell">
-                                                        <div className=''>{makeAnyStringShortAppenDots(record.shortDescription, 110)}</div>
+                                                        <div className=''>{makeAnyStringShortAppenDots(record.short_description, 110)}</div>
                                                     </td>
 
                                                     <td role="cell">
@@ -351,16 +400,16 @@ export default function ProductsListPage() {
                                                     </td>
 
                                                     <td role="cell">
-                                                        <div className=' fw-bolder'> {record?.stockQuantity}</div>
+                                                        <div className=' fw-bolder'> {record?.stockquantity}</div>
                                                     </td>
 
                                                     <td role="cell">
-                                                        <div className=' fw-bolder'>  {getDateCommonFormatFromJsonDate(record.createdOn)}</div>
+                                                        <div className=' fw-bolder'>  {getDateCommonFormatFromJsonDate(record.created_on)}</div>
                                                     </td>
 
 
                                                     {
-                                                        record.isActive == true
+                                                        record.is_active == true
                                                             ?
                                                             <td role="cell" className=""> <div className="badge badge-light-success fw-bolder">Active</div></td>
 
@@ -372,11 +421,11 @@ export default function ProductsListPage() {
                                                         <CommonTableActionCell
                                                             onEditClick={handleUserEditClick}
                                                             onDeleteClick={handleOnDeleteClick}
-                                                            editId={record.productId}
+                                                            editId={record.productid}
                                                             showEditButton={true}
                                                             deleteData={{
                                                                 showDeleteButton: true,
-                                                                entityRowId: record.productId,
+                                                                entityRowId: record.productid,
                                                                 entityName: dBEntitiesConst.Products.tableName,
                                                                 entityColumnName: dBEntitiesConst.Products.primaryKeyColumnName,
                                                                 sqlDeleteTypeId: sqlDeleteTypesConst.foreignKeyDelete,
@@ -424,6 +473,7 @@ export default function ProductsListPage() {
                                     closeModal={handleOpenCloseAddModal}
                                     defaultValues={userEditForm}
                                     onSubmit={handleUserFormSubmit}
+                                    allUnitsList = {allUnitsList}
                                 />
                                 :
                                 <>
