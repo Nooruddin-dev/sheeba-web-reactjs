@@ -182,3 +182,32 @@ height: 150px;
   max-height: 500px;
   overflow: auto;
 }
+
+.tax-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+  width: fit-content;
+}
+
+.tax-container select, 
+.tax-container input {
+  border: none;
+  outline: none;
+  padding: 8px;
+}
+
+.tax-container select {
+  border-right: 1px solid #ccc;
+}
+
+.tax-container input {
+  flex-grow: 1;
+}
+
+.order-tax-box{
+  border: 1px solid #3c2e2e;
+    padding: 7px;
+}

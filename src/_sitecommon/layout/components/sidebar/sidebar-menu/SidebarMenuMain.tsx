@@ -90,16 +90,7 @@ const SidebarMenuMain = () => {
         icon='grid-frame'
       />
 
-      {/* <SidebarMenuItemWithSub
-        to=''
-        title='Inventory Management'
-        fontIcon='bi-archive'
-        icon='grid-frame'
-      >
-        <SidebarMenuItem to='/site/products-list' title='Products List' hasBullet={true} />
-        <SidebarMenuItem to='/site/inventory-list' title='Inventory Methods' hasBullet={true} />
 
-      </SidebarMenuItemWithSub> */}
 
       <SidebarMenuItemWithSub
         to=''
@@ -111,6 +102,19 @@ const SidebarMenuMain = () => {
         <SidebarMenuItem to='/site/create-order' title='Create Order' hasBullet={true} />
 
       </SidebarMenuItemWithSub>
+
+
+      <SidebarMenuItemWithSub
+        to=''
+        title='GRN Vouchers'
+        fontIcon='bi-archive'
+        icon='handcart'
+      >
+        <SidebarMenuItem to='/grn/vochers-list' title='GRN Vochers List' hasBullet={true} />
+        <SidebarMenuItem to='/grn/create-voucher' title='Create GRN Voucher' hasBullet={true} />
+
+      </SidebarMenuItemWithSub>
+
 
 
 

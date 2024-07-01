@@ -50,3 +50,38 @@ export const dataOperationTypeConst = {
     CITIES: 6,
     SHIPPING: 7
 };
+
+
+export const inventoryUnits = {
+  ORDER_TOTAL: 1,
+  ORDER_SUBTOTAL: 2,
+  PRODUCTS: 3,
+  CATEGORIES: 4,
+  MANUFACTURERS: 5,
+  CITIES: 6,
+  SHIPPING: 7
+};
+
+
+export enum InventoryUnits {
+  KG = '1',
+  LB = '2',
+  LITRE = '3',
+  INCH = '4',
+  MM = '5',
+  METRE = '6',
+}
+
+
+export enum UnitTypesEnum {
+  Liquid_Solvent = '1',
+  Granules = '2',
+  Roll = '3',
+}
+
+export enum OrderTaxStatusEnum {
+  Taxable = '1',
+  NonTaxable = '2',
+}
+
+

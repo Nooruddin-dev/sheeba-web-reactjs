@@ -269,7 +269,7 @@ export default function PurchaseOrderDetailPage() {
                                                                     onClick={handleOpenCloseOrderReceiptModal}
                                                                 >
                                                                     <FontAwesomeIcon icon={faPlus} className='me-2' />
-                                                                    Generate Receipt</a>
+                                                                    Preview Receipt</a>
                                                             </div>
 
                                                         </div>

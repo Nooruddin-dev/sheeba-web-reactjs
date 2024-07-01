@@ -2,7 +2,7 @@
 const VERSION = "1";
 export const API_BASE_URL = 'http://localhost:3009'; //--Live: http://noornashad-001-site5.etempurl.com, Local: https://localhost:7044
 export const API_URL = `${API_BASE_URL}/api/v${VERSION}`;
-export const APP_BASE_URL = "http://localhost:3001/"; //--Live: http://noornashad-001-site1.etempurl.com/, Local: http://localhost:3000/
+export const APP_BASE_URL = "http://localhost:3000/"; //--Live: http://noornashad-001-site1.etempurl.com/, Local: http://localhost:3000/
 
 export const pageShowTimeDuration = 500;
 
@@ -14,6 +14,7 @@ export const controllerUrlExtensions = {
   INVENTORY: 'inventory',
   MACHINES: 'machines',
   ORDERS: 'orders',
+  VOUCHER: 'voucher',
 
 
 }
@@ -47,7 +48,9 @@ export const API_ENDPOINTS = {
   GET_ALL_PURCHASE_ORDERS: `/${controllerUrlExtensions.ORDERS}/get-all-purchase-orders`,
   GET_PURCHASE_ORDER_DETAILS_BY_ID: `/${controllerUrlExtensions.ORDERS}/get-purchase-order-details`,
 
-
+  //--Voucher APIs urls
+  GET_PURCHASE_ORDER_DETAIL_FOR_GRN_VOUCHER: `/${controllerUrlExtensions.VOUCHER}/get_purchase_order_detail_for_grn_voucher`,
+  GET_PURCHASE_ORDER_LIST_FOR_GRN_VOUCHER_BY_SEARCH_TERM: `/${controllerUrlExtensions.VOUCHER}/get-purchase-order-list-for-grn-voucher-by-search-term`,
 
 }
 

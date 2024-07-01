@@ -24,6 +24,8 @@ import MachinesListPage from '../areas/machines/pages/MachinesListPage';
 import CreateOrderPage from '../areas/orders/pages/CreateOrderPage';
 import PurchaseOrdersListPage from '../areas/orders/pages/PurchaseOrdersListPage';
 import PurchaseOrderDetailPage from '../areas/orders/pages/PurchaseOrderDetailPage';
+import GrnVoucherListPage from '../areas/grnVoucher/pages/GrnVoucherListPage';
+import CreateGrnVoucherPage from '../areas/grnVoucher/pages/CreateGrnVoucherPage';
 
 
 
@@ -89,8 +91,16 @@ export default function RouteConfig() {
           <LoginProtectedRoute> <PurchaseOrderDetailPage /> </LoginProtectedRoute>
         } />
 
+        <Route path="/grn/vochers-list" element={
+          <LoginProtectedRoute> <GrnVoucherListPage /> </LoginProtectedRoute>
+        } />
 
-     
+        <Route path="/grn/create-voucher" element={
+          <LoginProtectedRoute> <CreateGrnVoucherPage /> </LoginProtectedRoute>
+        } />
+
+
+
 
 
         {/* Common routes area starts here */}

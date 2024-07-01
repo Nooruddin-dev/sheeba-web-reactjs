@@ -35,10 +35,12 @@ const PurchaseOrderReceiptModal: React.FC<PurchaseOrderStatusFormInterface> = ({
     const [orderDetails, setOrderDetails] = useState<any>({});
 
 
+
     const componentRefForReceipt = useRef(null);
     const handlePrintReceipt = useReactToPrint({
         content: () => componentRefForReceipt.current,
         documentTitle: 'Order Receipt',
+
     });
 
 
@@ -60,22 +62,27 @@ const PurchaseOrderReceiptModal: React.FC<PurchaseOrderStatusFormInterface> = ({
                     setOrderDetails({});
                 }
 
+           
+
+                setTimeout(handlePrintReceipt, 1000); // Delay of 1 second
+
+
             })
             .catch((err: any) => console.log(err, "err"));
     };
 
 
     return (
-        <ReactModal
-            isOpen={isOpen}
-            onRequestClose={closeModal}
-            contentLabel="Example Modal"
-            className={"admin-large-modal"}
-            shouldCloseOnOverlayClick={false} // Prevent closing on overlay click
-        >
+        // <ReactModal
+        //     isOpen={isOpen}
+        //     onRequestClose={closeModal}
+        //     contentLabel="Example Modal"
+        //     className={"admin-large-modal"}
+        //     shouldCloseOnOverlayClick={false} 
+        // >
 
 
-            <div className='admin-modal-area'>
+            <div className='admin-modal-area' style={{display: 'none'}}>
                 <div className='admin-modal-header'>
                     <h2>Purchase Order Receipt</h2>
 
@@ -308,7 +315,7 @@ const PurchaseOrderReceiptModal: React.FC<PurchaseOrderStatusFormInterface> = ({
             </div>
 
 
-        </ReactModal>
+        // </ReactModal>
     )
 }
 

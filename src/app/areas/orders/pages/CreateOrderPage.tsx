@@ -7,15 +7,15 @@ import { Content } from '../../../../_sitecommon/layout/components/content';
 import { KTCard, KTCardBody, KTIcon, toAbsoluteUrl } from '../../../../_sitecommon/helpers';
 import { useForm } from 'react-hook-form';
 import SiteErrorMessage from '../../common/components/shared/SiteErrorMessage';
-import { createPurchaseOrderApi, gerProductsListBySearchTermApi, getAllTaxRulesApi, getAllUsersApi, getProductDetailById } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
+import { createPurchaseOrderApi, gerProductsListBySearchTermApi, getAllUsersApi, getProductDetailById } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
 import BusinessPartnerTypesEnum from '../../../../_sitecommon/common/enums/BusinessPartnerTypesEnum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import ReactSelect from 'react-select';
 import { showErrorMsg, showSuccessMsg, showWarningMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 import { makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
-import { taxRulesTypesConst } from '../../../../_sitecommon/common/enums/GlobalEnums';
-import { calculateItemAmount, calculateItemsSubTotal, calculateOrderItemAmount, calculateTaxValue, getTaxRateByTaxRuleId } from '../../../../_sitecommon/common/helpers/global/OrderHelper';
+import { OrderTaxStatusEnum, taxRulesTypesConst } from '../../../../_sitecommon/common/enums/GlobalEnums';
+import { calculateItemAmount, calculateItemLevelTaxValueNew, calculateItemsSubTotal, calculateOrderItemAmount, calculateTaxValue, calculateTaxValueNewFunc, getTaxRateByTaxRuleId } from '../../../../_sitecommon/common/helpers/global/OrderHelper';
 import { useNavigate } from 'react-router';
 import PurchaseOrderReceiptModal from '../components/PurchaseOrderReceiptModal';
 
@@ -47,12 +47,12 @@ export default function CreateOrderPage() {
     const navigate = useNavigate();
     const defaultValues: any = {};
     const formRefOrder = useRef<HTMLFormElement>(null);
-    const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm({ defaultValues });
+    const { register, handleSubmit, reset, getValues, setValue, formState: { errors } } = useForm({ defaultValues });
     const [formSubmitted, setFormSubmitted] = useState(false);
 
 
     const [allVendorsList, setAllVendorsList] = useState<any>(null);
-    const [allTaxRules, setAllTaxRules] = useState<any>([]);
+
     const [allSaleRepresentativesList, setAllSaleRepresentativesList] = useState<any>(null);
     const [minDate, setMinDate] = useState('');
     const [cartAllProducts, setCartAllProducts] = useState<any>([]);
@@ -60,11 +60,16 @@ export default function CreateOrderPage() {
     const [selectedSearchProductOptions, setSelectedSearchProductOptions] = useState([]);
     const [selectedProductDropDown, setSelectedProductDropDown] = useState<any>(null);
 
+    const [orderTaxStatusLocal, setOrderTaxStatusLocal] = useState<any>(OrderTaxStatusEnum.Taxable);
+
     const [cartItemTotlal, setCartItemTotlal] = useState<number>(0);
     const [orderTotal, setOrderTotal] = useState<number>(0);
     const [grandTaxAmount, setGrandTaxAmount] = useState<number>(0);
-    const [orderLevelTaxRuleId, setOrderLevelTaxRuleId] = useState<number>(0);
-    const [orderLevelTaxAmount, setOrderLevelTaxAmount] = useState<number>(0);
+
+    const [orderLevelTaxRateType, setOrderLevelTaxRateType] = useState<any>(null);
+    const [orderLevelTaxValue, setOrderLevelTaxValue] = useState<any>(0);
+    const [orderLevelTaxFinalAmount, setOrderLevelTaxFinalAmount] = useState<number>(0);
+
     const [latestOrderId, setLatestOrderId] = useState<any>(0);
     const [isOpenReceiptModal, setIsOpenReceiptModal] = useState<boolean>(false);
 
@@ -76,7 +81,7 @@ export default function CreateOrderPage() {
 
     const createPurchaseOrder = (data: any) => {
 
-        const { po_reference, delivery_date, company_name, order_date, vendor_id, sale_representative_id, purchaser_name, payment_terms, remarks } = data;
+        const { po_reference, delivery_date, company_name, order_date, vendor_id, sale_representative_id, purchaser_name, payment_terms, remarks, order_tax_status } = data;
         if (stringIsNullOrWhiteSpace(po_reference) || stringIsNullOrWhiteSpace(delivery_date)
             || stringIsNullOrWhiteSpace(company_name) || stringIsNullOrWhiteSpace(order_date) || stringIsNullOrWhiteSpace(vendor_id)
             || stringIsNullOrWhiteSpace(sale_representative_id) || stringIsNullOrWhiteSpace(purchaser_name)) {
@@ -86,18 +91,25 @@ export default function CreateOrderPage() {
 
         let cartProductsLocal: any = []
 
+
+  
+        
         cartAllProducts?.forEach((item: any) => {
 
-           // let taxRateItem = getTaxRateByTaxRuleId(allTaxRules, item?.product_tax_rule_id);
-           // let itemTotalTax = calculateTaxValue(taxRateItem, item?.price);
+            // let taxRateItem = getTaxRateByTaxRuleId(allTaxRules, item?.product_tax_rule_id);
+            // let itemTotalTax = calculateTaxValue(taxRateItem, item?.price);
+
+
 
             cartProductsLocal.push({
                 productid: item.productid,
                 quantity: item.quantity ?? 1,
                 price: item?.price,
-                product_tax_rule_id: item?.product_tax_rule_id,
-                itemTaxPercent: item.taxRateItem,
+
+                tax_rate_type: item?.tax_rate_type,
+                tax_value: item.tax_value,
                 itemTotalTax: item.itemTotalTax,
+
                 itemTotal: item?.itemTotal,
             })
         });
@@ -113,13 +125,16 @@ export default function CreateOrderPage() {
             purchaser_name: purchaser_name,
             payment_terms: payment_terms,
             remarks: remarks,
+            order_tax_status: order_tax_status ?? OrderTaxStatusEnum.Taxable,
 
 
             cartAllProducts: cartProductsLocal,
 
             orderTotal: orderTotal,
-            orderLevelTaxRuleId: orderLevelTaxRuleId,
-            orderLevelTaxAmount: orderLevelTaxAmount,
+
+            orderLevelTaxRateType: orderLevelTaxRateType,
+            orderLevelTaxValue: orderLevelTaxValue,
+            orderLevelTaxAmount: orderLevelTaxFinalAmount,
 
 
         }
@@ -195,24 +210,58 @@ export default function CreateOrderPage() {
             return updatedCart;
         });
     };
-    const handleProductTaxChange = (index: number, event: any) => {
+
+
+    const handleProductTaxRateTypeChange = (index: number, event: any) => {
         const { value } = event.target;
+
+        //--first empty this row tax value if rate type change
         setCartAllProducts((prevProducts: any) => {
             const updatedProducts = [...prevProducts];
-            updatedProducts[index].product_tax_rule_id = value;
+            updatedProducts[index].tax_value = 0;
+            return updatedProducts;
+        });
+
+
+        setCartAllProducts((prevProducts: any) => {
+            const updatedProducts = [...prevProducts];
+            updatedProducts[index].tax_rate_type = value;
             return updatedProducts;
         });
     };
+
+    const hanldeProductTaxValue = (index: number, value: number) => {
+
+        
+        let taxRateType = cartAllProducts[index]?.tax_rate_type;
+        if (taxRateType == undefined || taxRateType == null || stringIsNullOrWhiteSpace(taxRateType) == true) {
+            
+            showErrorMsg('Please select tax type from drop down!');
+            return false;
+        }
+
+        setCartAllProducts((prevProducts: any) => {
+            const updatedProducts = [...prevProducts];
+            updatedProducts[index].tax_value = value;
+            return updatedProducts;
+        });
+    };
+
+    const hanldeProductPriceChange = (index: number, value: number) => {
+        setCartAllProducts((prevProducts: any) => {
+            const updatedProducts = [...prevProducts];
+            updatedProducts[index].price = value;
+            return updatedProducts;
+        });
+    };
+
+
 
     const removeProductFromCart = (e: any, productid: number) => {
         e.preventDefault();
         setCartAllProducts((prevProducts: any) => prevProducts.filter((product: { productid: number; }) => product.productid !== productid));
     };
 
-
-    const handleChangeOrderLevelTaxRule = (event: any) => {
-        setOrderLevelTaxRuleId(event.target.value);
-    };
 
 
 
@@ -228,29 +277,30 @@ export default function CreateOrderPage() {
     useEffect(() => {
         let itemTotal = calculateItemsSubTotal(cartAllProducts);
         setCartItemTotlal(itemTotal);
+        
         let orderLevelTaxValueLocal = 0;
-        if (orderLevelTaxRuleId && orderLevelTaxRuleId > 0) {
-            const tax_rate_local = getTaxRateByTaxRuleId(allTaxRules, orderLevelTaxRuleId);
-            orderLevelTaxValueLocal = calculateTaxValue(tax_rate_local, itemTotal ?? 0);
+        if (orderLevelTaxRateType && !stringIsNullOrWhiteSpace(orderLevelTaxRateType)) {
+            orderLevelTaxValueLocal = calculateTaxValueNewFunc(itemTotal, orderLevelTaxRateType, (orderLevelTaxValue ?? 0));
+
             itemTotal = itemTotal + orderLevelTaxValueLocal;
-            setOrderLevelTaxAmount(orderLevelTaxValueLocal);
+            setOrderLevelTaxFinalAmount(orderLevelTaxValueLocal);
         }
 
         //--calcualte all taxes (product level + order level)
-        let  itemsGrandTotalTax = cartAllProducts?.reduce((total: any, product: any) => total + product.itemTotalTax, 0);
-        let grandTaxAmount =  (orderLevelTaxValueLocal + (parseInt(itemsGrandTotalTax?.toFixed(2) ?? 0)))?.toFixed(2);
+        let itemsGrandTotalTax = cartAllProducts?.reduce((total: any, product: any) => total + product.itemTotalTax, 0);
+        let grandTaxAmount = (orderLevelTaxValueLocal + (parseInt(itemsGrandTotalTax?.toFixed(2) ?? 0)))?.toFixed(2);
 
-        setGrandTaxAmount(parseInt(grandTaxAmount ?? '0'));
+        setGrandTaxAmount(parseFloat(grandTaxAmount ?? "0"));
 
         setOrderTotal(itemTotal);
-    }, [cartAllProducts, orderLevelTaxRuleId]);
+    }, [cartAllProducts, orderLevelTaxRateType, orderLevelTaxValue]);
 
 
     useEffect(() => {
         setMinDeliveryDate();
         getAllVendorsListService();
         getAllSaleRepresentativesListService();
-        getAllTaxRulesSerice();
+
     }, []);
 
     const getAllVendorsListService = () => {
@@ -303,30 +353,7 @@ export default function CreateOrderPage() {
             .catch((err: any) => console.log(err, "err"));
     };
 
-    const getAllTaxRulesSerice = () => {
 
-        const pageBasicInfoAllTaxes: any = {
-            pageNo: 1,
-            pageSize: 100,
-
-        }
-
-        let pageBasicInfoTaxInfoRequestParams = new URLSearchParams(pageBasicInfoAllTaxes).toString();
-
-
-        getAllTaxRulesApi(pageBasicInfoTaxInfoRequestParams)
-            .then((res: any) => {
-                const { data } = res;
-                if (data && data.length > 0) {
-                    setAllTaxRules(res?.data);
-                } else {
-                    setAllTaxRules([]);
-                }
-
-
-            })
-            .catch((err: any) => console.log(err, "err"));
-    };
 
 
     // Fetch options when the search query changes
@@ -337,6 +364,7 @@ export default function CreateOrderPage() {
             setSelectedSearchProductOptions([]); // Clear options if search query is empty
         }
     }, [searchQueryProduct]);
+
 
     //--if new user added from form then will pass searchByCustomerId to this funtion
     const gerProductsListBySearchTermService = () => {
@@ -355,10 +383,14 @@ export default function CreateOrderPage() {
                 }
 
             }).catch((error: any) => {
-                console.error('Error fetching customer data:', error);
+                console.error('Error fetching product data:', error);
             });
     };
 
+    useEffect(() => {
+        // Set the default value for order_tax_status
+        setValue('order_tax_status', OrderTaxStatusEnum.Taxable);
+    }, []);
 
     return (
         <AdminLayout>
@@ -549,7 +581,24 @@ export default function CreateOrderPage() {
 
 
 
+                                    <div className='col-lg-4'>
+                                        <div className="mb-10">
+                                            <label className="form-label required">Order Tax Status </label>
+                                            <select
+                                                className={`form-select form-select-solid ${formSubmitted ? (errors.order_tax_status ? 'is-invalid' : 'is-valid') : ''}`}
 
+                                                aria-label="Select example"
+                                                id="order_tax_status" {...register("order_tax_status", { required: true })}
+                                                onChange={(e)=>setOrderTaxStatusLocal(e.target.value)}
+                                            >
+
+                                                <option value='1'>Taxable</option>
+                                                <option value='2'>Non-Taxable</option>
+
+                                            </select>
+                                            {errors.order_tax_status && <SiteErrorMessage errorMsg='Tax status is required' />}
+                                        </div>
+                                    </div>
 
 
 
@@ -687,16 +736,18 @@ export default function CreateOrderPage() {
                                         <thead>
                                             <tr className='fw-bold text-muted'>
 
-                                                <th className='min-w-150px'>Product Id</th>
-                                                <th className='min-w-150px'>Product Name</th>
-                                                <th className='min-w-150px'>SKU</th>
-                                                <th className='min-w-100px'> Cost</th>
+                                                <th className='min-w-80px'>Product Id</th>
+                                                <th className='min-w-100px'>Product Name</th>
+                                                <th className='min-w-80px'>SKU</th>
+                                                <th className='min-w-150px'> Cost</th>
 
-                                                <th className='min-w-80px'>Quantity</th>
+                                                <th className='min-w-100px'>Quantity</th>
                                                 <th className='min-w-80px'>Amount</th>
-                                                <th className='min-w-100px'> Product Tax</th>
-                                                <th className='min-w-100px'>Item Total</th>
-                                                <th className='min-w-50px text-end'>Actions</th>
+                                                <th className='min-w-200px'>Item Tax</th>
+
+                                                <th className='min-w-80px'>Item Total Tax</th>
+                                                <th className='min-w-80px text-center'>Item Total</th>
+                                                <th className='min-w-50px text-start'>Actions</th>
                                             </tr>
                                         </thead>
 
@@ -726,7 +777,16 @@ export default function CreateOrderPage() {
 
                                                                 <td>
                                                                     <a className='text-gray-900 fw-bold text-hover-primary d-block fs-6'>
-                                                                        {productItem?.price}
+                                                                        {/* {productItem?.price} */}
+
+                                                                        <input
+                                                                            className='form-select form-select-solid item-cart-price'
+                                                                            type="number"
+                                                                            min={1}
+                                                                            value={productItem.price || 0}
+                                                                            onChange={(e) => hanldeProductPriceChange(index, parseInt(e.target.value, 10))}
+
+                                                                        />
                                                                     </a>
 
                                                                 </td>
@@ -743,25 +803,43 @@ export default function CreateOrderPage() {
                                                                 </td>
                                                                 <td role="cell" className="">{calculateItemAmount(productItem.price, productItem.quantity)}</td>
 
-                                                                <td className='text-end '>
+                                                                <td role="cell" className="">
+                                                                    <div className="tax-container">
+                                                                        <select
+                                                                            value={productItem.tax_rate_type ?? ''}
+                                                                            onChange={(event) => handleProductTaxRateTypeChange(index, event)}
+                                                                            disabled={orderTaxStatusLocal == OrderTaxStatusEnum.Taxable ? false : true}
+                                                                        >
+                                                                            <option value="">Select</option>
+                                                                            <option value="Percentage">Percentage</option>
+                                                                            <option value="Fixed">Fixed</option>
 
-                                                                    <select
-                                                                        className='form-select form-select-solid'
-                                                                        value={productItem.product_tax_rule_id ?? 0}
-                                                                        onChange={(event) => handleProductTaxChange(index, event)}
-                                                                    >
-                                                                        <option value="">Select Tax</option>
-                                                                        {allTaxRules?.filter((x: { tax_rule_type: any; }) => x.tax_rule_type == taxRulesTypesConst.ForProduct)?.map((taxOption: any, index: number) => (
-                                                                            <option key={index} value={taxOption.tax_rule_id}>{calculateTaxValue(taxOption.tax_rate, productItem.price)} - {taxOption.tax_rate}%</option>
-                                                                        ))}
-                                                                    </select>
+                                                                        </select>
+                                                                        <input
+                                                                            className='form-control'
+                                                                            type="number"
+                                                                            min={0}
+                                                                            readOnly={orderTaxStatusLocal == OrderTaxStatusEnum.Taxable ? false : true}
+                                                                            value={productItem.tax_value || 0}
+                                                                            onChange={(e) => hanldeProductTaxValue(index, parseInt(e.target.value, 10))}
+                                                                            placeholder="Enter tax value"
+                                                                        />
+                                                                    </div>
                                                                 </td>
 
-                                                                <td role="cell" className="">{calculateOrderItemAmount(productItem, allTaxRules)}</td>
+
+
+                                                                <td className='text-center '>
+                                                                    {calculateItemLevelTaxValueNew(productItem)}
+
+
+                                                                </td>
+
+                                                                <td className="text-center">{calculateOrderItemAmount(productItem)}</td>
 
 
 
-                                                                <td className='text-end min-w-50px pe-3'>
+                                                                <td className='text-center min-w-50px pe-3'>
                                                                     <a className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                                                                         onClick={(e) => removeProductFromCart(e, productItem?.productid)}
                                                                     >
@@ -798,38 +876,64 @@ export default function CreateOrderPage() {
                                                 ?
                                                 <tfoot className=''>
                                                     <tr className='mt-3 border-none'>
-                                                        <td colSpan={7} className='text-end'></td>
+                                                        <td colSpan={8} className='text-end'></td>
                                                         <td ></td>
                                                     </tr>
 
                                                     <tr className='mt-3 border-none'>
-                                                        <td colSpan={7} className='text-end fw-bold'>Sub Total</td>
+                                                        <td colSpan={8} className='text-end fw-bold'>Sub Total</td>
                                                         <td id="subTotal">{cartItemTotlal}</td>
                                                     </tr>
 
                                                     <tr className='border-none'>
-                                                        <td colSpan={7} className='text-end fw-bold'>Tax</td>
-                                                        <td>
-                                                            <select id="orderTaxSelect" className='form-select form-select-solid'
-                                                                value={orderLevelTaxRuleId} onChange={handleChangeOrderLevelTaxRule}
-                                                            >
+                                                        <td colSpan={8} className='text-end fw-bold'>Tax</td>
+                                                        <td className='min-w-250px'>
 
-                                                                <option value="">Select Order Tax</option>
-                                                                {allTaxRules?.filter((x: { tax_rule_type: any; }) => x.tax_rule_type == taxRulesTypesConst.ForOrder)?.map((taxOption: any, index: number) => (
-                                                                    <option key={index} value={taxOption.tax_rule_id}>{taxOption.tax_rate}%</option>
-                                                                ))}
+                                                            <div className='order-tax-box'>
+                                                                <div className="tax-container">
+                                                                    <select
+                                                                        value={orderLevelTaxRateType}
+                                                                        onChange={(e) => setOrderLevelTaxRateType(e.target.value)}
+                                                                        disabled={orderTaxStatusLocal == OrderTaxStatusEnum.Taxable ? false : true}
+                                                                    >
+                                                                        <option value="">Select</option>
+                                                                        <option value="Percentage">Percentage</option>
+                                                                        <option value="Fixed">Fixed</option>
 
-                                                            </select>
+                                                                    </select>
+                                                                    <input
+                                                                        className='form-control'
+                                                                        type="number"
+                                                                        min={0}
+                                                                        value={orderLevelTaxValue || 0}
+                                                                        readOnly={orderTaxStatusLocal == OrderTaxStatusEnum.Taxable ? false : true}
+                                                                        onChange={(e) => setOrderLevelTaxValue(parseInt(e.target.value, 10))}
+                                                                        placeholder="Enter tax value"
+                                                                    />
+                                                                </div>
+
+                                                                <div className='mt-2'>
+                                                                    Total: {calculateTaxValueNewFunc(cartItemTotlal  , orderLevelTaxRateType, orderLevelTaxValue)}
+                                                                </div>
+                                                            </div>
+
+
+
+
+
+
+
+
                                                         </td>
                                                     </tr>
 
                                                     <tr className='mt-3 border-none'>
-                                                        <td colSpan={7} className='text-end fw-bold'>Total Tax</td>
+                                                        <td colSpan={8} className='text-end fw-bold'>Total Tax</td>
                                                         <td id="subTotal">{grandTaxAmount}</td>
                                                     </tr>
 
                                                     <tr className='border-none'>
-                                                        <td colSpan={7} className='text-end fw-bold'>Grand Total</td>
+                                                        <td colSpan={8} className='text-end fw-bold'>Grand Total</td>
                                                         <td id="subTotal">{orderTotal}</td>
                                                     </tr>
                                                 </tfoot>

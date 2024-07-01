@@ -100,3 +100,17 @@ export const getUnitsListApi = (queryUrl: string) => {
         `${API_ENDPOINTS.GET_UNITS_LIST}?${queryUrl}`
     );
 }
+
+
+export const getPurchaseOrderDetailsForGrnVoucherApi = (purchase_order_id: number) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_PURCHASE_ORDER_DETAIL_FOR_GRN_VOUCHER}/${purchase_order_id}`
+    );
+}
+
+
+export const gerPurchaseOrdersListForGrnVoucherBySearchTermApi = (searchQueryOrder: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_PURCHASE_ORDER_LIST_FOR_GRN_VOUCHER_BY_SEARCH_TERM}/${searchQueryOrder}`
+    );
+}

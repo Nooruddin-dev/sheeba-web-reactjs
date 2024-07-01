@@ -5,6 +5,7 @@ import ReactModal from 'react-modal';
 import { useForm } from 'react-hook-form';
 import { KTIcon } from '../../../../_sitecommon/helpers';
 import SiteErrorMessage from '../../common/components/shared/SiteErrorMessage';
+import { UnitTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
 
 interface ProductAddUpdateFormInterface {
     isOpen: boolean,
@@ -29,17 +30,94 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
     const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm({ defaultValues });
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [isEditCase, setIsEditCase] = useState(false);
+    const [unitTypeLocal, setUnitTypeLocal] = useState<any>('');
+    const [unitSubTypesRoll, setUnitSubTypesRoll] = useState<any>(
+        [
+            {
+                unit_sub_type: "Micon",
+                unit_id: 0,
+                unit_value: ""
+            },
+            {
+                unit_sub_type: "Width",
+                unit_id: 0,
+                unit_value: ""
+            },
+            {
+                unit_sub_type: "Length",
+                unit_id: 0,
+                unit_value: ""
+            },
+            {
+                unit_sub_type: "Weight",
+                unit_id: 0,
+                unit_value: ""
+            }
+        ]
+    );
+
+
+    const handleProductUnitChangeForRollType = (index: number, event: any, unit_sub_type: string = 'empty') => {
+        const { value } = event.target;
+
+        if (unit_sub_type == 'Micon') {
+            setUnitSubTypesRoll((prevUnitSubType: any) => {
+                const updatedUnitSubType = [...prevUnitSubType];
+                updatedUnitSubType[index].unit_value = value;
+                return updatedUnitSubType;
+            });
+        } else {
+            setUnitSubTypesRoll((prevUnitSubType: any) => {
+                const updatedUnitSubType = [...prevUnitSubType];
+                updatedUnitSubType[index].unit_id = value;
+                return updatedUnitSubType;
+            });
+        }
+
+    };
 
 
     const onSubmitCategoryForm = (data: any) => {
-        onSubmit(data);
+
+        // Include unitSubTypesRoll in the data sent to the parent
+
+
+        const formData = { ...data, unitSubTypesRoll };
+        onSubmit(formData);
+
+        //onSubmit(data);
         // reset(); // Clear the form after submission
     };
 
     useEffect(() => {
         if (defaultValues && defaultValues.productidEditForm && defaultValues.productidEditForm > 0) {
             setIsEditCase(true);
+
+            if (defaultValues.unit_type && defaultValues.unit_type > 0) {
+                setUnitTypeLocal(defaultValues.unit_type);
+
+                if (defaultValues.unit_type == UnitTypesEnum.Roll) {
+
+                    const updatedUnitSubTypesRoll = unitSubTypesRoll.map((element: any) => {
+                        const selectedElement = defaultValues?.inventory_units_info?.find((x: { unit_sub_type: any; }) => x.unit_sub_type === element.unit_sub_type);
+
+                        if (element.unit_sub_type == 'Micon') {
+
+                            return { ...element, unit_value: selectedElement?.unit_value ?? element.unit_value };
+                        } else {
+
+                            return { ...element, unit_id: selectedElement?.unit_id ?? element.unit_id };
+                        }
+                    });
+
+                    setUnitSubTypesRoll(updatedUnitSubTypesRoll);
+
+                }
+            }
+
         }
+
+
     }, [])
 
 
@@ -141,7 +219,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                 </div>
                             </div>
 
-                            <div className='col-lg-6'>
+                            {/* <div className='col-lg-6'>
                                 <div className="mb-10">
                                     <label className="form-label required ">Cost</label>
                                     <input
@@ -154,7 +232,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                     />
                                     {errors.price && <SiteErrorMessage errorMsg='Cost field is required!' />}
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className='col-lg-6'>
                                 <div className="mb-10">
@@ -175,6 +253,163 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
 
                             <div className='col-lg-6'>
                                 <div className="mb-10">
+                                    <label className="form-label required">Inventory Type</label>
+                                    <select
+                                        className={`form-select form-select-solid ${formSubmitted ? (errors.unit_type ? 'is-invalid' : 'is-valid') : ''}`}
+
+                                        aria-label="Select example"
+                                        id="unit_type" {...register("unit_type", { required: true })}
+                                        disabled={isEditCase}
+                                        onChange={(e) => setUnitTypeLocal(e.target.value)}
+                                    >
+                                        <option value=''>--Select--</option>
+                                        <option value='1'>Liquid/Solvent</option>
+                                        <option value='2'> Granules </option>
+                                        <option value='3'>Roll</option>
+
+                                    </select>
+                                    {errors.unit_type && <SiteErrorMessage errorMsg='Unit type required' />}
+                                </div>
+                            </div>
+
+                            {
+                                unitTypeLocal == UnitTypesEnum.Roll ?
+                                    <div className='col-lg-6'>
+                                        <div className="mb-10">
+                                            <div className='table-responsive'>
+                                                <table className='table table-row-dashed table-bordered table-row-gray-300 align-middle gs-0 gy-1'>
+                                                    <thead>
+                                                        <tr className='fw-bold text-muted'>
+
+                                                            <th className='min-w-100px ps-3'> Sub Type</th>
+
+                                                            <th className='min-w-100px'>Unit</th>
+
+                                                        </tr>
+                                                    </thead>
+
+
+                                                    <tbody>
+                                                        {unitSubTypesRoll?.map((unitSubItem: any, index: number) => (
+                                                            <tr key={index}>
+                                                                <td role="cell" className="ps-3">{unitSubItem.unit_sub_type}</td>
+
+
+                                                                <td role="cell" className="">
+
+
+
+                                                                    {
+                                                                        unitSubItem.unit_sub_type == 'Micon'
+                                                                            ?
+                                                                            <>
+                                                                                <input
+                                                                                    type="number"
+                                                                                    min={0}
+                                                                                    value={unitSubItem.unit_value ?? 0}
+                                                                                    className={`form-control form-control-solid`}
+                                                                                    readOnly={isEditCase}
+                                                                                    placeholder="Enter number"
+                                                                                    onChange={(event) => handleProductUnitChangeForRollType(index, event, unitSubItem.unit_sub_type)}
+                                                                                />
+                                                                            </>
+
+                                                                            :
+                                                                            <UnitSelect
+                                                                                unit_sub_type={unitSubItem.unit_sub_type}
+                                                                                unit_id={unitSubItem.unit_id}
+                                                                                allUnitsList={allUnitsList}
+                                                                                isEditCase={isEditCase}
+                                                                                onChange={(event) => handleProductUnitChangeForRollType(index, event)}
+
+                                                                            />
+                                                                    }
+
+
+
+                                                                </td>
+
+
+
+
+
+
+                                                            </tr>
+
+
+                                                        ))}
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    :
+                                    <></>
+                            }
+
+
+                            {
+                                unitTypeLocal == UnitTypesEnum.Liquid_Solvent
+                                    ?
+                                    <div className='col-lg-6'>
+                                        <div className="mb-10">
+                                            <label className="form-label required">Unit </label>
+                                            <select
+                                                className={`form-select form-select-solid ${formSubmitted ? (errors.unit_id ? 'is-invalid' : 'is-valid') : ''}`}
+
+                                                aria-label="Select example"
+                                                id="unit_id" {...register("unit_id", { required: true })}
+                                                disabled={isEditCase}
+                                            >
+                                                <option value=''>--Select--</option>
+
+                                                {allUnitsList?.filter((x: { unit_id: number; }) => x.unit_id == 1 || x.unit_id == 2 || x.unit_id == 3)?.map((item: any, index: any) => (
+                                                    <option key={index} value={item.unit_id}>
+                                                        {item.unit_short_name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {errors.unit_id && <SiteErrorMessage errorMsg='Unit is required' />}
+                                        </div>
+                                    </div>
+                                    :
+                                    <></>
+                            }
+
+                            {
+                                unitTypeLocal == UnitTypesEnum.Granules
+                                    ?
+                                    <div className='col-lg-6'>
+                                        <div className="mb-10">
+                                            <label className="form-label required">Unit </label>
+                                            <select
+                                                className={`form-select form-select-solid ${formSubmitted ? (errors.unit_id ? 'is-invalid' : 'is-valid') : ''}`}
+
+                                                aria-label="Select example"
+                                                id="unit_id" {...register("unit_id", { required: true })}
+                                                disabled={isEditCase}
+                                            >
+                                                <option value=''>--Select--</option>
+
+                                                {allUnitsList?.filter((x: { unit_id: number; }) => x.unit_id == 1 || x.unit_id == 2)?.map((item: any, index: any) => (
+                                                    <option key={index} value={item.unit_id}>
+                                                        {item.unit_short_name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {errors.unit_id && <SiteErrorMessage errorMsg='Unit is required' />}
+                                        </div>
+                                    </div>
+                                    :
+                                    <></>
+                            }
+
+
+
+
+                            {/* <div className='col-lg-6'>
+                                <div className="mb-10">
                                     <label className="form-label required">Unit </label>
                                     <select
                                         className={`form-select form-select-solid ${formSubmitted ? (errors.unit_id ? 'is-invalid' : 'is-valid') : ''}`}
@@ -193,22 +428,9 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                     </select>
                                     {errors.unit_id && <SiteErrorMessage errorMsg='Unit is required' />}
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <div className='col-lg-6'>
-                                <div className="mb-10">
-                                    <label className="form-label required ">Size</label>
-                                    <input
-                                        type="number"
-                                        min={0}
-                                        className={`form-control form-control-solid ${formSubmitted ? (errors.size ? 'is-invalid' : 'is-valid') : ''}`}
-                                        id="size" {...register("size", { required: true })}
-                                        readOnly={isEditCase}
-                                        placeholder="Enter size"
-                                    />
-                                    {errors.size && <SiteErrorMessage errorMsg='Size is required!' />}
-                                </div>
-                            </div>
+
 
 
 
@@ -230,3 +452,47 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
 }
 
 export default ProductAddUpdateForm;
+
+
+
+interface UnitSelectProps {
+    unit_sub_type: string;
+    unit_id: number;
+    allUnitsList: any[]; // Replace with actual type of allUnitsList items
+    isEditCase: boolean,
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+}
+
+
+const UnitSelect: React.FC<UnitSelectProps> = ({ unit_sub_type, unit_id, allUnitsList, isEditCase, onChange }) => {
+    const [unitListSub, setUnitListSub] = useState<any>([]);
+
+    useEffect(() => {
+        if (unit_sub_type == 'Width') {
+            setUnitListSub(allUnitsList?.filter(x => x.unit_id == 4 || x.unit_id == 5));
+        } else if (unit_sub_type == 'Length') {
+            setUnitListSub(allUnitsList?.filter(x => x.unit_id == 6));
+        } else if (unit_sub_type == 'Weight') {
+            setUnitListSub(allUnitsList?.filter(x => x.unit_id == 1 || x.unit_id == 2));
+        }
+
+    }, [])
+
+    return (
+        <select
+            className='form-select form-select-solid'
+            value={unit_id ?? 0}
+            onChange={onChange}
+            disabled={isEditCase}
+        >
+            <option value="">Select Unit</option>
+            {unitListSub.map((item: any, index: number) => (
+                <option key={index} value={item.unit_id}>
+                    {item.unit_short_name}
+                </option>
+            ))}
+        </select>
+    );
+};
+
+

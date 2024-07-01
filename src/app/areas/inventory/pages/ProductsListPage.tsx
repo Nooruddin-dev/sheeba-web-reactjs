@@ -12,13 +12,14 @@ import { KTCard, KTCardBody, toAbsoluteUrlCustom } from '../../../../_sitecommon
 import CommonListSearchHeader from '../../common/components/layout/CommonListSearchHeader';
 import { CommonTableActionCell } from '../../common/components/layout/CommonTableActionCell';
 import dBEntitiesConst from '../../../../_sitecommon/common/constants/dBEntitiesConst';
-import { sqlDeleteTypesConst } from '../../../../_sitecommon/common/enums/GlobalEnums';
+import { UnitTypesEnum, sqlDeleteTypesConst } from '../../../../_sitecommon/common/enums/GlobalEnums';
 import CommonListPagination from '../../common/components/layout/CommonListPagination';
 import TableListLoading from '../../common/components/shared/TableListLoading';
 import BusinessPartnerTypesEnum from '../../../../_sitecommon/common/enums/BusinessPartnerTypesEnum';
 import { getAllProductsListApi, getUnitsListApi, insertUpdateProductApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
 import ProductAddUpdateForm from '../components/ProductAddUpdateForm';
 import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
+import { Portal } from '../../../../_sitecommon/partials';
 
 
 export default function ProductsListPage() {
@@ -85,7 +86,7 @@ export default function ProductsListPage() {
         e.preventDefault();
         const recordForEdit = allProductsList?.find((x: { productid: number }) => x.productid == id);
 
-   debugger
+
 
         setUserEditForm({
             productidEditForm: recordForEdit?.productid,
@@ -99,6 +100,11 @@ export default function ProductsListPage() {
             price: recordForEdit?.price,
             oldprice: recordForEdit?.oldprice,
             unit_id: recordForEdit?.unit_id,
+
+
+            unit_type: recordForEdit?.unit_type,
+            inventory_units_info: recordForEdit?.inventory_units_info,
+
             size: recordForEdit?.size,
 
         });
@@ -116,11 +122,39 @@ export default function ProductsListPage() {
         setUserEditForm(null);
     }
 
+
+    const getUnitTypeName = (unit_type_id: any) => {
+        if (unit_type_id == UnitTypesEnum.Granules) {
+            return 'Granules';
+        } else if (unit_type_id == UnitTypesEnum.Liquid_Solvent) {
+            return 'Liquid/Solvent';
+        } else if (unit_type_id == UnitTypesEnum.Roll) {
+            return 'Roll';
+        } else {
+            return '';
+        }
+    }
+
     const handleUserFormSubmit = (data: any) => {
 
 
         console.log('data product: ', data); // Handle form submission here
-        const { productidEditForm, product_name, short_description, sku, stockquantity, is_active, price , unit_id, size} = data;
+        //const { productidEditForm, product_name, short_description, sku, stockquantity, is_active} = data;
+
+        const {
+            productidEditForm,
+            product_name,
+            short_description,
+            sku,
+            stockquantity,
+            is_active,
+
+            unit_id,
+            unit_type,
+            unitSubTypesRoll
+        } = data;
+
+
         if (stringIsNullOrWhiteSpace(product_name) || stringIsNullOrWhiteSpace(sku)) {
             showErrorMsg('Please fill all required fields');
             return false;
@@ -131,8 +165,45 @@ export default function ProductsListPage() {
             return false;
         }
 
-     
+        if (stringIsNullOrWhiteSpace(unit_type)) {
+            showErrorMsg('Inventory type is required!');
+            return false;
+        }
 
+
+        let unitSubTypesRollFinal = [];
+        if (unit_type == UnitTypesEnum.Roll) {
+            if (unitSubTypesRoll && unitSubTypesRoll.length > 0) {
+                unitSubTypesRoll.forEach((unit: any) => {
+                    unit.unit_type = unit_type;
+                    unit.unit_type_name = getUnitTypeName(unit_type);
+                });
+                unitSubTypesRollFinal = unitSubTypesRoll;
+
+            }
+
+        } else {
+            if (stringIsNullOrWhiteSpace(unit_type) || unit_type < 1) {
+                showErrorMsg('Unit is required!');
+                return false;
+            }
+            unitSubTypesRollFinal.push(
+                {
+
+                    unit_type: unit_type,
+                    unit_type_name: getUnitTypeName(unit_type),
+                    unit_sub_type: null,
+                    unit_id: unit_id,
+                    unit_value: ""
+                }
+            )
+        }
+
+
+
+
+
+        const price = 0;
 
         const productidLocal = stringIsNullOrWhiteSpace(productidEditForm) ? 0 : productidEditForm;
 
@@ -149,28 +220,30 @@ export default function ProductsListPage() {
             productFormData.stockquantity = currentEditProduct.stockquantity;
             productFormData.is_active = currentEditProduct.is_active;
             productFormData.price = currentEditProduct.price;
-            productFormData.unit_id = currentEditProduct.unit_id;
-            productFormData.size = currentEditProduct.size;
+
+
+            productFormData.unitSubTypesRoll = unitSubTypesRollFinal;
+
         } else {
             if (stringIsNullOrWhiteSpace(stockquantity) || stockquantity < 0) {
                 showErrorMsg('Please define stock quantity');
                 return false;
             }
 
-            if (stringIsNullOrWhiteSpace(price) || price < 1) {
-                showErrorMsg('Cost is required!');
-                return false;
-            }
+            // if (stringIsNullOrWhiteSpace(price) || price < 1) {
+            //     showErrorMsg('Cost is required!');
+            //     return false;
+            // }
 
-            if (stringIsNullOrWhiteSpace(unit_id) || unit_id < 1) {
-                showErrorMsg('Unit is required!');
-                return false;
-            }
-    
-            if (stringIsNullOrWhiteSpace(size) || size < 1) {
-                showErrorMsg('Size is required!');
-                return false;
-            }
+            // if (stringIsNullOrWhiteSpace(unit_id) || unit_id < 1) {
+            //     showErrorMsg('Unit is required!');
+            //     return false;
+            // }
+
+            // if (stringIsNullOrWhiteSpace(size) || size < 1) {
+            //     showErrorMsg('Size is required!');
+            //     return false;
+            // }
 
             productFormData.productid = productidLocal;
             productFormData.product_name = product_name ?? '';
@@ -179,9 +252,12 @@ export default function ProductsListPage() {
             productFormData.stockquantity = stockquantity ?? 0;
             productFormData.is_active = is_active?.toString() == "1" ? 'true' : 'false';
             productFormData.price = price ?? 0;
-            productFormData.unit_id = unit_id;
-            productFormData.size = size;
+            // productFormData.unit_id = unit_id;
+            // productFormData.size = size;
 
+            productFormData.unit_id = unit_id;
+            productFormData.unit_type = unit_type;
+            productFormData.unitSubTypesRoll = unitSubTypesRollFinal;
 
         }
         const formData = {
@@ -192,8 +268,11 @@ export default function ProductsListPage() {
             stockquantity: productFormData.stockquantity,
             is_active: productFormData.is_active,
             price: productFormData.price,
-            unit_id: productFormData.unit_id,
-            size: productFormData.size,
+
+            unit_type: unit_type,
+            unitSubTypesRoll: productFormData.unitSubTypesRoll
+
+
         };
 
 
@@ -290,13 +369,13 @@ export default function ProductsListPage() {
             pageSize: 50
         }
         let pageBasicInfoUnitsRequestParams = new URLSearchParams(pageBasicInfoUnits).toString();
-    
+
         getUnitsListApi(pageBasicInfoUnitsRequestParams)
             .then((res: any) => {
                 const { data } = res;
                 if (data && data.length > 0) {
                     setAllUnitsList(res?.data);
-                }else{
+                } else {
                     setAllUnitsList([]);
                 }
 
@@ -346,7 +425,7 @@ export default function ProductsListPage() {
                                         <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>Product Id</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Product Name</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Description</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Cost</th>
+                                        {/* <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Cost</th> */}
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>SKU</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Stock Quantity</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Created On</th>
@@ -392,9 +471,9 @@ export default function ProductsListPage() {
                                                         <div className=''>{makeAnyStringShortAppenDots(record.short_description, 110)}</div>
                                                     </td>
 
-                                                    <td role="cell">
+                                                    {/* <td role="cell">
                                                         <div className='badge badge-light fw-bolder'>{record?.price}</div>
-                                                    </td>
+                                                    </td> */}
                                                     <td role="cell">
                                                         <div className=' fw-bolder'> {record?.sku}</div>
                                                     </td>
@@ -473,7 +552,7 @@ export default function ProductsListPage() {
                                     closeModal={handleOpenCloseAddModal}
                                     defaultValues={userEditForm}
                                     onSubmit={handleUserFormSubmit}
-                                    allUnitsList = {allUnitsList}
+                                    allUnitsList={allUnitsList}
                                 />
                                 :
                                 <>

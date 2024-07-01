@@ -178,12 +178,12 @@ export default function PurchaseOrdersListPage() {
                                 <thead>
                                     <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
                                         <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>PO Number</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>PO Ref</th>
+                                        {/* <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>PO Ref</th> */}
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Delivery Date</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Company Name</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Vendor</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Sale Representative</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Purchaser Name</th>
+                                        {/* <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Sale Representative</th> */}
+                                        {/* <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Purchaser Name</th> */}
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Order Total</th>
 
                                         <th colSpan={1} role="columnheader" className="text-end min-w-100px pe-3 rounded-end" style={{ cursor: 'pointer' }}>Actions</th>
@@ -197,7 +197,7 @@ export default function PurchaseOrdersListPage() {
                                             allPurchaseOrdersList?.map((record: any, index: number) => (
                                                 <tr role='row' key={index}>
                                                     <td role="cell" className="ps-3">{record.po_number}</td>
-                                                    <td role="cell" className="ps-3">{record.po_reference}</td>
+                                                    {/* <td role="cell" className="ps-3">{record.po_reference}</td> */}
 
 
 
@@ -236,10 +236,10 @@ export default function PurchaseOrdersListPage() {
                                                         </div>
                                                     </td>
 
-                                                    <td role="cell">
+                                                    {/* <td role="cell">
                                                         <div className=''>{record?.sale_representative_first_name}</div>
-                                                    </td>
-
+                                                    </td> */}
+{/* 
                                                     <td>
                                                         <div className="d-flex align-items-center">
                                                             <div className="ms-5">
@@ -248,7 +248,7 @@ export default function PurchaseOrdersListPage() {
 
                                                             </div>
                                                         </div>
-                                                    </td>
+                                                    </td> */}
 
                                                     <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{record.order_total}</td>
 

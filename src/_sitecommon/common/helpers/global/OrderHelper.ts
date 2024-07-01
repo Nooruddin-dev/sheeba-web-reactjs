@@ -1,3 +1,4 @@
+import { stringIsNullOrWhiteSpace } from "./ValidationHelper";
 
 
 
@@ -10,6 +11,33 @@ export const calculateTaxValue = (tax_rate: any, product_price: number) => {
     }
 }
 
+export const calculateTaxValueNewFunc = (amount: number, taxType: string, taxValue: number) => {
+    let taxAmount = 0;
+
+    if (taxType == 'Fixed') {
+        taxAmount = taxValue;
+    } else if (taxType == 'Percentage') {
+        taxAmount = (amount * taxValue) / 100;
+    } else {
+        return 0;
+    }
+
+    return taxAmount;
+}
+
+
+export const calculateItemLevelTaxValueNew = (productItem: any) => {
+
+    let taxRateType = productItem.tax_rate_type;
+    if (taxRateType == undefined || taxRateType == null || stringIsNullOrWhiteSpace(taxRateType) == true) {
+        return 0;
+    }
+    let amount = (productItem.price ?? 0) * (productItem.quantity ?? 1);
+    let itemTotalTax = calculateTaxValueNewFunc(amount, taxRateType, (productItem.tax_value ?? 0));
+    return (itemTotalTax ?? 0);
+}
+
+
 export const calculateItemAmount = (po_rate: any, itemQuantity: any) => {
 
     const poRate = parseInt(po_rate?.toString() ?? '0', 10);
@@ -21,26 +49,22 @@ export const calculateItemAmount = (po_rate: any, itemQuantity: any) => {
 }
 
 
-export const calculateOrderItemAmount = (productItem: any, allProductTaxes: any) => {
+
+export const calculateOrderItemAmount = (productItem: any) => {
 
     const itemQuantity: number = parseInt(productItem?.quantity ?? 1) ?? 1;
     const itemPrice: number = parseInt(productItem?.price ?? 0) ?? 0;
-    let itemTaxValue: number = 0;
+    let itemTotalTax: number = 0;
 
     let itemAmount = calculateItemAmount(itemPrice, itemQuantity);
+    itemTotalTax = calculateItemLevelTaxValueNew(productItem);
 
-    const itemTaxSelected = allProductTaxes?.find((x: { tax_rule_id: any; }) => x.tax_rule_id == productItem?.product_tax_rule_id);
-    if (itemTaxSelected && itemTaxSelected.tax_rule_id > 0) {
-        itemTaxValue = calculateTaxValue(itemTaxSelected.tax_rate, itemAmount);
-        productItem.taxRateItem = itemTaxSelected.tax_rate;
-    }
 
-    // Calculate the total item cost including tax
-    //const itemTotal: number = (itemPrice + itemTaxValue) * itemQuantity;
-    const itemTotal: number = itemAmount + itemTaxValue;
+    const itemTotal: number = itemAmount + itemTotalTax;
     productItem.itemTotal = itemTotal;
-    productItem.itemTotalTax = itemTaxValue;
-   
+    productItem.itemTotalTax = itemTotalTax;
+
+
 
 
     return itemTotal;
