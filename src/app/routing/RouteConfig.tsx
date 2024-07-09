@@ -26,6 +26,10 @@ import PurchaseOrdersListPage from '../areas/orders/pages/PurchaseOrdersListPage
 import PurchaseOrderDetailPage from '../areas/orders/pages/PurchaseOrderDetailPage';
 import GrnVoucherListPage from '../areas/grnVoucher/pages/GrnVoucherListPage';
 import CreateGrnVoucherPage from '../areas/grnVoucher/pages/CreateGrnVoucherPage';
+import JobCardsListPage from '../areas/cardManagement/pages/JobCardsListPage';
+import CreateJobCardPage from '../areas/cardManagement/pages/CreateJobCardPage';
+import CreateOrdeClonePage from '../areas/orders/pages/CreateOrdeClonePage';
+import GrnVoucherDetailPage from '../areas/grnVoucher/pages/GrnVoucherDetailPage';
 
 
 
@@ -82,6 +86,11 @@ export default function RouteConfig() {
           <LoginProtectedRoute> <CreateOrderPage /> </LoginProtectedRoute>
         } />
 
+        <Route path="/site/create-order-clone/:purchase_order_id" element={
+          <LoginProtectedRoute> <CreateOrdeClonePage /> </LoginProtectedRoute>
+        } />
+
+
 
         <Route path="/site/purchase-orders-list" element={
           <LoginProtectedRoute> <PurchaseOrdersListPage /> </LoginProtectedRoute>
@@ -97,6 +106,17 @@ export default function RouteConfig() {
 
         <Route path="/grn/create-voucher" element={
           <LoginProtectedRoute> <CreateGrnVoucherPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/site/grn-voucher-detail/:voucher_id" element={
+          <LoginProtectedRoute> <GrnVoucherDetailPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/job-management/cards-list" element={
+          <LoginProtectedRoute> <JobCardsListPage /> </LoginProtectedRoute>
+        } />
+        <Route path="/job-management/create-card" element={
+          <LoginProtectedRoute> <CreateJobCardPage /> </LoginProtectedRoute>
         } />
 
 

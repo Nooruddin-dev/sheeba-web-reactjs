@@ -199,8 +199,7 @@ export default function MachinesListPage() {
             pageBasicInfoParams = `${pageBasicInfoParams}&${searchFormQueryParams}`;
         }
 
-        
-
+    
         getAllMachinesListApi(pageBasicInfoParams)
             .then((res: any) => {
 

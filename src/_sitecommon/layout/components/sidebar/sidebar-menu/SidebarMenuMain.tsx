@@ -115,6 +115,17 @@ const SidebarMenuMain = () => {
 
       </SidebarMenuItemWithSub>
 
+      <SidebarMenuItemWithSub
+        to=''
+        title='Job Card Management'
+        fontIcon='bi-archive'
+        icon='handcart'
+      >
+        <SidebarMenuItem to='/job-management/cards-list' title='Job Card List' hasBullet={true} />
+        {/* <SidebarMenuItem to='/grn/create-voucher' title='Create GRN Voucher' hasBullet={true} /> */}
+
+      </SidebarMenuItemWithSub>
+
 
 
 

@@ -94,6 +94,12 @@ export const getPurchaseOrderDetailsByIdApi = (purchase_order_id: any) => {
     );
 }
 
+export const getPurchaseOrderDetailForEditCloneByIdApi = (purchase_order_id: any) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_PURCHASE_ORDER_DETAILS_FOR_EDIT_CLONE_BY_ID}/${purchase_order_id}`
+    );
+}
+
 
 export const getUnitsListApi = (queryUrl: string) => {
     return apiRequest.get(
@@ -114,3 +120,45 @@ export const gerPurchaseOrdersListForGrnVoucherBySearchTermApi = (searchQueryOrd
         `${API_ENDPOINTS.GET_PURCHASE_ORDER_LIST_FOR_GRN_VOUCHER_BY_SEARCH_TERM}/${searchQueryOrder}`
     );
 }
+
+
+export const gerProductsListForJobCardBySearchTermApi = (searchQueryProduct: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_PRODUCTS_LIST_FOR_JOB_CARD_BY_SEARCH_TERM}/${searchQueryProduct}`
+    );
+}
+
+
+export const createJobCardApi = (body: any) => {
+    return apiRequest.post(API_ENDPOINTS.CREATE_JOB_CARD, body);
+};
+
+export const getAllJobCardsListApi = (queryUrl: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_ALL_JOB_CARDS_LIST}?${queryUrl}`
+    );
+}
+
+
+export const createGrnVoucherApi = (body: any) => {
+    return apiRequest.post(API_ENDPOINTS.CREATE_GRN_VOUCHER_API, body);
+};
+
+export const getGrnVouchersListApi = (queryUrl: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_GRN_VOUCHERS_LIST_API}?${queryUrl}`
+    );
+}
+
+
+export const getGrnVoucherDetailByIdApi = (voucherId: any) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_GRN_VOUCHER_DETAIL_BY_ID_API}/${voucherId}`
+    );
+}
+
+export const updatePurchaseOrderStatusApi = (body: any) => {
+
+    return apiRequest.post(API_ENDPOINTS.UPDATE_PURCHASE_ORDER_STATUS, body);
+
+};

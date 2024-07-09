@@ -211,3 +211,10 @@ height: 150px;
   border: 1px solid #3c2e2e;
     padding: 7px;
 }
+
+.order-unit-field{
+  border-radius: 4px;
+    border: 1px solid #dbdfe9;
+    width: 100px;
+    padding: 5px;
+}

@@ -1,4 +1,29 @@
+import { PurchaseOrderStatusTypesEnum, UnitTypesEnum } from "../../enums/GlobalEnums";
+import { convertToTwoDecimalFloat } from "./GlobalHelper";
 import { stringIsNullOrWhiteSpace } from "./ValidationHelper";
+
+
+
+export const createOrderUnitLabel = (productUnit: any) => {
+
+    let unitTypeName = "";
+    if (productUnit?.unit_type == UnitTypesEnum.Roll) {
+        unitTypeName = "Roll";
+    } else if (productUnit?.unit_type == UnitTypesEnum.Liquid_Solvent) {
+        unitTypeName = "Liquid/Solvent";
+    } else if (productUnit?.unit_type == UnitTypesEnum.Granules) {
+        unitTypeName = "Granules";
+    }
+
+    let labelFinal = "";
+    if (productUnit?.unit_type == UnitTypesEnum.Roll) {
+        labelFinal = unitTypeName + ' (' + productUnit.unit_sub_type + '-' + (stringIsNullOrWhiteSpace(productUnit.unit_short_name) ? 'Default' : productUnit.unit_short_name) + ')';
+    } else {
+        labelFinal = unitTypeName + ' (' + (stringIsNullOrWhiteSpace(productUnit.unit_short_name) ? 'Default' : productUnit.unit_short_name) + ')';
+    }
+   
+    return labelFinal;
+}
 
 
 
@@ -22,7 +47,7 @@ export const calculateTaxValueNewFunc = (amount: number, taxType: string, taxVal
         return 0;
     }
 
-    return taxAmount;
+    return convertToTwoDecimalFloat(taxAmount);
 }
 
 
@@ -40,10 +65,11 @@ export const calculateItemLevelTaxValueNew = (productItem: any) => {
 
 export const calculateItemAmount = (po_rate: any, itemQuantity: any) => {
 
-    const poRate = parseInt(po_rate?.toString() ?? '0', 10);
-    const quantity = parseInt(itemQuantity?.toString() ?? '1', 10);
+    const poRate = convertToTwoDecimalFloat(po_rate);
+    const quantity = convertToTwoDecimalFloat(itemQuantity ?? 1);
 
-    const amount = poRate * quantity;
+
+    const amount = convertToTwoDecimalFloat((poRate * quantity));
 
     return amount;
 }
@@ -73,16 +99,17 @@ export const calculateOrderItemAmount = (productItem: any) => {
 
 
 export const calculateItemsSubTotal = (cartAllProducts: any) => {
-    let finalItemTotal = 0;
+    
+    let finalItemTotal: any = 0;
     finalItemTotal = cartAllProducts?.reduce((total: any, product: any) => total + product.itemTotal, 0);
-    return parseInt(finalItemTotal?.toFixed(2) ?? 0);
+    return convertToTwoDecimalFloat(finalItemTotal ?? "0");
 };
 
 export const getTaxRateByTaxRuleId = (allTaxRules: any, taxRuleId: number) => {
 
     const orderLevelTax = allTaxRules.find((x: { tax_rule_id: number; }) => x.tax_rule_id == taxRuleId);
     if (orderLevelTax && orderLevelTax.tax_rate) {
-        return parseInt(orderLevelTax.tax_rate ?? 0)?.toFixed(2);
+        return convertToTwoDecimalFloat(orderLevelTax.tax_rate ?? 0);
     } else {
         return 0;
     }
@@ -90,3 +117,25 @@ export const getTaxRateByTaxRuleId = (allTaxRules: any, taxRuleId: number) => {
 };
 
 
+export const calculateJobCardAmountMaster = (quanity: number, rate: number) => {
+
+    let finalItemTotal = 0;
+    finalItemTotal = (quanity ?? 0) * (rate ?? 0);
+    return parseFloat(finalItemTotal?.toFixed(2) ?? 0);
+};
+
+
+
+
+export const  getPurchaseOrderStatusClass = (statusId: number) => {
+    switch (statusId) {
+        case PurchaseOrderStatusTypesEnum.Complete:
+            return 'badge badge-light-success';
+        case PurchaseOrderStatusTypesEnum.Pending:
+            return 'badge badge-light-warning';
+        case PurchaseOrderStatusTypesEnum.Cancel:
+            return 'badge badge-light-info';
+        default:
+            return 'badge badge-light-info'; // Return an empty string or a default class if needed
+    }
+  }

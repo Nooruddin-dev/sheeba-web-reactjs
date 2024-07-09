@@ -15,6 +15,7 @@ export const controllerUrlExtensions = {
   MACHINES: 'machines',
   ORDERS: 'orders',
   VOUCHER: 'voucher',
+  JOB_CARD: 'jobcard',
 
 
 }
@@ -47,10 +48,21 @@ export const API_ENDPOINTS = {
   CREATE_PURCHASER_ORDER: `/${controllerUrlExtensions.ORDERS}/create-purchase-order`,
   GET_ALL_PURCHASE_ORDERS: `/${controllerUrlExtensions.ORDERS}/get-all-purchase-orders`,
   GET_PURCHASE_ORDER_DETAILS_BY_ID: `/${controllerUrlExtensions.ORDERS}/get-purchase-order-details`,
+  GET_PURCHASE_ORDER_DETAILS_FOR_EDIT_CLONE_BY_ID: `/${controllerUrlExtensions.ORDERS}/get-purchase-order-details-for-edit-clone`,
+  UPDATE_PURCHASE_ORDER_STATUS: `/${controllerUrlExtensions.ORDERS}/update-purchase-order-status`,
 
   //--Voucher APIs urls
   GET_PURCHASE_ORDER_DETAIL_FOR_GRN_VOUCHER: `/${controllerUrlExtensions.VOUCHER}/get_purchase_order_detail_for_grn_voucher`,
   GET_PURCHASE_ORDER_LIST_FOR_GRN_VOUCHER_BY_SEARCH_TERM: `/${controllerUrlExtensions.VOUCHER}/get-purchase-order-list-for-grn-voucher-by-search-term`,
+  CREATE_GRN_VOUCHER_API: `/${controllerUrlExtensions.VOUCHER}/create-grn-voucher`,
+  GET_GRN_VOUCHERS_LIST_API: `/${controllerUrlExtensions.VOUCHER}/get-grn-vouchers-list`,
+  GET_GRN_VOUCHER_DETAIL_BY_ID_API: `/${controllerUrlExtensions.VOUCHER}/get-grn-voucher-detail-by-id`,
+
+  //--Job Card APIs urls
+  GET_PRODUCTS_LIST_FOR_JOB_CARD_BY_SEARCH_TERM: `/${controllerUrlExtensions.JOB_CARD}/get-products-list-for-job-card-by-search-term`,
+  CREATE_JOB_CARD: `/${controllerUrlExtensions.JOB_CARD}/create-job-card`,
+  GET_ALL_JOB_CARDS_LIST: `/${controllerUrlExtensions.JOB_CARD}/get-job-card-list`,
+
 
 }
 

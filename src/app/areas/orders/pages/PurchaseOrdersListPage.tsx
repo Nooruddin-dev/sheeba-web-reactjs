@@ -12,20 +12,22 @@ import { KTCard, KTCardBody, KTIcon, toAbsoluteUrlCustom } from '../../../../_si
 import CommonListSearchHeader from '../../common/components/layout/CommonListSearchHeader';
 import { CommonTableActionCell } from '../../common/components/layout/CommonTableActionCell';
 import dBEntitiesConst from '../../../../_sitecommon/common/constants/dBEntitiesConst';
-import { sqlDeleteTypesConst } from '../../../../_sitecommon/common/enums/GlobalEnums';
+import { PurchaseOrderStatusTypesEnum, sqlDeleteTypesConst } from '../../../../_sitecommon/common/enums/GlobalEnums';
 import CommonListPagination from '../../common/components/layout/CommonListPagination';
 import TableListLoading from '../../common/components/shared/TableListLoading';
 import BusinessPartnerTypesEnum from '../../../../_sitecommon/common/enums/BusinessPartnerTypesEnum';
-import { getAllMachinesListApi, getAllPurchaseOrdersListApi, getAllUsersApi, getMachineTypesListApi, inserUpdateBusinessPartnerApi, insertUpdateMachineApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
+import { getAllMachinesListApi, getAllPurchaseOrdersListApi, getAllUsersApi, getMachineTypesListApi, inserUpdateBusinessPartnerApi, insertUpdateMachineApi, updatePurchaseOrderStatusApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
 import { Link } from 'react-router-dom';
 import { getDateCommonFormatFromJsonDate } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
+import { getPurchaseOrderStatusClass } from '../../../../_sitecommon/common/helpers/global/OrderHelper';
+import OrderStatusCommonForm from '../components/OrderStatusCommonForm';
 
 
 
 
 export default function PurchaseOrdersListPage() {
     const isLoading = false;
-    const [allMachineTypes, setAllMachineTypes] = useState<any>([]);
+
 
     // ✅-- Starts: necessary varaibles for the page
     const [isOpenAddNewForm, setIsOpenAddNewForm] = useState<boolean>(false);
@@ -41,6 +43,9 @@ export default function PurchaseOrdersListPage() {
     const [searchFormQueryParams, setSearchFormQueryParams] = useState<string>('');
     const [allPurchaseOrdersList, setAllPurchaseOrdersList] = useState<any>([]);
     const [searchFieldValues, setSearchFieldValues] = useState<{ [key: string]: string }>({});
+
+    const [orderStatusEditForm, setOrderStatusEditForm] = useState<any>(null); // Data of the order status being edited
+    const [isOpenOrderStatusForm, setIsOpenOrderStatusForm] = useState<boolean>(false);
 
     const HtmlSearchFields: HtmlSearchFieldConfig[] = [
         { inputId: 'po_numberSearch', inputName: 'po_numberSearch', labelName: 'PO Number', placeHolder: 'PO Number', type: 'number', defaultValue: '', iconClass: 'fa fa-search' },
@@ -81,16 +86,94 @@ export default function PurchaseOrdersListPage() {
         setListRefreshCounter(prevCounter => prevCounter + 1);
     }
 
-
-
-    const handleOnDeleteClick = (rowId: number) => {
-        setListRefreshCounter(prevCounter => prevCounter + 1);
+    const handleOpenCloseOrderStatusFormModal = () => {
+        setIsOpenOrderStatusForm(!isOpenOrderStatusForm);
+        setOrderStatusEditForm(null);
     }
 
 
-    const handleOpenCloseAddModal = () => {
-        setIsOpenAddNewForm(!isOpenAddNewForm);
-        setUserEditForm(null);
+    const handlePurchaseOrderStatusEditForm = (e: any, id: number) => {
+
+        e.preventDefault();
+
+
+
+
+        const recordForEdit = allPurchaseOrdersList?.find((x: { purchase_order_id: number }) => x.purchase_order_id == id);
+
+        if (recordForEdit?.status_id == PurchaseOrderStatusTypesEnum.Complete || recordForEdit?.status_id == PurchaseOrderStatusTypesEnum.Cancel) {
+            showErrorMsg('Not allowed to change status from complete/cancel!');
+            return;
+        }
+
+
+
+        setOrderStatusEditForm({
+            orderIdStatusEditForm: recordForEdit?.purchase_order_id,
+            orderStatusIdForUpdate: recordForEdit?.status_id,
+
+        });
+
+        setIsOpenOrderStatusForm(!isOpenOrderStatusForm);
+    }
+
+    const updatePurchaseOrderStatusService = (data: any) => {
+        console.log('order status data: ', data); // Handle form submission here
+        const { orderIdStatusEditForm, orderStatusIdForUpdate } = data;
+        if (stringIsNullOrWhiteSpace(orderIdStatusEditForm) || orderIdStatusEditForm < 1) {
+            showErrorMsg('Invalid purchase order id');
+            return;
+        }
+
+        if (stringIsNullOrWhiteSpace(orderStatusIdForUpdate) || orderStatusIdForUpdate < 1) {
+            showErrorMsg('Please select order status');
+            return;
+        }
+
+        const recordForEdit = allPurchaseOrdersList?.find((x: { purchase_order_id: number }) => x.purchase_order_id == orderIdStatusEditForm);
+        let total_grn_vouchers = recordForEdit?.total_grn_vouchers ?? 0;
+        total_grn_vouchers = parseInt(total_grn_vouchers ?? 0);
+        if (orderStatusIdForUpdate == PurchaseOrderStatusTypesEnum.Cancel && total_grn_vouchers > 0) {
+            showErrorMsg('Status can be marked "Cancel" if no GRN vouchers exist');
+            return;
+        }
+
+        if (orderStatusIdForUpdate == PurchaseOrderStatusTypesEnum.Complete && total_grn_vouchers < 1) {
+            showErrorMsg('Status can be marked "Complete" if at least one GRN voucher exists');
+            return;
+        }
+
+
+        const formData = {
+            purchase_order_id: stringIsNullOrWhiteSpace(orderIdStatusEditForm) ? 0 : orderIdStatusEditForm,
+            status_id: orderStatusIdForUpdate,
+
+        }
+
+
+        updatePurchaseOrderStatusApi(formData)
+            .then((res: any) => {
+debugger
+                if (res?.data?.response?.success == true && (res?.data?.response?.responseMessage == "Saved Successfully!" || res?.data?.response?.responseMessage == 'Updated Successfully!')) {
+                    showSuccessMsg("Saved Successfully!");
+                    //--clear form
+                    setTimeout(() => {
+                        setIsOpenOrderStatusForm(false);
+                        setSearchFormQueryParams('');
+                        setListRefreshCounter(prevCounter => prevCounter + 1);
+                    }, 500);
+
+                } else {
+                    showErrorMsg("An error occured. Please try again!");
+                }
+
+
+            })
+            .catch((err: any) => {
+                console.error(err, "err");
+                showErrorMsg("An error occured. Please try again!");
+            });
+
     }
 
 
@@ -182,9 +265,10 @@ export default function PurchaseOrdersListPage() {
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Delivery Date</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Company Name</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Vendor</th>
-                                        {/* <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Sale Representative</th> */}
+                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>GRN Vochers Count</th>
                                         {/* <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Purchaser Name</th> */}
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Order Total</th>
+                                        <th colSpan={1} role="columnheader" className="min-w-50px" style={{ cursor: 'pointer' }}>Status</th>
 
                                         <th colSpan={1} role="columnheader" className="text-end min-w-100px pe-3 rounded-end" style={{ cursor: 'pointer' }}>Actions</th>
                                     </tr>
@@ -211,9 +295,9 @@ export default function PurchaseOrdersListPage() {
                                                             <div className="ms-5">
 
                                                                 <a href="#" className="text-gray-800 text-hover-primary fs-5 fw-bold" data-kt-ecommerce-product-filter="product_name">
-                                                     
+
                                                                     {getDateCommonFormatFromJsonDate(record.delivery_date)}
-                                                                    </a>
+                                                                </a>
 
                                                             </div>
                                                         </div>
@@ -236,10 +320,8 @@ export default function PurchaseOrdersListPage() {
                                                         </div>
                                                     </td>
 
-                                                    {/* <td role="cell">
-                                                        <div className=''>{record?.sale_representative_first_name}</div>
-                                                    </td> */}
-{/* 
+
+                                                    {/* 
                                                     <td>
                                                         <div className="d-flex align-items-center">
                                                             <div className="ms-5">
@@ -250,13 +332,37 @@ export default function PurchaseOrdersListPage() {
                                                         </div>
                                                     </td> */}
 
+                                                    <td role="cell">
+                                                        <div className=''>{record?.total_grn_vouchers ?? 0}</div>
+                                                    </td>
+
                                                     <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{record.order_total}</td>
 
 
 
 
+
+                                                    <td style={{ cursor: 'pointer' }}>
+                                                        <span
+                                                            onClick={(e) => handlePurchaseOrderStatusEditForm(e, record.purchase_order_id)}
+                                                            className={getPurchaseOrderStatusClass(record.status_id ?? PurchaseOrderStatusTypesEnum.Pending)}
+                                                        >{record.status_name ?? 'Pending'}
+                                                        </span>
+
+                                                    </td>
+
+
                                                     <td className='text-end pe-3'>
-                                                       
+
+
+                                                        <Link
+                                                            to={`/site/create-order-clone/${record.purchase_order_id}`}
+                                                            className='btn btn-bg-light btn-color-muted btn-active-color-primary btn-sm px-4 me-2'
+                                                        >
+                                                            <KTIcon iconName='copy' className='fs-3' />
+
+                                                            Clone
+                                                        </Link>
 
                                                         <Link
                                                             to={`/site/purchase-order-detail/${record.purchase_order_id}`}
@@ -300,7 +406,22 @@ export default function PurchaseOrdersListPage() {
                         {isLoading && <TableListLoading />}
 
 
-                      
+
+                        {
+                            isOpenOrderStatusForm == true
+                                ?
+
+                                <OrderStatusCommonForm
+                                    isOpen={isOpenOrderStatusForm}
+                                    closeModal={handleOpenCloseOrderStatusFormModal}
+                                    defaultValues={orderStatusEditForm}
+                                    onSubmit={updatePurchaseOrderStatusService}
+
+                                />
+                                :
+                                <>
+                                </>
+                        }
 
 
 
@@ -308,7 +429,7 @@ export default function PurchaseOrdersListPage() {
                 </KTCard>
             </Content>
 
-            
+
         </AdminLayout>
     )
 }
