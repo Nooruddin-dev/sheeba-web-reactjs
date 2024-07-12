@@ -88,13 +88,19 @@ export default function CreateGrnVoucherPageSub() {
             return false;
         }
 
+        let cartAllProductsLocal = cartAllProducts?.filter((x: { is_item_checked: boolean; })=>x.is_item_checked == true);
+        if (cartAllProductsLocal == undefined || cartAllProductsLocal == null || cartAllProductsLocal.length < 1) {
+            showErrorMsg('Please select at least one item!');
+            return false;
+        }
+
         let cartGrnVoucherItemsLocal: any = []
 
 
 
        
         cartAllProducts?.filter((x: { is_item_checked: boolean; })=>x.is_item_checked == true)?.forEach((item: any) => {
-debugger
+
             cartGrnVoucherItemsLocal.push({
                 product_id: item.product_id,
                 order_line_item_id: item.line_item_id, //--order line item id
@@ -240,6 +246,7 @@ debugger
     };
 
     const handleCheckboxOrderItemChange = (index: number, checked: boolean) => {
+        
         const updatedItems = cartAllProducts.map((item: any, idx: number) =>
             idx === index ? { ...item, is_item_checked: checked } : item
         );
@@ -304,7 +311,7 @@ debugger
     useEffect(() => {
         //--only get checked item from "cartAllProducts"
         let cartAllProductsLocal = cartAllProducts?.filter((x: { is_item_checked: boolean; })=>x.is_item_checked == true);
-        if(cartAllProductsLocal && cartAllProductsLocal?.length > 0){
+        if(cartAllProductsLocal ){
             
             let itemTotal = calculateItemsSubTotal(cartAllProductsLocal);
             setCartItemTotlal(itemTotal);

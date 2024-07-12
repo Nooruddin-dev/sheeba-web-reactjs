@@ -153,7 +153,7 @@ export default function PurchaseOrdersListPage() {
 
         updatePurchaseOrderStatusApi(formData)
             .then((res: any) => {
-debugger
+
                 if (res?.data?.response?.success == true && (res?.data?.response?.responseMessage == "Saved Successfully!" || res?.data?.response?.responseMessage == 'Updated Successfully!')) {
                     showSuccessMsg("Saved Successfully!");
                     //--clear form
