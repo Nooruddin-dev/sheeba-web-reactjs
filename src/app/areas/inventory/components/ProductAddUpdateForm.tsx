@@ -18,6 +18,8 @@ interface ProductAddUpdateFormInterface {
 
 
 
+
+
 const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
     isOpen,
     closeModal,
@@ -31,58 +33,100 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [isEditCase, setIsEditCase] = useState(false);
     const [unitTypeLocal, setUnitTypeLocal] = useState<any>('');
-    const [unitSubTypesRoll, setUnitSubTypesRoll] = useState<any>(
+    const [unitSubTypesAll, setUnitSubTypesAll] = useState<any>(
         [
             {
+                rowId: 1,
+                unit_type: UnitTypesEnum.Roll,
                 unit_sub_type: "Micon",
                 unit_id: 0,
-                unit_value: ""
+                unit_value: "",
+
             },
             {
+                rowId: 2,
+                unit_type: UnitTypesEnum.Roll,
                 unit_sub_type: "Width",
                 unit_id: 0,
                 unit_value: ""
             },
             {
+                rowId: 3,
+                unit_type: UnitTypesEnum.Roll,
                 unit_sub_type: "Length",
                 unit_id: 0,
                 unit_value: ""
             },
+
             {
+                rowId: 4,
+                unit_type: UnitTypesEnum.Roll,
                 unit_sub_type: "Weight",
+                unit_id: 0,
+                unit_value: ""
+            },
+
+            {
+                rowId: 5,
+                unit_type: UnitTypesEnum.Liquid_Solvent, // For Solvent only. Unit sub type will be empty here
+                unit_sub_type: "",
+                unit_id: 0,
+                unit_value: ""
+            },
+
+            {
+                rowId: 6,
+                unit_type: UnitTypesEnum.Granules, // For Granules only. 
+                unit_sub_type: "",
                 unit_id: 0,
                 unit_value: ""
             }
         ]
     );
 
-
-    const handleProductUnitChangeForRollType = (index: number, event: any, unit_sub_type: string = 'empty') => {
+    const handleProductUnitValueChange = (rowId: number, event: any) => {
         const { value } = event.target;
-
-        if (unit_sub_type == 'Micon') {
-            setUnitSubTypesRoll((prevUnitSubType: any) => {
-                const updatedUnitSubType = [...prevUnitSubType];
-                updatedUnitSubType[index].unit_value = value;
-                return updatedUnitSubType;
-            });
-        } else {
-            setUnitSubTypesRoll((prevUnitSubType: any) => {
-                const updatedUnitSubType = [...prevUnitSubType];
-                updatedUnitSubType[index].unit_id = value;
-                return updatedUnitSubType;
-            });
-        }
-
+    
+        setUnitSubTypesAll((prevUnitSubTypes: any) => {
+            const updatedUnitSubTypes = [...prevUnitSubTypes];
+            const index = updatedUnitSubTypes.findIndex((unitSubType: any) => unitSubType.rowId === rowId);
+    
+            if (index !== -1) {
+                updatedUnitSubTypes[index].unit_value = value;
+            }
+    
+            return updatedUnitSubTypes;
+        });
     };
+
+
+
+  
+
+    const handleProductUnitIdChange = (rowId: number, event: any) => {
+        const { value } = event.target;
+    
+        setUnitSubTypesAll((prevUnitSubTypes: any) => {
+            const updatedUnitSubTypes = [...prevUnitSubTypes];
+            const index = updatedUnitSubTypes.findIndex((unitSubType: any) => unitSubType.rowId === rowId);
+    
+            if (index !== -1) {
+                updatedUnitSubTypes[index].unit_id = value;
+            }
+    
+            return updatedUnitSubTypes;
+        });
+    };
+
+
 
 
     const onSubmitCategoryForm = (data: any) => {
 
-        // Include unitSubTypesRoll in the data sent to the parent
+        // Include unitSubTypesAll in the data sent to the parent
 
 
-        const formData = { ...data, unitSubTypesRoll };
+        const formData = { ...data, unitSubTypesAll };
         onSubmit(formData);
 
         //onSubmit(data);
@@ -96,23 +140,17 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
             if (defaultValues.unit_type && defaultValues.unit_type > 0) {
                 setUnitTypeLocal(defaultValues.unit_type);
 
-                if (defaultValues.unit_type == UnitTypesEnum.Roll) {
+                const updatedunitSubTypesAll = unitSubTypesAll.map((element: any) => {
+                    const selectedElement = defaultValues?.inventory_units_info?.find((x: { unit_sub_type: any; }) => x.unit_sub_type === element.unit_sub_type);
 
-                    const updatedUnitSubTypesRoll = unitSubTypesRoll.map((element: any) => {
-                        const selectedElement = defaultValues?.inventory_units_info?.find((x: { unit_sub_type: any; }) => x.unit_sub_type === element.unit_sub_type);
+                    return {
+                        ...element,
+                        unit_value: selectedElement?.unit_value ?? element.unit_value,
+                        unit_id: selectedElement?.unit_id ?? element.unit_id,
+                    };
+                });
 
-                        if (element.unit_sub_type == 'Micon') {
-
-                            return { ...element, unit_value: selectedElement?.unit_value ?? element.unit_value };
-                        } else {
-
-                            return { ...element, unit_id: selectedElement?.unit_id ?? element.unit_id };
-                        }
-                    });
-
-                    setUnitSubTypesRoll(updatedUnitSubTypesRoll);
-
-                }
+                setUnitSubTypesAll(updatedunitSubTypesAll);
             }
 
         }
@@ -284,16 +322,17 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                                             <th className='min-w-100px ps-3'> Sub Type</th>
 
                                                             <th className='min-w-100px'>Unit</th>
+                                                            <th className='min-w-100px'>Value</th>
 
                                                         </tr>
                                                     </thead>
 
 
                                                     <tbody>
-                                                        {unitSubTypesRoll?.map((unitSubItem: any, index: number) => (
+                                                        {unitSubTypesAll?.filter((x: { unit_type: any; }) => x.unit_type === UnitTypesEnum.Roll)?.map((unitSubItem: any, index: number) => (
                                                             <tr key={index}>
-                                                                <td role="cell" className="ps-3">{unitSubItem.unit_sub_type}</td>
 
+                                                                <td role="cell" className="ps-3">{unitSubItem.unit_sub_type}</td>
 
                                                                 <td role="cell" className="">
 
@@ -303,15 +342,15 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                                                         unitSubItem.unit_sub_type == 'Micon'
                                                                             ?
                                                                             <>
-                                                                                <input
+                                                                                {/* <input
                                                                                     type="number"
                                                                                     min={0}
                                                                                     value={unitSubItem.unit_value ?? 0}
                                                                                     className={`form-control form-control-solid`}
                                                                                     readOnly={isEditCase}
                                                                                     placeholder="Enter number"
-                                                                                    onChange={(event) => handleProductUnitChangeForRollType(index, event, unitSubItem.unit_sub_type)}
-                                                                                />
+                                                                                    onChange={(event) => handleProductUnitValueChange(index, event)}
+                                                                                /> */}
                                                                             </>
 
                                                                             :
@@ -320,13 +359,97 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                                                                 unit_id={unitSubItem.unit_id}
                                                                                 allUnitsList={allUnitsList}
                                                                                 isEditCase={isEditCase}
-                                                                                onChange={(event) => handleProductUnitChangeForRollType(index, event)}
+                                                                                onChange={(event) => handleProductUnitIdChange(unitSubItem.rowId, event)}
 
                                                                             />
                                                                     }
 
 
 
+                                                                </td>
+
+                                                                <td role="cell">
+                                                                    <input
+                                                                        type="number"
+                                                                        min={0}
+                                                                        value={unitSubItem.unit_value ?? 0}
+                                                                        className={`form-control form-control-solid`}
+                                                                        readOnly={isEditCase}
+                                                                        placeholder="Enter value"
+                                                                        onChange={(event) => handleProductUnitValueChange(unitSubItem.rowId, event)}
+                                                                    />
+                                                                </td>
+
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    :
+                                    <></>
+                            }
+
+
+                            {
+                                unitTypeLocal == UnitTypesEnum.Liquid_Solvent
+                                    ?
+                                    <div className='col-lg-6'>
+                                        <div className="mb-10">
+                                            <div className='table-responsive'>
+                                                <table className='table table-row-dashed table-bordered table-row-gray-300 align-middle gs-0 gy-1'>
+                                                    <thead>
+                                                        <tr className='fw-bold text-muted'>
+
+
+                                                            <th className='min-w-100px'>Unit</th>
+                                                            <th className='min-w-100px'>Value</th>
+
+                                                        </tr>
+                                                    </thead>
+
+
+                                                    <tbody>
+                                                        {unitSubTypesAll?.filter((x: { unit_type: any; }) => x.unit_type === UnitTypesEnum.Liquid_Solvent).map((unitSubItem: any, index: number) => (
+                                                            <tr key={index}>
+
+
+                                                                <td role="cell" className="">
+
+
+
+                                                                    <select
+                                                                        className={`form-select form-select-solid`}
+                                                                        aria-label="Select example"
+                                                                        disabled={isEditCase}
+                                                                        value={unitSubItem?.unit_id ?? 0}
+                                                                        onChange={(event) => handleProductUnitIdChange(unitSubItem.rowId, event)}
+                                                                    >
+                                                                        <option value=''>--Select--</option>
+
+                                                                        {allUnitsList?.filter((x: { unit_id: number; }) => x.unit_id == 1 || x.unit_id == 2 || x.unit_id == 3)?.map((item: any, index: any) => (
+                                                                            <option key={index} value={item.unit_id}>
+                                                                                {item.unit_short_name}
+                                                                            </option>
+                                                                        ))}
+                                                                    </select>
+
+
+
+                                                                </td>
+
+                                                                <td role="cell">
+                                                                    <input
+                                                                        type="number"
+                                                                        min={0}
+                                                                        value={unitSubItem.unit_value ?? 0}
+                                                                        className={`form-control form-control-solid`}
+                                                                        readOnly={isEditCase}
+                                                                        placeholder="Enter value"
+                                                                        onChange={(event) => handleProductUnitValueChange(unitSubItem.rowId, event)}
+                                                                    />
                                                                 </td>
 
 
@@ -348,57 +471,78 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                     <></>
                             }
 
-
-                            {
-                                unitTypeLocal == UnitTypesEnum.Liquid_Solvent
-                                    ?
-                                    <div className='col-lg-6'>
-                                        <div className="mb-10">
-                                            <label className="form-label required">Unit </label>
-                                            <select
-                                                className={`form-select form-select-solid ${formSubmitted ? (errors.unit_id ? 'is-invalid' : 'is-valid') : ''}`}
-
-                                                aria-label="Select example"
-                                                id="unit_id" {...register("unit_id", { required: true })}
-                                                disabled={isEditCase}
-                                            >
-                                                <option value=''>--Select--</option>
-
-                                                {allUnitsList?.filter((x: { unit_id: number; }) => x.unit_id == 1 || x.unit_id == 2 || x.unit_id == 3)?.map((item: any, index: any) => (
-                                                    <option key={index} value={item.unit_id}>
-                                                        {item.unit_short_name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            {errors.unit_id && <SiteErrorMessage errorMsg='Unit is required' />}
-                                        </div>
-                                    </div>
-                                    :
-                                    <></>
-                            }
-
                             {
                                 unitTypeLocal == UnitTypesEnum.Granules
                                     ?
                                     <div className='col-lg-6'>
                                         <div className="mb-10">
-                                            <label className="form-label required">Unit </label>
-                                            <select
-                                                className={`form-select form-select-solid ${formSubmitted ? (errors.unit_id ? 'is-invalid' : 'is-valid') : ''}`}
+                                            <div className='table-responsive'>
+                                                <table className='table table-row-dashed table-bordered table-row-gray-300 align-middle gs-0 gy-1'>
+                                                    <thead>
+                                                        <tr className='fw-bold text-muted'>
 
-                                                aria-label="Select example"
-                                                id="unit_id" {...register("unit_id", { required: true })}
-                                                disabled={isEditCase}
-                                            >
-                                                <option value=''>--Select--</option>
 
-                                                {allUnitsList?.filter((x: { unit_id: number; }) => x.unit_id == 1 || x.unit_id == 2)?.map((item: any, index: any) => (
-                                                    <option key={index} value={item.unit_id}>
-                                                        {item.unit_short_name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            {errors.unit_id && <SiteErrorMessage errorMsg='Unit is required' />}
+                                                            <th className='min-w-100px'>Unit</th>
+                                                            <th className='min-w-100px'>Value</th>
+
+                                                        </tr>
+                                                    </thead>
+
+
+                                                    <tbody>
+                                                        {unitSubTypesAll?.filter((x: { unit_type: any; }) => x.unit_type === UnitTypesEnum.Granules).map((unitSubItem: any, index: number) => (
+                                                            <tr key={index}>
+
+
+                                                                <td role="cell" className="">
+
+
+
+                                                                    <select
+                                                                        className={`form-select form-select-solid`}
+                                                                        aria-label="Select example"
+                                                                        disabled={isEditCase}
+                                                                        value={unitSubItem?.unit_id ?? 0}
+                                                                        onChange={(event) => handleProductUnitIdChange(unitSubItem.rowId, event)}
+                                                                    >
+                                                                        <option value=''>--Select--</option>
+
+                                                                        {allUnitsList?.filter((x: { unit_id: number; }) => x.unit_id == 1 || x.unit_id == 2)?.map((item: any, index: any) => (
+                                                                            <option key={index} value={item.unit_id}>
+                                                                                {item.unit_short_name}
+                                                                            </option>
+                                                                        ))}
+                                                                    </select>
+
+
+
+                                                                </td>
+
+                                                                <td role="cell">
+                                                                    <input
+                                                                        type="number"
+                                                                        min={0}
+                                                                        value={unitSubItem.unit_value ?? 0}
+                                                                        className={`form-control form-control-solid`}
+                                                                        readOnly={isEditCase}
+                                                                        placeholder="Enter value"
+                                                                        onChange={(event) => handleProductUnitValueChange(unitSubItem.rowId, event)}
+                                                                    />
+                                                                </td>
+
+
+
+
+
+
+                                                            </tr>
+
+
+                                                        ))}
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                     :

@@ -151,7 +151,7 @@ export default function ProductsListPage() {
 
             unit_id,
             unit_type,
-            unitSubTypesRoll
+            unitSubTypesAll
         } = data;
 
 
@@ -170,34 +170,51 @@ export default function ProductsListPage() {
             return false;
         }
 
+        debugger
 
-        let unitSubTypesRollFinal = [];
-        if (unit_type == UnitTypesEnum.Roll) {
-            if (unitSubTypesRoll && unitSubTypesRoll.length > 0) {
-                unitSubTypesRoll.forEach((unit: any) => {
-                    unit.unit_type = unit_type;
-                    unit.unit_type_name = getUnitTypeName(unit_type);
-                });
-                unitSubTypesRollFinal = unitSubTypesRoll;
+        let unitSubTypesAllFinal: any = [];
+        if (unitSubTypesAll && unitSubTypesAll.length > 0) {
+            unitSubTypesAll?.filter((x: { unit_type: any; })=>x.unit_type == unit_type)?.forEach((unit: any) => {
+                unit.unit_type = unit_type;
+                unit.unit_type_name = getUnitTypeName(unit_type);
 
-            }
+                unitSubTypesAllFinal.push(
+                    unit
+                )
+            });
+          
 
-        } else {
-            if (stringIsNullOrWhiteSpace(unit_type) || unit_type < 1) {
-                showErrorMsg('Unit is required!');
-                return false;
-            }
-            unitSubTypesRollFinal.push(
-                {
-
-                    unit_type: unit_type,
-                    unit_type_name: getUnitTypeName(unit_type),
-                    unit_sub_type: null,
-                    unit_id: unit_id,
-                    unit_value: ""
-                }
-            )
         }
+
+
+
+    
+        // if (unit_type == UnitTypesEnum.Roll) {
+        //     if (unitSubTypesAll && unitSubTypesAll.length > 0) {
+        //         unitSubTypesAll.forEach((unit: any) => {
+        //             unit.unit_type = unit_type;
+        //             unit.unit_type_name = getUnitTypeName(unit_type);
+        //         });
+        //         unitSubTypesAllFinal = unitSubTypesAll;
+
+        //     }
+
+        // } else {
+        //     if (stringIsNullOrWhiteSpace(unit_type) || unit_type < 1) {
+        //         showErrorMsg('Unit is required!');
+        //         return false;
+        //     }
+        //     unitSubTypesAllFinal.push(
+        //         {
+
+        //             unit_type: unit_type,
+        //             unit_type_name: getUnitTypeName(unit_type),
+        //             unit_sub_type: null,
+        //             unit_id: unit_id,
+        //             unit_value: ""
+        //         }
+        //     )
+        // }
 
 
 
@@ -222,13 +239,19 @@ export default function ProductsListPage() {
             productFormData.price = currentEditProduct.price;
 
 
-            productFormData.unitSubTypesRoll = unitSubTypesRollFinal;
+            productFormData.unitSubTypesAll = unitSubTypesAllFinal;
 
         } else {
             if (stringIsNullOrWhiteSpace(stockquantity) || stockquantity < 0) {
                 showErrorMsg('Please define stock quantity');
                 return false;
             }
+
+            if (unitSubTypesAll?.filter((x: { unit_type: any; }) => x.unit_type === unit_type)?.filter((x: { unit_sub_type: string; })=>x.unit_sub_type != 'Micon')?.some((x: { unit_id: number; }) => x.unit_id < 1)) {
+                showErrorMsg('Please select unit');
+                return false;
+            }
+            
 
             // if (stringIsNullOrWhiteSpace(price) || price < 1) {
             //     showErrorMsg('Cost is required!');
@@ -255,9 +278,9 @@ export default function ProductsListPage() {
             // productFormData.unit_id = unit_id;
             // productFormData.size = size;
 
-            productFormData.unit_id = unit_id;
+            // productFormData.unit_id = unit_id;
             productFormData.unit_type = unit_type;
-            productFormData.unitSubTypesRoll = unitSubTypesRollFinal;
+            productFormData.unitSubTypesAll = unitSubTypesAllFinal;
 
         }
         const formData = {
@@ -270,7 +293,7 @@ export default function ProductsListPage() {
             price: productFormData.price,
 
             unit_type: unit_type,
-            unitSubTypesRoll: productFormData.unitSubTypesRoll
+            unitSubTypesAll: productFormData.unitSubTypesAll
 
 
         };

@@ -865,9 +865,9 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                                                         type="number"
                                                                                         min={0}
                                                                                         value={productUnit.unit_value || 0}
-                                                                                        onChange={(e) => handleUnitValueChangeForRollType(index, unitIndex, parseFloat(e.target.value))}
-                                                                                        // readOnly={productUnit.unit_sub_type == "Micon" ? true : false}
-                                                                                        placeholder={`Enter ${productUnit.unit_sub_type} value`}
+                                                                                        // onChange={(e) => handleUnitValueChangeForRollType(index, unitIndex, parseFloat(e.target.value))}
+                                                                                        readOnly={true}
+                                                                                        placeholder={``}
                                                                                     />
                                                                                 </div>
                                                                             ))}
