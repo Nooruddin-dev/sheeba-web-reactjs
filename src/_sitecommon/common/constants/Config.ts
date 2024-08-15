@@ -22,7 +22,7 @@ export const controllerUrlExtensions = {
 
 export const API_ENDPOINTS = {
   //--Common Controller APIs url
-  DELETE_ANY_RECORD: `/${controllerUrlExtensions.COMMON}/delete-record`,
+
 
 
   //--Users APIs urls
@@ -30,6 +30,7 @@ export const API_ENDPOINTS = {
   GET_ALL_BUSINESS_PARTNERS: `/${controllerUrlExtensions.USERS}/get-all-business-partners`,
   INSERT_UPDATE_BUSINESS_PARTNER: `/${controllerUrlExtensions.USERS}/insert-update-business-partner`,
   GET_BUSINESS_PARTNERS_TYPES: `/${controllerUrlExtensions.USERS}/get-business-partner-types`,
+  DELETE_ANY_RECORD: `/${controllerUrlExtensions.USERS}/delete-any-record`,
 
   //--Inventory APIs urls
   INSERT_UPDATE_PRODUCTS: `/${controllerUrlExtensions.INVENTORY}/insert-update-product`,
@@ -62,6 +63,11 @@ export const API_ENDPOINTS = {
   GET_PRODUCTS_LIST_FOR_JOB_CARD_BY_SEARCH_TERM: `/${controllerUrlExtensions.JOB_CARD}/get-products-list-for-job-card-by-search-term`,
   CREATE_JOB_CARD: `/${controllerUrlExtensions.JOB_CARD}/create-job-card`,
   GET_ALL_JOB_CARDS_LIST: `/${controllerUrlExtensions.JOB_CARD}/get-job-card-list`,
+  GET_JOB_CARD_DETAIL_BY_ID_FOR_EDIT: `/${controllerUrlExtensions.JOB_CARD}/get-job-card-detail-by-id-for-edit`,
+  GET_JOB_CARD_PRODUCTION_ENTRIES: `/${controllerUrlExtensions.JOB_CARD}/get-job-production-entries`,
+  GET_JOB_CARDS_BY_SEARCH_TERM_FOR_PRODUCTION_ENTRY: `/${controllerUrlExtensions.JOB_CARD}/get-job-cards-by-search-term-for-production-entry`,
+  INSERT_UPDATE_PRODUCTION_ENTRY: `/${controllerUrlExtensions.JOB_CARD}/insert-update-production-entry`,
+
 
 
 }

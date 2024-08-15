@@ -30,6 +30,8 @@ import JobCardsListPage from '../areas/cardManagement/pages/JobCardsListPage';
 import CreateJobCardPage from '../areas/cardManagement/pages/CreateJobCardPage';
 import CreateOrdeClonePage from '../areas/orders/pages/CreateOrdeClonePage';
 import GrnVoucherDetailPage from '../areas/grnVoucher/pages/GrnVoucherDetailPage';
+import EditJobCardPage from '../areas/cardManagement/pages/EditJobCardPage';
+import ProductionEntriesPage from '../areas/cardManagement/pages/ProductionEntriesPage';
 
 
 
@@ -115,8 +117,17 @@ export default function RouteConfig() {
         <Route path="/job-management/cards-list" element={
           <LoginProtectedRoute> <JobCardsListPage /> </LoginProtectedRoute>
         } />
+
         <Route path="/job-management/create-card" element={
           <LoginProtectedRoute> <CreateJobCardPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/job-management/edit-card/:job_card_id" element={
+          <LoginProtectedRoute> <EditJobCardPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/job-management/production-entries" element={
+          <LoginProtectedRoute> <ProductionEntriesPage /> </LoginProtectedRoute>
         } />
 
 

@@ -4,9 +4,11 @@ import apiRequest from "./axiosHelper";
 
 
 export const deletAnyRecordApi = (deleteParam: any) => {
-    return apiRequest.delete(
-        `${API_ENDPOINTS.DELETE_ANY_RECORD}/${deleteParam?.entityName}/${deleteParam?.entityColumnName}/${deleteParam?.entityRowId}/${deleteParam?.sqlDeleteTypeId}`
-    );
+    // return apiRequest.delete(
+    //     `${API_ENDPOINTS.DELETE_ANY_RECORD}/${deleteParam?.entityName}/${deleteParam?.entityColumnName}/${deleteParam?.entityRowId}/${deleteParam?.sqlDeleteTypeId}`
+    // );
+
+    return apiRequest.post(API_ENDPOINTS.DELETE_ANY_RECORD, deleteParam);
 }
 
 export const getUserLoginApi = (body: any) => {
@@ -139,6 +141,12 @@ export const getAllJobCardsListApi = (queryUrl: string) => {
     );
 }
 
+export const getAllJobProductionEntriesApi = (queryUrl: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_JOB_CARD_PRODUCTION_ENTRIES}?${queryUrl}`
+    );
+}
+
 
 export const createGrnVoucherApi = (body: any) => {
     return apiRequest.post(API_ENDPOINTS.CREATE_GRN_VOUCHER_API, body);
@@ -161,4 +169,21 @@ export const updatePurchaseOrderStatusApi = (body: any) => {
 
     return apiRequest.post(API_ENDPOINTS.UPDATE_PURCHASE_ORDER_STATUS, body);
 
+};
+
+
+export const getJobCardDetailByIdForEditApi = (job_card_id: any) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_JOB_CARD_DETAIL_BY_ID_FOR_EDIT}/${job_card_id}`
+    );
+}
+
+export const gerProductionEntryListBySearchTermApi = (searchQueryProductEntry: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_JOB_CARDS_BY_SEARCH_TERM_FOR_PRODUCTION_ENTRY}/${searchQueryProductEntry}`
+    );
+}
+
+export const insertUpdateJobProductionEntryApi = (body: any) => {
+    return apiRequest.post(API_ENDPOINTS.INSERT_UPDATE_PRODUCTION_ENTRY, body);
 };

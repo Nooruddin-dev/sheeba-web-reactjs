@@ -312,13 +312,13 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
 
         //--calcualte all taxes (product level + order level)
         let itemsGrandTotalTax = cartAllProducts?.reduce((total: any, product: any) => total + product.itemTotalTax, 0);
-        
+
         const itemsGrandTotalTaxNumber = convertToTwoDecimalFloat(itemsGrandTotalTax ?? "0");
         let grandTaxAmount = convertToTwoDecimalFloat((orderLevelTaxValueLocal + itemsGrandTotalTaxNumber));
 
         setGrandTaxAmount(convertToTwoDecimalFloat(grandTaxAmount));
 
-        setOrderTotal(itemTotal);
+        setOrderTotal(convertToTwoDecimalFloat(itemTotal));
 
 
 
@@ -956,6 +956,10 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                                             <span className="path5"></span>
                                                                         </i>
                                                                     </a>
+
+                                                                  
+
+
                                                                 </td>
 
                                                             </tr>

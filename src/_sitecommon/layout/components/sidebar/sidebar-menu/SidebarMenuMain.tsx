@@ -108,7 +108,7 @@ const SidebarMenuMain = () => {
         to=''
         title='GRN Vouchers'
         fontIcon='bi-archive'
-        icon='handcart'
+        icon='abstract-27'
       >
         <SidebarMenuItem to='/grn/vochers-list' title='GRN Vochers List' hasBullet={true} />
         <SidebarMenuItem to='/grn/create-voucher' title='Create GRN Voucher' hasBullet={true} />
@@ -119,10 +119,10 @@ const SidebarMenuMain = () => {
         to=''
         title='Job Card Management'
         fontIcon='bi-archive'
-        icon='handcart'
+        icon='abstract-43'
       >
         <SidebarMenuItem to='/job-management/cards-list' title='Job Card List' hasBullet={true} />
-        {/* <SidebarMenuItem to='/grn/create-voucher' title='Create GRN Voucher' hasBullet={true} /> */}
+        <SidebarMenuItem to='/job-management/production-entries' title='Production Entries' hasBullet={true} />
 
       </SidebarMenuItemWithSub>
 

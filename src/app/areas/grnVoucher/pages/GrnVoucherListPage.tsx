@@ -137,8 +137,8 @@ export default function GrnVoucherListPage() {
   return (
     <AdminLayout>
       <AdminPageHeader
-        title='Purchase Orders List'
-        pageDescription='Purchase Orders List'
+        title='GRN Vouchers'
+        pageDescription='GRN Vouchers'
         addNewClickType={'modal'}
         newLink={''}
         onAddNewClick={undefined}

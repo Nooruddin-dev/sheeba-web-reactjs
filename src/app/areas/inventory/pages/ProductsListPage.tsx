@@ -170,7 +170,7 @@ export default function ProductsListPage() {
             return false;
         }
 
-        debugger
+        
 
         let unitSubTypesAllFinal: any = [];
         if (unitSubTypesAll && unitSubTypesAll.length > 0) {

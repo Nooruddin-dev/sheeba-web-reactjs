@@ -293,7 +293,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                 <div className="mb-10">
                                     <label className="form-label required">Inventory Type</label>
                                     <select
-                                        className={`form-select form-select-solid ${formSubmitted ? (errors.unit_type ? 'is-invalid' : 'is-valid') : ''}`}
+                                        className={`form-select form-select-solid `}
 
                                         aria-label="Select example"
                                         id="unit_type" {...register("unit_type", { required: true })}
@@ -306,7 +306,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                         <option value='3'>Roll</option>
 
                                     </select>
-                                    {errors.unit_type && <SiteErrorMessage errorMsg='Unit type required' />}
+                                    {/* {errors.unit_type && <SiteErrorMessage errorMsg='Unit type required' />} */}
                                 </div>
                             </div>
 

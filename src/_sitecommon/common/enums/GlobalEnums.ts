@@ -93,3 +93,10 @@ export enum PurchaseOrderStatusTypesEnum {
 }
 
 
+export enum MachineTypesEnum {
+  Extruder = 1,
+  Cutting = 2,
+  Printing = 3,
+  Lamination = 4,
+  Slitting = 5
+}
