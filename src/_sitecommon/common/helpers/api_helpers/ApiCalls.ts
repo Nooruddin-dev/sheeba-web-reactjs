@@ -187,3 +187,26 @@ export const gerProductionEntryListBySearchTermApi = (searchQueryProductEntry: s
 export const insertUpdateJobProductionEntryApi = (body: any) => {
     return apiRequest.post(API_ENDPOINTS.INSERT_UPDATE_PRODUCTION_ENTRY, body);
 };
+
+export const insertCardDispatchInfoApi = (body: any) => {
+    return apiRequest.post(API_ENDPOINTS.INSERT_CARD_DISPATCH_INFO, body);
+};
+
+
+export const getJobDispatchReportDataApi = (queryUrl: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_JOB_DISPATCH_REPORT_DATA}?${queryUrl}`
+    );
+}
+
+export const getJobDispatchReportDataByIdApi = (card_dispatch_info_id: any) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_JOB_DISPATCH_REPORT_DATA_BY_ID}/${card_dispatch_info_id}`
+    );
+}
+
+export const getMachineBasedReportDataApi = (queryUrl: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_MACHINE_BASED_REPORT_DATA}?${queryUrl}`
+    );
+}

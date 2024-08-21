@@ -67,6 +67,10 @@ export const API_ENDPOINTS = {
   GET_JOB_CARD_PRODUCTION_ENTRIES: `/${controllerUrlExtensions.JOB_CARD}/get-job-production-entries`,
   GET_JOB_CARDS_BY_SEARCH_TERM_FOR_PRODUCTION_ENTRY: `/${controllerUrlExtensions.JOB_CARD}/get-job-cards-by-search-term-for-production-entry`,
   INSERT_UPDATE_PRODUCTION_ENTRY: `/${controllerUrlExtensions.JOB_CARD}/insert-update-production-entry`,
+  INSERT_CARD_DISPATCH_INFO: `/${controllerUrlExtensions.JOB_CARD}/insert-card-dispatch-info`,
+  GET_JOB_DISPATCH_REPORT_DATA: `/${controllerUrlExtensions.JOB_CARD}/get-job-dispatch-report-data`,
+  GET_JOB_DISPATCH_REPORT_DATA_BY_ID: `/${controllerUrlExtensions.JOB_CARD}/get-job-dispatch-report-data-by-id`,
+  GET_MACHINE_BASED_REPORT_DATA: `/${controllerUrlExtensions.JOB_CARD}/get-machine-based-report-api`,
 
 
 

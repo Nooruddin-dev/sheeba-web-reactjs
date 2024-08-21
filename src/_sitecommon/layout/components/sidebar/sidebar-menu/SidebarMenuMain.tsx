@@ -126,6 +126,18 @@ const SidebarMenuMain = () => {
 
       </SidebarMenuItemWithSub>
 
+      <SidebarMenuItemWithSub
+        to=''
+        title='Reports'
+        fontIcon='bi-archive'
+        icon='abstract-44'
+      >
+        <SidebarMenuItem to='/reports/dispatch-info' title='Job Dispatch Info' hasBullet={true} />
+        <SidebarMenuItem to='/reports/machine-based' title='Machine Based Report' hasBullet={true} />
+      
+
+      </SidebarMenuItemWithSub>
+
 
 
 

@@ -20,6 +20,7 @@ import '../src/_sitecommon/assets/keenicons/solid/style.css';
  **/
 import '../src/_sitecommon/assets/sass/style.scss'
 import '../src/_sitecommon/assets/css/siteglobalstyle.css'
+import '../src/_sitecommon/assets/css/printAreaStyle.css'
 
 
 

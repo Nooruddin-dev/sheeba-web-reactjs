@@ -32,6 +32,8 @@ import CreateOrdeClonePage from '../areas/orders/pages/CreateOrdeClonePage';
 import GrnVoucherDetailPage from '../areas/grnVoucher/pages/GrnVoucherDetailPage';
 import EditJobCardPage from '../areas/cardManagement/pages/EditJobCardPage';
 import ProductionEntriesPage from '../areas/cardManagement/pages/ProductionEntriesPage';
+import CardDispatchInfoPage from '../areas/cardManagement/pages/CardDispatchInfoPage';
+import MachineBasedReportPage from '../areas/cardManagement/pages/MachineBasedReportPage';
 
 
 
@@ -129,6 +131,20 @@ export default function RouteConfig() {
         <Route path="/job-management/production-entries" element={
           <LoginProtectedRoute> <ProductionEntriesPage /> </LoginProtectedRoute>
         } />
+
+        <Route path="/job-management/dispatch-info/:job_card_id" element={
+          <LoginProtectedRoute> <CardDispatchInfoPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/reports/dispatch-info-report" element={
+          <LoginProtectedRoute> <CardDispatchInfoPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/reports/machine-based" element={
+          <LoginProtectedRoute> <MachineBasedReportPage /> </LoginProtectedRoute>
+        } />
+
+
 
 
 

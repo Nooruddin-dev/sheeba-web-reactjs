@@ -1,0 +1,23 @@
+@media print {
+    .printable-area {
+        box-sizing: border-box;
+        padding: 10px; /* Add padding if necessary */
+        margin: 0 auto; /* Center the content */
+        overflow: visible; /* Ensure content is not clipped */
+        width: 100%; /* Adjust width to fit the page */
+        max-width: 100%; /* Ensure it doesn’t exceed the page width */
+
+        page-break-inside: avoid; /* Avoids breaking the content inside the div */
+    }
+
+    /* Handle large images or other wide content */
+    img, table {
+        max-width: 100%; /* Ensure images and tables do not overflow */
+        height: auto;
+    }
+
+     /* Optional: Scale down content if it's too wide */
+     body {
+        zoom: 0.75; /* Adjust zoom level as needed */
+    }
+}

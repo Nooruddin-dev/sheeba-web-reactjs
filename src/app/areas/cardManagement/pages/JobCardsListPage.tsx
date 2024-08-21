@@ -9,18 +9,25 @@ import { HtmlSearchFieldConfig } from '../../../models/common/HtmlSearchFieldCon
 import { APP_BASIC_CONSTANTS } from '../../../../_sitecommon/common/constants/Config'
 import CommonListPagination from '../../common/components/layout/CommonListPagination'
 import TableListLoading from '../../common/components/shared/TableListLoading'
-import { stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper'
-import { getAllJobCardsListApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls'
+import { showErrorMsg, showSuccessMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper'
+import { getAllJobCardsListApi, insertCardDispatchInfoApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls'
 import { getDateCommonFormatFromJsonDate } from '../../../../_sitecommon/common/helpers/global/ConversionHelper'
 import { Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAdd, faList } from '@fortawesome/free-solid-svg-icons'
+import JobCardDispatchAddForm from '../components/JobCardDispatchAddForm'
+import { slideDown } from '../../../../_sitecommon/assets/ts/_utils'
+import JobCardDispatchInvoice from '../components/JobCardDispatchInvoice'
 
 export default function JobCardsListPage() {
     const isLoading = false;
 
 
     // ✅-- Starts: necessary varaibles for the page
-    const [isOpenAddNewForm, setIsOpenAddNewForm] = useState<boolean>(false);
+    const [isOpenDispatchInvoiceModal, setIsOpenDispatchInvoiceModal] = useState<boolean>(false);
+    const [isOpenDispatchAddForm, setIsOpenDispatchAddForm] = useState<boolean>(false);
     const [listRefreshCounter, setListRefreshCounter] = useState<number>(0);
+    const [latestCardDispatchInfoId, setLatestCardDispatchInfoId] = useState<number>(0);
     const [pageBasicInfo, setPageBasicInfo] = useState<any>(
         {
             pageNo: 1,
@@ -39,7 +46,7 @@ export default function JobCardsListPage() {
         { inputId: 'sealing_methodSearch', inputName: 'sealing_methodSearch', labelName: 'Sealing Method', placeHolder: 'Sealing Method', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
 
     ];
-    const [userEditForm, setUserEditForm] = useState<any>(null); // Data of the user being edited
+    const [jobCardDispatchEditForm, setJobCardDispatchEditForm] = useState<any>(null); // Data of the dipatch being edited
     // ✅-- Ends: necessary varaibles for the page
 
 
@@ -82,6 +89,103 @@ export default function JobCardsListPage() {
         }));
         setListRefreshCounter(prevCounter => prevCounter + 1);
     };
+
+    const handleOpenCloseAddDispatchModal = () => {
+        setIsOpenDispatchAddForm(!isOpenDispatchAddForm);
+
+    }
+
+    const handleDispatchAddEntryFormSubmit = (data: any) => {
+
+        const {
+            job_card_id,
+            item_name,
+            total_bags,
+            quantity,
+            core_value,
+            gross_value,
+            net_weight,
+            grand_total,
+            card_tax_type,
+            card_tax_value,
+            show_company_detail
+
+        } = data;
+
+
+
+
+        if (stringIsNullOrWhiteSpace(item_name) || stringIsNullOrWhiteSpace(total_bags) || stringIsNullOrWhiteSpace(quantity)
+            || stringIsNullOrWhiteSpace(core_value) || stringIsNullOrWhiteSpace(gross_value) || stringIsNullOrWhiteSpace(net_weight)) {
+            showErrorMsg('Please fill all required fields!');
+            return false;
+        }
+
+
+        const formData = {
+            job_card_id: job_card_id,
+            item_name: item_name,
+            total_bags: total_bags,
+            quantity: quantity,
+            core_value: core_value,
+            gross_value: gross_value,
+            net_weight: net_weight,
+            grand_total: grand_total,
+            card_tax_type: card_tax_type,
+            card_tax_value: card_tax_value,
+            show_company_detail: show_company_detail ?? true
+
+        };
+
+
+
+
+        insertCardDispatchInfoApi(formData)
+            .then((res: any) => {
+
+                if (res?.data?.response?.success == true && (res?.data?.response?.responseMessage == "Saved Successfully!" || res?.data?.response?.responseMessage == 'Updated Successfully!')) {
+                    showSuccessMsg("Saved Successfully!");
+
+                    setIsOpenDispatchAddForm(false);
+
+                    //--handle invoice below
+                    setLatestCardDispatchInfoId(res?.data?.response?.primaryKeyValue);
+                    setIsOpenDispatchInvoiceModal(true);
+
+
+                } else if (res?.data?.response?.success == false && !stringIsNullOrWhiteSpace(res?.data?.response?.responseMessage)) {
+                    showErrorMsg(res?.data?.response?.responseMessage);
+                }
+                else {
+                    showErrorMsg("An error occured. Please try again!");
+                }
+
+
+            })
+            .catch((err: any) => {
+                console.error(err, "err");
+                showErrorMsg("An error occured. Please try again!");
+            });
+
+
+
+
+    }
+    const handleJobCardDispatch = (record: any) => {
+
+        const dispatchInfoValues = {
+            job_card_id: record.job_card_id,
+            item_name: record.product_name,
+        }
+        setJobCardDispatchEditForm(dispatchInfoValues);
+
+        setIsOpenDispatchAddForm(true);
+    }
+
+
+    const handleOpenCloseDispatchInvoiceModal = () => {
+        setIsOpenDispatchInvoiceModal(!isOpenDispatchInvoiceModal);
+    }
 
 
 
@@ -160,8 +264,9 @@ export default function JobCardsListPage() {
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Company Name</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Product Name </th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Weight/Qty</th>
-                                    
+
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Status</th>
+                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Dispatch Info</th>
 
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Created At</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Updated At</th>
@@ -192,6 +297,13 @@ export default function JobCardsListPage() {
                                                     <td role="cell">
                                                         <div className=''>{record?.job_status}</div>
                                                     </td>
+                                                    <td role="cell" >
+                                                        <div className='d-flex jobcard-td'>
+                                                            <Link to='' onClick={() => handleJobCardDispatch(record)}>            <FontAwesomeIcon icon={faAdd} className='me-1' /> Add</Link>
+                                                            <Link to={`/job-management/dispatch-info/${record.job_card_id}`}>            <FontAwesomeIcon icon={faList} className='me-1' />List</Link>
+
+                                                        </div>
+                                                    </td>
 
 
                                                     <td role="cell" >   {getDateCommonFormatFromJsonDate(record.created_on)} </td>
@@ -201,7 +313,7 @@ export default function JobCardsListPage() {
 
 
 
-                                                  
+
 
 
                                                     <td className='text-end pe-3'>
@@ -216,7 +328,7 @@ export default function JobCardsListPage() {
                                                             Edit
                                                         </Link>
 
-                                                     
+
 
                                                     </td>
 
@@ -254,6 +366,35 @@ export default function JobCardsListPage() {
 
 
 
+                        {
+                            isOpenDispatchAddForm == true
+                                ?
+
+                                <JobCardDispatchAddForm
+                                    isOpen={isOpenDispatchAddForm}
+                                    closeModal={handleOpenCloseAddDispatchModal}
+                                    defaultValues={jobCardDispatchEditForm}
+                                    onSubmit={handleDispatchAddEntryFormSubmit}
+
+                                />
+                                :
+                                <>
+                                </>
+                        }
+
+                        {
+                            isOpenDispatchInvoiceModal == true
+                                ?
+
+                                <JobCardDispatchInvoice
+                                    isOpen={isOpenDispatchInvoiceModal}
+                                    closeModal={handleOpenCloseDispatchInvoiceModal}
+                                    cardDispatchInfoId={latestCardDispatchInfoId}
+                                />
+                                :
+                                <>
+                                </>
+                        }
 
 
                     </KTCardBody>

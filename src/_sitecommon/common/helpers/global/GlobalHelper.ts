@@ -136,4 +136,15 @@ export const generateUniqueIdWithDate = () => {
   return `${uniquePart}-${date}`;
 }
 
+export const getCurrentDate = () => {
+  const currentDate = new Date();
+
+  const options: any = { year: 'numeric', month: 'long', day: 'numeric' };
+  const formattedDate = currentDate.toLocaleDateString('en-US', options);
+  
+  return formattedDate;
+}
+
+
+
 

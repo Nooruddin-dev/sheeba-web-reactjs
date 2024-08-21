@@ -8,6 +8,7 @@ import { CreateAppModal, Dropdown1 } from '../../../../partials'
 import { useLayout } from '../../../core'
 import { Link } from 'react-router-dom'
 import { SearchHeaderButtonHtmlType } from '../../../../../app/models/common/SearchHeaderButtonHtmlType'
+import { getCurrentDate } from '../../../../common/helpers/global/GlobalHelper'
 
 
 type Props = {
@@ -79,6 +80,8 @@ const ToolbarClassic: React.FC<Props> = ({ addNewClickType, newLink, onAddNewCli
           :
           <></>
       }
+
+     
 
 
     </div>

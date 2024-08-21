@@ -163,7 +163,7 @@ const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSea
                             name={field.inputName}
                             data-kt-user-table-filter='date'
                             className='form-control form-control-solid  ps-14'
-                            placeholder={field.placeHolder}
+             
                             value={searchFieldValues[field.inputName] || ''}
                             onChange={handleSearchInputChange}
                         />
