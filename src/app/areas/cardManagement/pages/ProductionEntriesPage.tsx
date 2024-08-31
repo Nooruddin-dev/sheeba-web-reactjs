@@ -131,7 +131,10 @@ export default function ProductionEntriesPage() {
             job_card_product_id,
             waste_value,
             net_value,
-            gross_value
+            gross_value,
+
+            weight_value
+
         } = data;
 
         if (stringIsNullOrWhiteSpace(job_card_id) || job_card_id < 1) {
@@ -168,7 +171,9 @@ export default function ProductionEntriesPage() {
             job_card_product_id: job_card_product_id,
             waste_value: waste_value,
             net_value: net_value,
-            gross_value: gross_value
+            gross_value: gross_value,
+
+            weight_value: weight_value
 
         };
 

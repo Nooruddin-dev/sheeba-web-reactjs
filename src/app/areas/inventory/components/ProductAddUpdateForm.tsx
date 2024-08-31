@@ -58,13 +58,13 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                 unit_value: ""
             },
 
-            {
-                rowId: 4,
-                unit_type: UnitTypesEnum.Roll,
-                unit_sub_type: "Weight",
-                unit_id: 0,
-                unit_value: ""
-            },
+            // {
+            //     rowId: 4,
+            //     unit_type: UnitTypesEnum.Roll,
+            //     unit_sub_type: "Weight",
+            //     unit_id: 0,
+            //     unit_value: ""
+            // },
 
             {
                 rowId: 5,
@@ -257,6 +257,9 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                 </div>
                             </div>
 
+                            
+                       
+
                             {/* <div className='col-lg-6'>
                                 <div className="mb-10">
                                     <label className="form-label required ">Cost</label>
@@ -309,6 +312,46 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                     {/* {errors.unit_type && <SiteErrorMessage errorMsg='Unit type required' />} */}
                                 </div>
                             </div>
+
+                            <div className='col-lg-6'>
+                                <div className="mb-10">
+                                    <label className="form-label  ">Weight Unit Type</label>
+                                    <select
+                                        className={`form-select form-select-solid ${formSubmitted ? (errors.weight_unit_id ? 'is-invalid' : 'is-valid') : ''}`}
+
+                                        aria-label="Select example"
+                                        id="weight_unit_id" {...register("weight_unit_id", { required: false })}
+                                        disabled={isEditCase}
+                                    >
+                                        <option value=''>--Select--</option>
+
+                                        {allUnitsList?.map((item: any, index: any) => (
+                                            <option key={index} value={item.unit_id}>
+                                                {item.unit_short_name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {errors.weight_unit_id && <SiteErrorMessage errorMsg='Weight Unit type is required' />}
+                                </div>
+                            </div>
+
+                            
+                            <div className='col-lg-6'>
+                                <div className="mb-10">
+                                    <label className="form-label  ">Weight Value</label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        className={`form-control form-control-solid ${formSubmitted ? (errors.weight_value ? 'is-invalid' : 'is-valid') : ''}`}
+                                        id="weight_value" {...register("weight_value", { required: false })}
+                                        readOnly={isEditCase}
+                                        placeholder="Enter weight"
+                                    />
+                                    {errors.weight_value && <SiteErrorMessage errorMsg='Weight value is required!' />}
+                                </div>
+                            </div>
+
+
 
                             {
                                 unitTypeLocal == UnitTypesEnum.Roll ?
@@ -393,7 +436,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                             }
 
 
-                            {
+                            {/* {
                                 unitTypeLocal == UnitTypesEnum.Liquid_Solvent
                                     ?
                                     <div className='col-lg-6'>
@@ -469,9 +512,9 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                     </div>
                                     :
                                     <></>
-                            }
+                            } */}
 
-                            {
+                            {/* {
                                 unitTypeLocal == UnitTypesEnum.Granules
                                     ?
                                     <div className='col-lg-6'>
@@ -547,7 +590,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                     </div>
                                     :
                                     <></>
-                            }
+                            } */}
 
 
 

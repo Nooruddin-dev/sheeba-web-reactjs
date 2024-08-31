@@ -107,6 +107,9 @@ export default function CreateGrnVoucherPageSub() {
                 product_sku_code: item.code_sku,
 
                 quantity: item.quantity ?? 1,
+                weight_value: item.weight_value ?? 0,
+
+
                 po_rate: item?.price,
                 amount: calculateItemAmount(item.price, item.quantity),
 
@@ -241,6 +244,14 @@ export default function CreateGrnVoucherPageSub() {
         setCartAllProducts((prevCart: any) => {
             const updatedCart = [...prevCart];
             updatedCart[index] = { ...updatedCart[index], quantity: newQuantity };
+            return updatedCart;
+        });
+    };
+
+    const handleWeightValueChange = (index: number, newWeightValue: number) => {
+        setCartAllProducts((prevCart: any) => {
+            const updatedCart = [...prevCart];
+            updatedCart[index] = { ...updatedCart[index], weight_value: newWeightValue };
             return updatedCart;
         });
     };
@@ -631,6 +642,8 @@ export default function CreateGrnVoucherPageSub() {
                                                 <th className='min-w-150px'> Cost</th>
 
                                                 <th className='min-w-100px'>Quantity</th>
+                                                <th className='min-w-100px'>Weight</th>
+                                                
                                                 <th className='min-w-80px'>Amount</th>
                                                 <th className='min-w-200px'>Item Tax</th>
 
@@ -702,6 +715,19 @@ export default function CreateGrnVoucherPageSub() {
 
                                                                     />
                                                                 </td>
+
+                                                                <td className='text-end '>
+                                                                    <input
+                                                                        className='form-select form-select-solid '
+                                                                        type="number"
+                                                                        min={1}
+                                                                        value={productItem.weight_value || 1}
+                                                                        onChange={(e) => handleWeightValueChange(index, parseInt(e.target.value, 10))}
+
+                                                                    />
+                                                                </td>
+
+
                                                                 <td role="cell" className="">{calculateItemAmount(productItem.price, productItem.quantity)}</td>
 
                                                                 <td role="cell" className="">

@@ -101,6 +101,9 @@ export default function ProductsListPage() {
             oldprice: recordForEdit?.oldprice,
             unit_id: recordForEdit?.unit_id,
 
+            weight_unit_id: recordForEdit?.weight_unit_id,
+            weight_value: recordForEdit?.weight_value,
+
 
             unit_type: recordForEdit?.unit_type,
             inventory_units_info: recordForEdit?.inventory_units_info,
@@ -149,8 +152,14 @@ export default function ProductsListPage() {
             stockquantity,
             is_active,
 
+            weight_unit_id,
+            weight_value,
+
             unit_id,
             unit_type,
+
+
+
             unitSubTypesAll
         } = data;
 
@@ -247,26 +256,11 @@ export default function ProductsListPage() {
                 return false;
             }
 
-            if (unitSubTypesAll?.filter((x: { unit_type: any; }) => x.unit_type === unit_type)?.filter((x: { unit_sub_type: string; })=>x.unit_sub_type != 'Micon')?.some((x: { unit_id: number; }) => x.unit_id < 1)) {
-                showErrorMsg('Please select unit');
-                return false;
-            }
+            // if (unitSubTypesAll?.filter((x: { unit_type: any; }) => x.unit_type === unit_type)?.filter((x: { unit_sub_type: string; })=>x.unit_sub_type != 'Micon')?.some((x: { unit_id: number; }) => x.unit_id < 1)) {
+            //     showErrorMsg('Please select unit');
+            //     return false;
+            // }
             
-
-            // if (stringIsNullOrWhiteSpace(price) || price < 1) {
-            //     showErrorMsg('Cost is required!');
-            //     return false;
-            // }
-
-            // if (stringIsNullOrWhiteSpace(unit_id) || unit_id < 1) {
-            //     showErrorMsg('Unit is required!');
-            //     return false;
-            // }
-
-            // if (stringIsNullOrWhiteSpace(size) || size < 1) {
-            //     showErrorMsg('Size is required!');
-            //     return false;
-            // }
 
             productFormData.productid = productidLocal;
             productFormData.product_name = product_name ?? '';
@@ -275,9 +269,9 @@ export default function ProductsListPage() {
             productFormData.stockquantity = stockquantity ?? 0;
             productFormData.is_active = is_active?.toString() == "1" ? 'true' : 'false';
             productFormData.price = price ?? 0;
-            // productFormData.unit_id = unit_id;
-            // productFormData.size = size;
-
+            productFormData.weight_unit_id = weight_unit_id;
+            productFormData.weight_value = weight_value;
+          
             // productFormData.unit_id = unit_id;
             productFormData.unit_type = unit_type;
             productFormData.unitSubTypesAll = unitSubTypesAllFinal;
@@ -291,6 +285,9 @@ export default function ProductsListPage() {
             stockquantity: productFormData.stockquantity,
             is_active: productFormData.is_active,
             price: productFormData.price,
+
+            weight_unit_id: productFormData.weight_unit_id,
+            weight_value: productFormData.weight_value,
 
             unit_type: unit_type,
             unitSubTypesAll: productFormData.unitSubTypesAll

@@ -105,6 +105,8 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                     setValue('company_name', data.company_name);
                     setValue('product_name', data.product_name);
                     setValue('weight_qty', data.weight_qty);
+                    
+                    setValue('weight_value', data.weight_value);
 
                     setCartAllProducts(data.job_card_products);
 
@@ -366,6 +368,20 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                                 </div>
                             </div>
 
+                            <div className='col-lg-4'>
+                                <div className="mb-10">
+                                    <label className="form-label">Quantity</label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        className={`form-control form-control-solid `}
+                                        id="weight_value" {...register("weight_value", { required: false })}
+                                        readOnly={false}
+                                        placeholder=""
+                                    />
+
+                                </div>
+                            </div>
 
 
 
