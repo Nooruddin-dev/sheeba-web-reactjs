@@ -136,7 +136,7 @@ export default function RouteConfig() {
           <LoginProtectedRoute> <CardDispatchInfoPage /> </LoginProtectedRoute>
         } />
 
-        <Route path="/reports/dispatch-info-report" element={
+        <Route path="/reports/dispatch-info" element={
           <LoginProtectedRoute> <CardDispatchInfoPage /> </LoginProtectedRoute>
         } />
 

@@ -80,6 +80,10 @@ export default function ProductionEntriesPage() {
             job_card_product_id: recordForEdit?.job_card_product_id,
             machine_id: recordForEdit?.machine_id,
             waste_value: recordForEdit?.waste_value,
+            weight_value: recordForEdit?.weight_value,
+
+      
+
             net_value: recordForEdit?.net_value,
 
           

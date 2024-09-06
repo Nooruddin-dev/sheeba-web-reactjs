@@ -97,8 +97,10 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
 
         getJobCardDetailByIdForEditApi(job_card_id_selected)
+        
             .then((res: any) => {
                 const { data } = res;
+                
                 if (data) {
                     setValue('job_card_id', data.job_card_id);
                     setValue('job_card_no', data.job_card_no);
@@ -106,7 +108,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                     setValue('product_name', data.product_name);
                     setValue('weight_qty', data.weight_qty);
                     
-                    setValue('weight_value', data.weight_value);
+                    //setValue('weight_value', data.weight_value);
 
                     setCartAllProducts(data.job_card_products);
 
