@@ -41,9 +41,9 @@ export default function JobCardsListPage() {
     const [searchFieldValues, setSearchFieldValues] = useState<{ [key: string]: string }>({});
 
     const HtmlSearchFields: HtmlSearchFieldConfig[] = [
-        { inputId: 'job_card_idSearch', inputName: 'job_card_idSearch', labelName: 'Job Card ID', placeHolder: 'Job Card ID', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
+        { inputId: 'job_card_noSearch', inputName: 'job_card_noSearch', labelName: 'Job Card No', placeHolder: 'Job Card No', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
         { inputId: 'company_nameSearch', inputName: 'company_nameSearch', labelName: 'Company Name', placeHolder: 'Company Name', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
-        { inputId: 'sealing_methodSearch', inputName: 'sealing_methodSearch', labelName: 'Sealing Method', placeHolder: 'Sealing Method', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
+        { inputId: 'product_nameSearch', inputName: 'product_nameSearch', labelName: 'Product Name', placeHolder: 'Product Name', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
 
     ];
     const [jobCardDispatchEditForm, setJobCardDispatchEditForm] = useState<any>(null); // Data of the dipatch being edited

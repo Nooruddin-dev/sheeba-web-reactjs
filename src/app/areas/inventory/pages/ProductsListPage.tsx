@@ -442,8 +442,8 @@ export default function ProductsListPage() {
                             >
                                 <thead>
                                     <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>Product Id</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Product Name</th>
+                                        <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>Product Name</th>
+                                     
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Description</th>
                                         {/* <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Cost</th> */}
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>SKU</th>
@@ -461,12 +461,12 @@ export default function ProductsListPage() {
                                             ?
                                             allProductsList?.map((record: any, index: number) => (
                                                 <tr role='row' key={index}>
-                                                    <td role="cell" className="ps-3">{record.productid}</td>
+                                             
 
 
 
 
-                                                    <td>
+                                                    <td role="cell" className="ps-3">
                                                         <div className="d-flex align-items-center">
 
                                                             {/* <a href="/metronic8/demo1/apps/ecommerce/catalog/edit-product.html" className="symbol symbol-50px">

@@ -218,7 +218,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
 
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.short_description ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="short_description" {...register("short_description", { required: false })}
-                                        readOnly={isEditCase}
+                                        // readOnly={isEditCase}
                                         placeholder="Enter product name"
                                     />
                                     {errors.short_description && <SiteErrorMessage errorMsg='Short description is required' />}

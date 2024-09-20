@@ -80,7 +80,13 @@ export default function ProductionEntriesPage() {
             job_card_product_id: recordForEdit?.job_card_product_id,
             machine_id: recordForEdit?.machine_id,
             waste_value: recordForEdit?.waste_value,
+            gross_value: recordForEdit?.gross_value,
+
             weight_value: recordForEdit?.weight_value,
+
+            start_time: recordForEdit?.start_time,
+            end_time: recordForEdit?.end_time,
+            tare_core: recordForEdit?.tare_core ?? 0,
 
       
 
@@ -137,7 +143,11 @@ export default function ProductionEntriesPage() {
             net_value,
             gross_value,
 
-            weight_value
+            weight_value,
+
+            start_time,
+            end_time,
+            tare_core
 
         } = data;
 
@@ -177,7 +187,11 @@ export default function ProductionEntriesPage() {
             net_value: net_value,
             gross_value: gross_value,
 
-            weight_value: weight_value
+            weight_value: weight_value,
+
+            start_time: start_time,
+            end_time: end_time,
+            tare_core: tare_core ?? 0
 
         };
 

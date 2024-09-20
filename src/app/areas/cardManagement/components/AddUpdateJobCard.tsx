@@ -7,10 +7,10 @@ import { Content } from '../../../../_sitecommon/layout/components/content';
 import { KTCard, KTCardBody, KTIcon, toAbsoluteUrl } from '../../../../_sitecommon/helpers';
 import { useForm } from 'react-hook-form';
 import SiteErrorMessage from '../../common/components/shared/SiteErrorMessage';
-import { createJobCardApi, deletAnyRecordApi, gerProductsListForJobCardBySearchTermApi, getAllUsersApi, getProductDetailById } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
+import { createJobCardApi, deletAnyRecordApi, gerProductsListForJobCardBySearchTermApi, getAllUsersApi, getJobCardDetailByIdForEditApi, getProductDetailById } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
 import BusinessPartnerTypesEnum from '../../../../_sitecommon/common/enums/BusinessPartnerTypesEnum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faPlus, faPrint } from '@fortawesome/free-solid-svg-icons';
 import ReactSelect from 'react-select';
 import { showErrorMsg, showSuccessMsg, showWarningMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
@@ -19,6 +19,7 @@ import { calculateItemsSubTotal, calculateJobCardAmountMaster, calculateTaxValue
 import { useNavigate, useParams } from 'react-router';
 import { generateUniqueIdWithDate } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
 import { CommonTableActionCell } from '../../common/components/layout/CommonTableActionCell';
+import JobCardInvoiceModal from './JobCardInvoiceModal';
 
 
 
@@ -65,6 +66,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
     const [searchQueryProduct, setSearchQueryProduct] = useState('');
     const [selectedSearchProductOptions, setSelectedSearchProductOptions] = useState([]);
     const [selectedProductDropDown, setSelectedProductDropDown] = useState<any>(null);
+    const [jobCardDetailForPrinting, setJobCardDetailForPrinting] = useState<any>(null);
 
     const [card_tax_type, setCard_tax_type] = useState<any>(null);
     const [card_tax_value, setCard_tax_value] = useState<any>(0);
@@ -271,7 +273,12 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                     reset();
                     setFormSubmitted(false);
 
-                    navigate('/job-management/cards-list');
+                    //--open the print invoice once saved successfully
+                    setTimeout(() => {
+                        setIsOpenReceiptModal(true);
+                    }, 1000);
+
+                  //  navigate('/job-management/cards-list');
 
                 } else if (res?.data?.response?.success == false && !stringIsNullOrWhiteSpace(res?.data?.response?.responseMessage)) {
                     showErrorMsg(res?.data?.response?.responseMessage);
@@ -520,6 +527,117 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
         }, 500);
 
     }, []);
+
+
+    
+    //--get job card detail for printing invoice
+    useEffect(() => {
+        
+        const job_card_id_for_api = (job_card_id && parseInt(job_card_id ?? '0') > 0) ? job_card_id :  (latestJobCardId && latestJobCardId > 0  ? latestJobCardId : 0);
+
+        if(job_card_id_for_api && job_card_id_for_api > 0){
+            getJobCardDetailByIdForEdit(job_card_id_for_api);
+        }
+    }, [job_card_id, latestJobCardId]);
+
+    const getJobCardDetailByIdForEdit = (job_card_id_for_api: any) => {
+
+     
+
+        getJobCardDetailByIdForEditApi(job_card_id_for_api)
+            .then((res: any) => {
+
+                const { data } = res;
+                const dataResponse = data;
+                if (dataResponse) {
+
+
+                    let orderdatelocal = dataResponse.order_date;
+                    orderdatelocal = orderdatelocal?.split('T')[0];
+    
+                    let dispatch_date_local = dataResponse.dispatch_date;
+                    dispatch_date_local = dispatch_date_local?.split('T')[0];
+
+                    let finalJobDetail = {
+                        order_date: orderdatelocal,
+                        dispatch_date: dispatch_date_local,
+                        company_name: dataResponse.company_name,
+                        product_name: dataResponse.product_name,
+                        weight_qty: dataResponse.weight_qty,
+                        job_size: dataResponse.job_size,
+                        micron: dataResponse.micron,
+                        sealing_method: dataResponse.sealing_method,
+                        job_card_reference: dataResponse.job_card_reference,
+                        special_request: dataResponse.special_request,
+                        card_rate: dataResponse.card_rate,
+                        card_amount: dataResponse.card_amount,
+                        card_tax_amount: dataResponse.card_tax_amount,
+                        card_total_amount: dataResponse.card_total_amount,
+
+                        jobCardAllProducts: [],
+                        jobDistributionFields: [],
+                    }
+    
+                
+    
+                    // set job card products
+                    if (dataResponse.job_card_products && dataResponse.job_card_products.length > 0) {
+                        try {
+    
+                            const jobCardAllProductsLocal: any = [];
+                            for (const element of dataResponse.job_card_products) {
+                                jobCardAllProductsLocal.push({
+                                    job_card_product_id: element.job_card_product_id,
+                                    productid: element.product_id,
+                                    sku: element?.sku,
+    
+                                    product_name: element.product_name
+                                });
+                            }
+    
+                           finalJobDetail.jobCardAllProducts = jobCardAllProductsLocal;
+    
+                        } catch (error) {
+                            console.error("Error setting products/materials", error);
+                        }
+                    }
+    
+    
+                    // set job card dispatch info
+                    if (dataResponse.job_card_dispatch_info && dataResponse.job_card_dispatch_info.length > 0) {
+                        try {
+    
+                            const jobDistributionFieldsLocal: any = [];
+                            for (const element of dataResponse.job_card_dispatch_info) {
+                                jobDistributionFieldsLocal.push({
+                                    dispatch_info_id: element.dispatch_info_id,
+                                    dispatch_place: element.dispatch_place,
+                                    dispatch_weight_quantity: element?.dispatch_weight_quantity,
+                                    job_card_id: element?.job_card_id,
+                                    unique_key: element.unique_key
+                                });
+                            }
+    
+                            finalJobDetail.jobDistributionFields = jobDistributionFieldsLocal;
+                          
+                        } catch (error) {
+                            console.error("Error setting products/materials", error);
+                        }
+                    }
+
+
+
+
+                    setJobCardDetailForPrinting(finalJobDetail);
+                } else {
+                    setJobCardDetailForPrinting({});
+                }
+
+
+            })
+            .catch((err: any) => console.log(err, "err"));
+    };
+
 
     return (
 
@@ -858,7 +976,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                         <div className="me-3">
                             <label htmlFor="fieldValue" className="form-label">Weight/Quantity</label>
                             <input
-                                type="text"
+                                type="number"
                                 className="form-control"
                                 id="fieldValue"
                                 value={dispatch_weight_quantity}
@@ -1246,6 +1364,20 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
                         <div className="col-lg-12 col-md-12">
                             <div className="d-flex justify-content-end align-content-center">
+                                {
+                                    job_card_id && stringIsNullOrWhiteSpace(job_card_id) == false
+                                        ?
+                                        <button className="btn btn-primary fs-3 me-3"
+                                        onClick={handleOpenCloseOrderReceiptModal}
+                                        >
+                                            <FontAwesomeIcon icon={faPrint} style={{ marginRight: '4px' }} />
+
+                                            Print
+                                        </button>
+                                        :
+                                        <></>
+                                }
+
                                 <button className="btn btn-primary fs-3"
                                     onClick={() => {
                                         if (formRefOrder.current) {
@@ -1262,8 +1394,11 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                                             'Save'
                                     }
 
-                                    
+
                                 </button>
+
+
+
                             </div>
 
                         </div>
@@ -1274,19 +1409,19 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
             </div>
 
-            {/* {
-                    isOpenReceiptModal == true
-                        ?
+            {
+                isOpenReceiptModal == true
+                    ?
 
-                        <PurchaseOrderReceiptModal
-                            isOpen={isOpenReceiptModal}
-                            closeModal={handleOpenCloseOrderReceiptModal}
-                            orderId={latestOrderId}
-                        />
-                        :
-                        <>
-                        </>
-                } */}
+                    <JobCardInvoiceModal
+                        isOpen={isOpenReceiptModal}
+                        closeModal={handleOpenCloseOrderReceiptModal}
+                        jobCardDetailForPrinting={jobCardDetailForPrinting}
+                    />
+                    :
+                    <>
+                    </>
+            }
 
         </Content>
 

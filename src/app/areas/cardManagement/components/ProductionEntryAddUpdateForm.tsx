@@ -56,14 +56,16 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
     try {
         const wasteValue = watch("waste_value") || 0;
-        const netValue = watch("net_value") || 0;
+        const gross_value = watch("gross_value") || 0;
+        const tare_core = watch("tare_core") || 0;
 
+      
 
-        const grossTotalValue = convertToTwoDecimalFloat(wasteValue) + convertToTwoDecimalFloat(netValue);
-        setValue("gross_value", grossTotalValue);
+        const netTotalValue = convertToTwoDecimalFloat(gross_value) - convertToTwoDecimalFloat(wasteValue) - convertToTwoDecimalFloat(tare_core);
+        setValue("net_value", netTotalValue);
 
     } catch (error) {
-        console.error("An error occured in calculating total gross value: ", error);
+        console.error("An error occured in calculating total net value: ", error);
     }
 
 
@@ -97,17 +99,17 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
 
         getJobCardDetailByIdForEditApi(job_card_id_selected)
-        
+
             .then((res: any) => {
                 const { data } = res;
-                
+
                 if (data) {
                     setValue('job_card_id', data.job_card_id);
                     setValue('job_card_no', data.job_card_no);
                     setValue('company_name', data.company_name);
                     setValue('product_name', data.product_name);
                     setValue('weight_qty', data.weight_qty);
-                    
+
                     //setValue('weight_value', data.weight_value);
 
                     setCartAllProducts(data.job_card_products);
@@ -362,7 +364,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
                                         {cartAllProducts?.map((item: any, index: any) => (
                                             <option key={index} value={item.job_card_product_id}>
-                                                {item.sku}
+                                                {item.sku} - {item.product_name}
                                             </option>
                                         ))}
                                     </select>
@@ -385,7 +387,53 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                                 </div>
                             </div>
 
+                            <div className='col-lg-4'>
+                                <div className="mb-10">
+                                    <label className="form-label">Start Time</label>
+                                    <input
+                                        type="time"
+                                        className={`form-control form-control-solid`}
+                                        id="start_time"
+                                        {...register("start_time", { required: false })}
+                                        readOnly={false}
+                                        placeholder=""
+                                    />
+                                </div>
+                            </div>
 
+                            <div className='col-lg-4'>
+                                <div className="mb-10">
+                                    <label className="form-label">End Time</label>
+                                    <input
+                                        type="time"
+                                        className={`form-control form-control-solid`}
+                                        id="end_time"
+                                        {...register("end_time", { required: false })}
+                                        readOnly={false}
+                                        placeholder=""
+                                    />
+                                </div>
+                            </div>
+
+
+
+
+                        
+
+                            <div className='col-lg-4'>
+                                <div className="mb-10">
+                                    <label className="form-label">Gross</label>
+                                    <input
+                                        type="number"
+
+                                        className={`form-control form-control-solid ${formSubmitted ? (errors.gross_value ? 'is-invalid' : 'is-valid') : ''}`}
+                                        id="gross_value" {...register("gross_value", { required: false })}
+                                        readOnly={false}
+                                        placeholder=""
+                                    />
+
+                                </div>
+                            </div>
 
                             <div className='col-lg-4'>
                                 <div className="mb-10">
@@ -402,6 +450,23 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                                 </div>
                             </div>
 
+                          
+                            <div className='col-lg-4'>
+                                <div className="mb-10">
+                                    <label className="form-label  required">Tare/Core</label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        className={`form-control form-control-solid ${formSubmitted ? (errors.tare_core ? 'is-invalid' : 'is-valid') : ''}`}
+                                        id="tare_core" {...register("tare_core", { required: false })}
+                                        readOnly={false}
+                                        placeholder="Enter tare/core"
+                                    />
+                                    {errors.tare_core && <SiteErrorMessage errorMsg='Tare/Core is required' />}
+                                </div>
+                            </div>
+
+
                             <div className='col-lg-4'>
                                 <div className="mb-10">
                                     <label className="form-label  required">Net</label>
@@ -410,7 +475,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.net_value ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="net_value" {...register("net_value", { required: true })}
-                                        readOnly={false}
+                                        readOnly={true}
                                         placeholder="Enter net value"
                                     />
                                     {errors.net_value && <SiteErrorMessage errorMsg='Net is required' />}
@@ -419,21 +484,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
 
 
-                            <div className='col-lg-4'>
-                                <div className="mb-10">
-                                    <label className="form-label">Gross</label>
-                                    <input
-                                        type="number"
-
-                                        className={`form-control form-control-solid ${formSubmitted ? (errors.gross_value ? 'is-invalid' : 'is-valid') : ''}`}
-                                        id="gross_value" {...register("gross_value", { required: false })}
-                                        readOnly={true}
-                                        placeholder=""
-                                    />
-
-                                </div>
-                            </div>
-
+                          
 
 
 
