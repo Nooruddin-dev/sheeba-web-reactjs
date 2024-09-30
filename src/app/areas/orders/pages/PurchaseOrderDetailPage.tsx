@@ -115,7 +115,7 @@ export default function PurchaseOrderDetailPage() {
                                             <div className='d-flex align-items-center bg-light-info rounded p-5'>
 
                                                 <span className=' text-info me-5'>
-                                                    <KTIcon iconName='abstract-26' className='text-info fs-1 me-5' />
+                                                   
                                                 </span>
 
                                                 <div className='flex-grow-1 me-2'>
@@ -304,7 +304,7 @@ export default function PurchaseOrderDetailPage() {
                                                                     >
                                                                         <thead>
                                                                             <tr className='text-start text-muted fw-bolder fs-7  gs-0 bg-light-info'
-                                                                                style={{ border: '1.5px solid #f6c000' }}
+                                                                                style={{ border: '1.5px solid #999' }}
                                                                             >
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>Order Item ID</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}> Product Name</th>

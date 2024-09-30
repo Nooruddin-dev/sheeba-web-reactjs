@@ -1117,9 +1117,9 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
             <div
                 className='card rounded-0 shadow-none border-0 bgi-no-repeat bgi-position-x-end bgi-size-cover mt-3'
                 style={{
-                    backgroundColor: '#663259',
+                    backgroundColor: 'rgb(103 103 103 / 82%)',
                     backgroundSize: 'auto 100%',
-                    backgroundImage: `url('${toAbsoluteUrl('media/misc/taieri.svg')}')`,
+                    
                 }}
             >
 

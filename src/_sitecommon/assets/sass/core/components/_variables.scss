@@ -64,7 +64,7 @@ $secondary-clarity:				rgba(#F9F9F9, 0.2) !default;
 $secondary-inverse:				$gray-800 !default; 
 
 // Light colors
-$light: 						$gray-100 !default;
+$light: 						$gray-200 !default;
 $light-active: 					$gray-200 !default;
 $light-light: 					#ffffff !default;
 $light-clarity: 				rgba($white, 0.2) !default;
@@ -600,9 +600,11 @@ $input-plaintext-color:                     var(--#{$prefix}gray-700) !default;
 
 $inpur-autifill-bg-color:					var(--#{$prefix}gray-100) !default;
 
+
+
 // Keenthemes solid input style
 $input-solid-color:         	            var(--#{$prefix}gray-700) !default;
-$input-solid-bg:                            var(--#{$prefix}gray-100) !default;
+$input-solid-bg:                            var(--#{$prefix}gray-300) !default;
 $input-solid-bg-focus:                      var(--#{$prefix}gray-200) !default;
 $input-solid-placeholder-color:             var(--#{$prefix}gray-500) !default; 
 

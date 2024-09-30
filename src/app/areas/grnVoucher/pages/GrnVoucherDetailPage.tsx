@@ -118,10 +118,10 @@ export default function GrnVoucherDetailPage() {
                                                         <div className="col-lg-3 col-md-3 col-3">
                                                             <div className='d-flex align-items-center flex-row-fluid flex-wrap'>
                                                                 <div className='flex-grow-1 me-2'>
-                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-6 fw-bold'>
+                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-4 fw-bold'>
                                                                         Voucher Number
                                                                     </a>
-                                                                    <span className='text-muted fw-semibold d-block fs-7'> {grnVoucherDetail?.voucher_number}</span>
+                                                                    <span className='text-muted fw-semibold d-block fs-5'> {grnVoucherDetail?.voucher_number}</span>
                                                                 </div>
                                                                 {/* <span className='badge badge-light fw-bold my-2'>+82$</span> */}
                                                             </div>
@@ -129,11 +129,11 @@ export default function GrnVoucherDetailPage() {
                                                         <div className="col-lg-3 col-md-3 col-3">
                                                             <div className='d-flex align-items-center flex-row-fluid flex-wrap'>
                                                                 <div className='flex-grow-1 me-2'>
-                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-6 fw-bold'>
+                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-4 fw-bold'>
                                                                         PO Number
                                                                     </a>
 
-                                                                    <span className='text-muted fw-semibold d-block fs-7'> {grnVoucherDetail?.po_number}</span>
+                                                                    <span className='text-muted fw-semibold d-block fs-5'> {grnVoucherDetail?.po_number}</span>
                                                                 </div>
                                                                 {/* <span className='badge badge-light fw-bold my-2'>+82$</span> */}
                                                             </div>
@@ -142,10 +142,10 @@ export default function GrnVoucherDetailPage() {
                                                         <div className="col-lg-3 col-md-3 col-3">
                                                             <div className='d-flex align-items-center flex-row-fluid flex-wrap'>
                                                                 <div className='flex-grow-1 me-2'>
-                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-6 fw-bold'>
+                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-4 fw-bold'>
                                                                         Date
                                                                     </a>
-                                                                    <span className='text-muted fw-semibold d-block fs-7'> {getDateCommonFormatFromJsonDate(grnVoucherDetail?.grn_date)}</span>
+                                                                    <span className='text-muted fw-semibold d-block fs-6'> {getDateCommonFormatFromJsonDate(grnVoucherDetail?.grn_date)}</span>
                                                                 </div>
                                                                 {/* <span className='badge badge-light fw-bold my-2'>+82$</span> */}
                                                             </div>
@@ -155,10 +155,10 @@ export default function GrnVoucherDetailPage() {
                                                         <div className="col-lg-3 col-md-3 col-3">
                                                             <div className='d-flex align-items-center flex-row-fluid flex-wrap'>
                                                                 <div className='flex-grow-1 me-2'>
-                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-6 fw-bold'>
+                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-4 fw-bold'>
                                                                         Receiver Name
                                                                     </a>
-                                                                    <span className='text-muted fw-semibold d-block fs-7'>   {grnVoucherDetail?.receiver_name}</span>
+                                                                    <span className='text-muted fw-semibold d-block fs-6'>   {grnVoucherDetail?.receiver_name}</span>
                                                                 </div>
                                                                 {/* <span className='badge badge-light fw-bold my-2'>+82$</span> */}
                                                             </div>
@@ -172,10 +172,10 @@ export default function GrnVoucherDetailPage() {
                                                         <div className="col-lg-3 col-md-3 col-3">
                                                             <div className='d-flex align-items-center flex-row-fluid flex-wrap'>
                                                                 <div className='flex-grow-1 me-2'>
-                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-6 fw-bold'>
+                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-4 fw-bold'>
                                                                         Receiver Contact
                                                                     </a>
-                                                                    <span className='text-muted fw-semibold d-block fs-7'>   {grnVoucherDetail?.receiver_contact}</span>
+                                                                    <span className='text-muted fw-semibold d-block fs-6'>   {grnVoucherDetail?.receiver_contact}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -184,10 +184,10 @@ export default function GrnVoucherDetailPage() {
                                                         <div className="col-lg-3 col-md-3 col-3">
                                                             <div className='d-flex align-items-center flex-row-fluid flex-wrap'>
                                                                 <div className='flex-grow-1 me-2'>
-                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-6 fw-bold'>
+                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-4 fw-bold'>
                                                                         GRN Tax Total
                                                                     </a>
-                                                                    <span className='text-muted fw-semibold d-block fs-7'>{grnVoucherDetail?.grn_tax_total}</span>
+                                                                    <span className='text-muted fw-semibold d-block fs-6'>{grnVoucherDetail?.grn_tax_total}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -195,10 +195,10 @@ export default function GrnVoucherDetailPage() {
                                                         <div className="col-lg-3 col-md-3 col-3">
                                                             <div className='d-flex align-items-center flex-row-fluid flex-wrap'>
                                                                 <div className='flex-grow-1 me-2'>
-                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-6 fw-bold'>
+                                                                    <a href='#' className='text-gray-800 text-hover-primary fs-4 fw-bold'>
                                                                         GRN Amount Total
                                                                     </a>
-                                                                    <span className='text-muted fw-semibold d-block fs-7'>{grnVoucherDetail?.grn_toal_amount}</span>
+                                                                    <span className='text-muted fw-semibold d-block fs-6'>{grnVoucherDetail?.grn_toal_amount}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -253,8 +253,8 @@ export default function GrnVoucherDetailPage() {
 
                                                                     >
                                                                         <thead>
-                                                                            <tr className='text-start text-muted fw-bolder fs-7  gs-0 bg-light-info'
-                                                                                style={{ border: '1.5px solid #f6c000' }}
+                                                                            <tr className='text-start text-muted fw-bolder fs-6  gs-0 bg-light-info'
+                                                                                style={{ border: '1.5px solid #999' }}
                                                                             >
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>GRN Item ID</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}> Product Name</th>
@@ -276,7 +276,7 @@ export default function GrnVoucherDetailPage() {
                                                                                     grnVoucherDetail?.grn_voucher_line_items?.map((record: any) => (
                                                                                         <tr>
                                                                                             <td className='ps-3'>
-                                                                                                <span className="text-muted fw-semibold text-muted d-block fs-7">{record.grn_line_item_id}</span>
+                                                                                                <span className="text-muted fw-semibold text-muted d-block fs-6">{record.grn_line_item_id}</span>
                                                                                             </td>
                                                                                             <td>
                                                                                                 <div className='d-flex align-items-center'>
@@ -287,7 +287,7 @@ export default function GrnVoucherDetailPage() {
                                                                                                         <a href='#' className='text-gray-900 fw-bold text-hover-primary fs-6'>
                                                                                                             {record.product_name}
                                                                                                         </a>
-                                                                                                        {/* <span className='text-muted fw-semibold text-muted d-block fs-7'>
+                                                                                                        {/* <span className='text-muted fw-semibold text-muted d-block fs-6'>
                                                                                                         Fast Food
                                                                                                     </span> */}
                                                                                                     </div>
