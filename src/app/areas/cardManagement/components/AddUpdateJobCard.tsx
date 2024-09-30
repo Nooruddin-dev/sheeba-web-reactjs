@@ -1128,7 +1128,8 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                     <div className=' d-flex align-items-center'>
                         <h1 className='fw-bold me-3'>Search</h1>
 
-                        <span className='fw-bold'>Materials List</span>
+                        <span className='fw-bold
+                        '>Materials List</span>
                     </div>
 
 

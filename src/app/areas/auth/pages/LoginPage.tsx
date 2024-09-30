@@ -103,22 +103,20 @@ export default function LoginPage() {
     return (
         <LoginLayout>
 
-            <div className="d-flex flex-column flex-root" id="kt_app_root"
-                style={{ backgroundImage: `url('${toAbsoluteUrl('media/auth/bg4.jpg')}')` }}
-            >
+            <div className="d-flex flex-column flex-root loginscreen" id="kt_app_root"            >
                 {/* Page bg image */}
 
                 {/* Authentication - Sign-in */}
                 <div className="d-flex flex-column flex-column-fluid flex-lg-row">
                     {/* Aside */}
                     <div className="d-flex flex-center w-lg-50 pt-15 pt-lg-0 px-10">
-                        <div className="d-flex flex-center flex-lg-start flex-column">
+                        <div className="d-flex flex-center flex-lg-center flex-column">
                             {/* Logo */}
-                            <a href="index.html" className="mb-7">
-                                <img alt="Logo" src={toAbsoluteUrl('media/logos/custom-4.png')} />
+                            <a href="index.html" className="mb-7 default_dark_2 loginlogo">
+                                <img alt="Logo" src={toAbsoluteUrl('media/logos/default_dark_2.png')} />
                             </a>
                             {/* Title */}
-                            <h2 className="text-white fw-normal m-0">Sheeba Inventory Management System</h2>
+                            <h2 className=" fw-normal m-0 ">Sheeba Inventory Management System</h2>
                         </div>
                     </div>
                     {/* Body */}
@@ -199,7 +197,7 @@ export default function LoginPage() {
                                     {/* Wrapper */}
                                     <div className="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
                                         <div></div>
-                                        <a href="/auth/forgot-password" className="link-primary">Forgot Password ?</a>
+                                        <a href="/auth/forgot-password" className="link-primary"></a>
                                     </div>
                                     {/* Submit button */}
                                     <div className="d-grid mb-10">
@@ -224,21 +222,13 @@ export default function LoginPage() {
                             <div className="d-flex flex-stack px-lg-10">
                                 {/* Languages */}
                                 <div className="me-0">
-                                    <button className="btn btn-flex btn-link btn-color-gray-700 btn-active-color-primary rotate fs-base" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start" data-kt-menu-offset="0px, 0px">
-                                        <img className="w-20px h-20px rounded me-3" src={toAbsoluteUrl('media/flags/united-states.svg')} alt="" />
-                                        <span className="me-1">English</span>
-                                        {/* <i className="ki-duotone ki-down fs-5 text-muted rotate-180 m-0"></i> */}
-                                    </button>
+                                  
                                     <div className="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-4 fs-7" data-kt-menu="true" id="kt_auth_lang_menu">
                                         {/* Menu items */}
                                     </div>
                                 </div>
                                 {/* Links */}
-                                <div className="d-flex fw-semibold text-primary fs-base gap-5">
-                                    <a href="pages/team.html" target="_blank">Help</a>
-                                    {/* <a href="pages/pricing/column.html" target="_blank">Plans</a> */}
-                                    <a href="pages/contact.html" target="_blank">Contact Us</a>
-                                </div>
+                              
                             </div>
                             {/* End Footer */}
                         </div>
