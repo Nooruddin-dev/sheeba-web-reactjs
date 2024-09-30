@@ -529,9 +529,9 @@ export default function CreateGrnVoucherPageSub() {
 
 
                 <div
-                    className='card rounded-0 shadow-none border-0 bgi-no-repeat bgi-position-x-end bgi-size-cover mt-3'
+                    className='card rounded-0 shadow-none border-0 bgi-no-repeat bgi-position-x-end bgi-size-cover mt-3 bgclor'
                     style={{
-                        backgroundColor: 'rgb(103 103 103 / 82%)',
+                       
                         backgroundSize: 'auto 100%',
                        
                     }}
@@ -540,9 +540,9 @@ export default function CreateGrnVoucherPageSub() {
                     <div className='card-body container-xxl pt-10 pb-8'>
 
                         <div className=' d-flex align-items-center'>
-                            <h1 className='fw-bold me-3 text-white'>Search</h1>
+                            <h1 className='fw-bold me-3'>Search</h1>
 
-                            <span className='fw-bold text-white opacity-50'>Orders List</span>
+                            <span className='fw-bold'>Orders List</span>
                         </div>
 
 

@@ -288,7 +288,7 @@ export default function PurchaseOrderDetailPage() {
                                                 </span>
 
                                                 <div className='flex-grow-1 me-2'>
-                                                    <a href='#' className='fw-bold text-gray-800 text-hover-primary fs-6'>
+                                                    <a href='#' className='fw-bold text-gray-800 text-hover-primary fs-3'>
                                                         Order Items
                                                     </a>
 

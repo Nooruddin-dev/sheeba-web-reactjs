@@ -327,7 +327,7 @@ font-size: 16px !important;
   width: 100%;
 }
 .tab-content .bg-light-warning{
-  background-color: #ccc;
+  background-color:#cccccc47 !important;
 }
 /* .path2, .path1,  */
  .text-warning.me-5{
@@ -340,6 +340,15 @@ font-size: 16px !important;
   background: #666 !important;
 } 
 
+.bgi-size-cover.mt-3.bgclor{
+  background-color:#cccccc47 !important;
+  & .card-body {
+    padding: 0rem;
+    &.container-xxl{
+      max-width: 1520px;
+    }
+  }
+}
 /* .app-header-menu .menu .menu-item .menu-link.active .menu-title{
 
 } */
