@@ -16,6 +16,7 @@ import { stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers
 import { GetDefaultCurrencySymbol, getOrderDetailStatusBoundaryClass } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
 import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { getJobDispatchReportDataByIdApi, getPurchaseOrderDetailsByIdApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
+import { DeliveryChallanUnits } from '../../../../_sitecommon/common/constants/DeliveryChallanUnits';
 
 interface JobCardDispatchInvoiceInterface {
     isOpen: boolean,
@@ -84,7 +85,7 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
 
         <div className='admin-modal-area' style={{ display: 'none' }}>
             <div className='admin-modal-header'>
-                <h2>Card Dispatch Invoice</h2>
+                <h2>Delivery Challan</h2>
 
                 <div className='btn btn-sm btn-icon btn-active-color-primary' onClick={closeModal}>
                     <KTIcon className='fs-1' iconName='cross' />
@@ -104,14 +105,20 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
                             <div className="mw-lg-950px mx-auto w-100">
 
                                 <div className="d-flex justify-content-between flex-column flex-sm-row mb-19">
-                                    <h4 className="fw-bolder text-gray-800 fs-2qx pe-5 pb-7">Card Dispatch Invoice</h4>
+                                    <h4 className="fw-bolder text-gray-800 fs-2qx pe-5 pb-7">Delivery Challan</h4>
 
                                     <div className="text-sm-end">
 
                                         <a href="#" className="d-block mw-150px ms-sm-auto">
-                                            <img alt="Logo"
-                                                src={toAbsoluteUrl('media/svg/brand-logos/lloyds-of-london-logo.svg')}
-                                                className="w-100" />
+                                            {
+                                                (dispatchInvoiceDetail?.show_company_detail == true || dispatchInvoiceDetail?.show_company_detail == 'true' || dispatchInvoiceDetail?.show_company_detail == '1') &&
+                                                (
+                                                    <img alt="Logo"
+                                                        src={toAbsoluteUrl('media/svg/brand-logos/lloyds-of-london-logo.svg')}
+                                                        className="w-100" />
+                                                )
+                                            }
+
                                         </a>
 
                                         <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
@@ -140,29 +147,31 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
                                                 </thead> */}
                                                 <tbody className="fw-semibold text-gray-600 ">
                                                     <tr>
-                                                        <td className="text-start bg-light p-3">Job Date</td>
+                                                        <td className="text-start bg-light p-3"> Date</td>
                                                         <td className='text-start p-3'>
                                                             <div className="d-flex align-items-center">
-                                                                <div className="ms-5">  <div className="fw-bold">  {dispatchInvoiceDetail?.job_date}</div>   </div>
+                                                                <div className="ms-5">  <div className="fw-bold">   {getDateCommonFormatFromJsonDate(dispatchInvoiceDetail?.job_date)}</div>   </div>
                                                             </div>
                                                         </td>
-                                                    
+
                                                     </tr>
 
-                                                    <tr>
+                                                    {/* <tr>
                                                         <td className="text-start bg-light p-3">Job Card No</td>
                                                         <td className='text-start p-3'>
                                                             <div className="d-flex align-items-center">
                                                                 <div className="ms-5">  <div className="fw-bold">  {dispatchInvoiceDetail?.job_card_no} </div>   </div>
                                                             </div>
                                                         </td>
-                                                    </tr>
+                                                    </tr> */}
+
+
 
                                                     <tr>
-                                                        <td className="text-start bg-light p-3">Dispatch#</td>
+                                                        <td className="text-start bg-light p-3">M/s.</td>
                                                         <td className='text-start p-3'>
                                                             <div className="d-flex align-items-center">
-                                                                <div className="ms-5">  <div className="fw-bold"> {dispatchInvoiceDetail?.card_dispatch_no}</div>   </div>
+                                                                <div className="ms-5">  <div className="fw-bold">  {dispatchInvoiceDetail?.company_name}</div>   </div>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -176,47 +185,12 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
                                                         </td>
                                                     </tr>
 
-                                                    <tr>
-                                                        <td className="text-start bg-light p-3">No.Bags</td>
-                                                        <td className='text-start p-3'>
-                                                            <div className="d-flex align-items-center">
-                                                                <div className="ms-5">  <div className="fw-bold">  {dispatchInvoiceDetail?.total_bags}</div>   </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
 
                                                     <tr>
-                                                        <td className="text-start bg-light p-3">Quantity</td>
+                                                        <td className="text-start bg-light p-3">Dispatch#</td>
                                                         <td className='text-start p-3'>
                                                             <div className="d-flex align-items-center">
-                                                                <div className="ms-5">  <div className="fw-bold">  {dispatchInvoiceDetail?.quantity}</div>   </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td className="text-start bg-light p-3">Core</td>
-                                                        <td className='text-start p-3'>
-                                                            <div className="d-flex align-items-center">
-                                                                <div className="ms-5">  <div className="fw-bold">  {dispatchInvoiceDetail?.core_value}</div>   </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td className="text-start bg-light p-3">Gross</td>
-                                                        <td className='text-start p-3'>
-                                                            <div className="d-flex align-items-center">
-                                                                <div className="ms-5">  <div className="fw-bold">  {dispatchInvoiceDetail?.gross_value}</div>   </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td className="text-start bg-light p-3">Net Weight</td>
-                                                        <td className='text-start p-3'>
-                                                            <div className="d-flex align-items-center">
-                                                                <div className="ms-5">  <div className="fw-bold">  {dispatchInvoiceDetail?.net_weight}</div>   </div>
+                                                                <div className="ms-5">  <div className="fw-bold"> {dispatchInvoiceDetail?.card_dispatch_no}</div>   </div>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -225,6 +199,96 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
                                                 </tbody>
                                             </table>
                                         </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="col-lg-12 col-md-12">
+                                            <div className='table-responsive'>
+
+                                                <table className='table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4'>
+
+                                                    <thead>
+                                                        <tr className='fw-bold text-muted'>
+
+                                                            {/* <th className='min-w-80px'>Product Id</th> */}
+                                                            <th className='min-w-100px'>Bag/Roll</th>
+                                                            <th className='min-w-80px'>Qty</th>
+                                                            <th className='min-w-80px'>Unit</th>
+                                                            <th className='min-w-80px'>Weight</th>
+                                                            <th className='min-w-80px'>Tare</th>
+                                                            <th className='min-w-80px'>Total</th>
+
+                                                        
+
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+
+                                                        {
+                                                            dispatchInvoiceDetail?.deliveryChallanLineItems != undefined && dispatchInvoiceDetail?.deliveryChallanLineItems.length > 0
+                                                                ?
+                                                                <>
+                                                                    {dispatchInvoiceDetail?.deliveryChallanLineItems?.map((dispathItem: any, index: number) => (
+                                                                        <tr key={index}>
+
+
+                                                                            <td role="cell" className="ps-3">
+                                                                                <div className='d-flex align-items-center'>
+
+                                                                                    <div className='d-flex justify-content-start flex-column'>
+                                                                                        <a className='text-gray-900 fw-bold text-hover-primary fs-6'>
+                                                                                            {makeAnyStringShortAppenDots(dispathItem?.total_bags, 20)}
+                                                                                        </a>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td role="cell" className="">{dispathItem.quantity}</td>
+                                                                            <td role="cell" className="">{DeliveryChallanUnits.find((x: { dispatch_unit_id: any; }) => x.dispatch_unit_id == dispathItem.dispatch_unit_id)?.delivery_unit_name}</td>
+                                                                            <td role="cell" className="">{dispathItem.net_weight}</td>
+                                                                            <td role="cell" className="">{dispathItem.tare_value}</td>
+                                                                            <td role="cell" className="">{dispathItem.total_value}</td>
+
+
+
+                                                                           
+
+                                                                        </tr>
+                                                                    ))}
+
+
+                                                                </>
+                                                                :
+                                                                <tr>
+                                                                    <td colSpan={10}>
+                                                                        <div className='d-flex p-5 justify-content-center align-content-center'>
+                                                                            <h4 className='text-center'>No dispatch found</h4>
+                                                                        </div>
+                                                                    </td>
+
+
+                                                                </tr>
+                                                        }
+
+                                                    </tbody>
+
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colSpan={5} className="text-right fw-bold">Grand Total:</td>
+                                                            <td className="text-right fw-bold">
+                                                                {dispatchInvoiceDetail?.grand_total}
+                                                            </td>
+                                                        </tr>
+                                                    </tfoot>
+
+                                                </table>
+
+                                            </div>
+
+                                        </div>
+
+                                       
                                     </div>
 
                                 </div>

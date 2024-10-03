@@ -99,24 +99,15 @@ export default function JobCardsListPage() {
 
         const {
             job_card_id,
+            company_name,
             item_name,
-            total_bags,
-            quantity,
-            core_value,
-            gross_value,
-            net_weight,
-            grand_total,
-            card_tax_type,
-            card_tax_value,
-            show_company_detail
+            show_company_detail,
 
+            deliveryChallanLineItems
         } = data;
 
 
-
-
-        if (stringIsNullOrWhiteSpace(item_name) || stringIsNullOrWhiteSpace(total_bags) || stringIsNullOrWhiteSpace(quantity)
-            || stringIsNullOrWhiteSpace(core_value) || stringIsNullOrWhiteSpace(gross_value) || stringIsNullOrWhiteSpace(net_weight)) {
+        if (stringIsNullOrWhiteSpace(item_name)) {
             showErrorMsg('Please fill all required fields!');
             return false;
         }
@@ -124,17 +115,12 @@ export default function JobCardsListPage() {
 
         const formData = {
             job_card_id: job_card_id,
+            company_name: company_name,
             item_name: item_name,
-            total_bags: total_bags,
-            quantity: quantity,
-            core_value: core_value,
-            gross_value: gross_value,
-            net_weight: net_weight,
-            grand_total: grand_total,
-            card_tax_type: card_tax_type,
-            card_tax_value: card_tax_value,
-            show_company_detail: show_company_detail ?? true
-
+            show_company_detail: show_company_detail ?? true,
+            
+            deliveryChallanLineItems: deliveryChallanLineItems,
+       
         };
 
 
@@ -176,6 +162,7 @@ export default function JobCardsListPage() {
         const dispatchInfoValues = {
             job_card_id: record.job_card_id,
             item_name: record.product_name,
+            company_name: record.company_name,
         }
         setJobCardDispatchEditForm(dispatchInfoValues);
 
