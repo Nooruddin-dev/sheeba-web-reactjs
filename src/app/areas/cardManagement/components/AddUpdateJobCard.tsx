@@ -1115,20 +1115,21 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
 
             <div
-                className='card rounded-0 shadow-none border-0 bgi-no-repeat bgi-position-x-end bgi-size-cover mt-3'
+                className='card rounded-0 shadow-none border-0 bgi-no-repeat bgi-position-x-end bgi-size-cover mt-3 bgclor'
                 style={{
-                    backgroundColor: '#663259',
+                   
                     backgroundSize: 'auto 100%',
-                    backgroundImage: `url('${toAbsoluteUrl('media/misc/taieri.svg')}')`,
+                    
                 }}
             >
 
                 <div className='card-body container-xxl pt-10 pb-8'>
 
                     <div className=' d-flex align-items-center'>
-                        <h1 className='fw-bold me-3 text-white'>Search</h1>
+                        <h1 className='fw-bold me-3'>Search</h1>
 
-                        <span className='fw-bold text-white opacity-50'>Materials List</span>
+                        <span className='fw-bold
+                        '>Materials List</span>
                     </div>
 
 

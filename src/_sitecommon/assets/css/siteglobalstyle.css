@@ -231,3 +231,131 @@ height: 150px;
  
 }
 
+
+body #root .card-body{
+  & .table {
+   & thead {
+     & tr{
+      &  th{
+        font-size: 16px !important;
+        font-weight: bold !important;
+        color: #000 !important;
+
+        }
+      }
+   }
+     & tbody{
+        & tr {
+          border-bottom: 1px solid #ccc !important;
+          td *, td{
+            font-size: 14px !important; 
+            margin-left: 0 !important;
+            color: #000 !important;
+          }
+          
+        }
+      }
+      & tfoot{
+        & tr {
+        
+          td *, td{
+            font-size: 14px !important; 
+            margin-left: 0 !important;
+            color: #000 !important;
+            border-bottom: 1px solid #cccccc8a !important;
+          }
+          
+        }
+      }
+  }
+}
+.app-sidebar-footer{
+ & .btn-label{
+  color: #ffffff !important;
+  font-size: 16px;
+  font-weight: bold
+  }
+}
+
+.pagination{
+  margin-top: 5px !important;
+}
+
+.badge{
+  font-size:  1rem !important;
+}
+
+body #root .btn.btn-light-primary.me-3{
+background: #ccc !important;
+color: #000 !important;
+& i {
+  display:  none !important;
+}
+}
+body #root .btn.btn-primary{
+  background:  #999999 !important;
+}
+
+
+body #root  .page-item.active .page-link{
+  background:  #999999 !important;
+}
+.badge-light{
+  background:none !important ;
+}
+
+.container-fluid{
+ & .btn.btn-sm.fw-bold.btn-danger{
+    font-size: 16px !important;
+    background:  #999999 !important;
+  }
+}
+
+.admin-modal-footer{
+ & .btn.btn-danger{
+font-size: 16px !important;
+    background:  #999999 !important;
+    &:hover{
+      background:  #666 !important;
+    }
+  }
+  
+}
+
+
+.card-body.container-xxl .mb-lg-0{
+  width: 100%;
+}
+.tab-content .bg-light-warning{
+  background-color:#cccccc47 !important;
+}
+/* .path2, .path1,  */
+ .text-warning.me-5{
+  display: none;
+}
+.text-end .ki-duotone{
+  display: none;
+}
+.btn.btn-warning{
+  background: #666 !important;
+} 
+
+.bgi-size-cover.mt-3.bgclor{
+  background-color:#cccccc47 !important;
+  & .card-body {
+    padding: 0rem;
+    &.container-xxl{
+      max-width: 1520px;
+    }
+  }
+}
+
+.loginlogo img{
+width: 200px;
+}
+.loginscreen{
+  background: #ccc;
+}
+/* .app-header-menu .menu .menu-item .menu-link.active .menu-title{
+
+} */

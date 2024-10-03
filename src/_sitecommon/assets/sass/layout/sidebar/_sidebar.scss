@@ -27,12 +27,19 @@
     }
         
     .app-sidebar-logo {
-        height: calc(var(--#{$prefix}app-header-height) + 1px); 
+        height: calc(var(--#{$prefix}app-header-height) + 120px); 
         display: flex;
         align-items: center;
         justify-content: space-between;        
         position: relative;
         flex-shrink: 0;
+        a{
+            text-align: center;
+                img.app-sidebar-logo-default{
+                    width: 75% !important;
+                }
+        }
+       
     }
         
     .app-sidebar-menu {

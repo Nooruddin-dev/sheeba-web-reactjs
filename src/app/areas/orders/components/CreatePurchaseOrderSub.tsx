@@ -711,20 +711,20 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
 
 
                 <div
-                    className='card rounded-0 shadow-none border-0 bgi-no-repeat bgi-position-x-end bgi-size-cover mt-3'
+                    className='card rounded-0 shadow-none border-0 bgi-no-repeat bgi-position-x-end bgi-size-cover mt-3 bgclor'
                     style={{
-                        backgroundColor: '#663259',
+                       
                         backgroundSize: 'auto 100%',
-                        backgroundImage: `url('${toAbsoluteUrl('media/misc/taieri.svg')}')`,
+                        
                     }}
                 >
 
                     <div className='card-body container-xxl pt-10 pb-8'>
 
                         <div className=' d-flex align-items-center'>
-                            <h1 className='fw-bold me-3 text-white'>Search</h1>
+                            <h1 className='fw-bold me-3'>Search</h1>
 
-                            <span className='fw-bold text-white opacity-50'>Products List</span>
+                            <span className='fw-bold'>Products List</span>
                         </div>
 
 
@@ -985,17 +985,17 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                 ?
                                                 <tfoot className=''>
                                                     <tr className='mt-3 border-none'>
-                                                        <td colSpan={8} className='text-end'></td>
+                                                        <td colSpan={2} className='text-end'></td>
                                                         <td ></td>
                                                     </tr>
 
                                                     <tr className='mt-3 border-none'>
-                                                        <td colSpan={8} className='text-end fw-bold'>Sub Total</td>
+                                                        <td colSpan={2} className=' fw-bold'>Sub Total</td>
                                                         <td id="subTotal">{cartItemTotlal}</td>
                                                     </tr>
 
                                                     <tr className='border-none'>
-                                                        <td colSpan={8} className='text-end fw-bold'>Tax</td>
+                                                        <td colSpan={2} className=' fw-bold'>Tax</td>
                                                         <td className='min-w-250px'>
 
                                                             <div className='order-tax-box'>
@@ -1037,12 +1037,12 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                     </tr>
 
                                                     <tr className='mt-3 border-none'>
-                                                        <td colSpan={8} className='text-end fw-bold'>Total Tax</td>
+                                                        <td colSpan={2} className='fw-bold'>Total Tax</td>
                                                         <td id="subTotal">{grandTaxAmount}</td>
                                                     </tr>
 
                                                     <tr className='border-none'>
-                                                        <td colSpan={8} className='text-end fw-bold'>Grand Total</td>
+                                                        <td colSpan={2} className=' fw-bold'>Grand Total</td>
                                                         <td id="subTotal">{orderTotal}</td>
                                                     </tr>
                                                 </tfoot>
@@ -1057,7 +1057,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                             </div>
 
                             <div className="col-lg-12 col-md-12">
-                                <div className="d-flex justify-content-end align-content-center">
+                                <div className="d-flex justify-content-start align-content-center">
                                     <button className="btn btn-primary fs-3"
                                         onClick={() => {
                                             if (formRefOrder.current) {

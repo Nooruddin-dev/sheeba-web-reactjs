@@ -4,14 +4,14 @@
 
 [data-kt-app-layout="dark-sidebar"] {
     .app-sidebar {
-        background-color: $app-sidebar-dark-bg-color;
-        border-right: 0;
+        background-color: rgb(245 245 245);
+        border-right: 1px solid #a7a7a7;
 
         .scroll-y,
         .hover-scroll-overlay-y {        
             @include scrollbar-color(transparent, $app-sidebar-dark-scrollbar-color-hover);
         }
-
+ 
         .app-sidebar-logo {
             border-bottom: 1px dashed $app-sidebar-dark-separator-color;
         }
@@ -81,6 +81,10 @@
                 );
             }
         }
+        .menu .menu-item .menu-link .menu-title{
+color: #000;
+        }
+
     } 
 }
 
@@ -102,4 +106,21 @@
             border-right: 1px solid $app-sidebar-dark-separator-color;
         }
     }
+}
+
+.menu-item .menu-link{
+    padding: 1rem;
+    border-bottom:1px solid #a7a7a7;
+} 
+
+[data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item.hover:not(.here) > .menu-link:not(.disabled):not(.active):not(.here) .menu-title, [data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item:not(.here) .menu-link:hover:not(.disabled):not(.active):not(.here) .menu-title{
+    color: #000000b0;
+}
+
+.menu-item .menu-link .menu-icon{
+    display: none;
+}
+[data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item .menu-link.active {
+    background-color: rgb(28 28 33 / 31%);
+    color: #F5F5F5;
 }
