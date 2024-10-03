@@ -317,12 +317,9 @@ export default function CardDispatchInfoPage() {
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Job Card</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Dispatch#</th>
                                         <th colSpan={1} role="columnheader" className="min-w-150px" style={{ cursor: 'pointer' }}>Item</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>No.Bags</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Qty</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Core</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Gross</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Net Weight</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Net Qty</th>
+                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>M/s.</th>
+       
+                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Grand Total</th>
                                         <th colSpan={1} role="columnheader" className="min-w-150px pe-3 rounded-end" style={{ cursor: 'pointer' }}>Invoice</th>
 
                                     </tr>
@@ -370,23 +367,12 @@ export default function CardDispatchInfoPage() {
                                                     </td>
 
                                                     <td role="cell" className=''>
-                                                        <div className=''>{record?.total_bags}</div>
+                                                        <div className=''>{record?.company_name}</div>
                                                     </td>
                                                     <td role="cell" className=''>
-                                                        <div className=''>{record?.quantity}</div>
+                                                        <div className=''>{record?.grand_total}</div>
                                                     </td>
-                                                    <td role="cell" className=''>
-                                                        <div className=''>{record?.core_value}</div>
-                                                    </td>
-                                                    <td role="cell" className=''>
-                                                        <div className=''>{record?.gross_value}</div>
-                                                    </td>
-                                                    <td role="cell" >
-                                                        <div className=''>{record?.net_weight}</div>
-                                                    </td>
-                                                    <td role="cell" >
-                                                        <div className=''></div>
-                                                    </td>
+                                                   
 
                                                     <td role="cell" className='pe-3'>
 
