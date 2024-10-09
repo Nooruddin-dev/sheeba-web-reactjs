@@ -109,9 +109,18 @@ const PurchaseOrderReceiptModal: React.FC<PurchaseOrderStatusFormInterface> = ({
                                         <div className="text-sm-end">
 
                                             <a href="#" className="d-block mw-150px ms-sm-auto">
-                                                <img alt="Logo"
-                                                    src={toAbsoluteUrl('media/svg/brand-logos/lloyds-of-london-logo.svg')}
-                                                    className="w-100" />
+                                               
+
+{
+                                                (orderDetails?.show_company_detail == true || orderDetails?.show_company_detail == 'true' || orderDetails?.show_company_detail == '1') &&
+                                                (
+                                                    <img alt="Logo"
+                                                        src={toAbsoluteUrl('media/logos/default_dark_2.png')}
+                                                        className="w-50" 
+                                                        height={50}
+                                                        />
+                                                )
+                                            }
                                             </a>
 
                                             <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">

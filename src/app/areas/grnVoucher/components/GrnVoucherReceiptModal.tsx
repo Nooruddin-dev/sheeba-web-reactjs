@@ -109,9 +109,18 @@ const GrnVoucherReceiptModal: React.FC<GrnVoucherReceiptInterface> = ({
                                     <div className="text-sm-end">
 
                                         <a href="#" className="d-block mw-150px ms-sm-auto">
-                                            <img alt="Logo"
-                                                src={toAbsoluteUrl('media/svg/brand-logos/lloyds-of-london-logo.svg')}
-                                                className="w-100" />
+
+
+                                            {
+                                                (grnVoucherDetail?.show_company_detail == true || grnVoucherDetail?.show_company_detail == 'true' || grnVoucherDetail?.show_company_detail == '1') &&
+                                                (
+                                                    <img alt="Logo"
+                                                    src={toAbsoluteUrl('media/logos/default_dark_2.png')}
+                                                    className="w-50" 
+                                                    height={50}
+                                                    />
+                                                )
+                                            }
                                         </a>
 
                                         <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
@@ -177,7 +186,7 @@ const GrnVoucherReceiptModal: React.FC<GrnVoucherReceiptInterface> = ({
                                                 <table className="table align-middle table-row-dashed fs-6 gy-5 mb-0">
                                                     <thead>
                                                         <tr className="border-bottom fs-6 fw-bold text-muted bg-light">
-                                                         
+
                                                             <th className="min-w-175px pb-2 ps-3 rounded-start">GRN Item ID</th>
                                                             <th className="min-w-175px pb-2">Product Name</th>
                                                             <th className="min-w-70px text-end pb-2">SKU Code</th>
@@ -216,7 +225,7 @@ const GrnVoucherReceiptModal: React.FC<GrnVoucherReceiptInterface> = ({
                                                                             </div>
                                                                         </td>
                                                                         <td className="text-end">{record.product_sku_code}</td>
-                                                                    
+
                                                                         <td className="text-end">{record.quantity}</td>
                                                                         <td className="text-end">{record.amount}</td>
 

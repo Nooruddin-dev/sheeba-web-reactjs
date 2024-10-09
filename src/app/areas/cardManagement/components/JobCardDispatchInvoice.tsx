@@ -114,8 +114,10 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
                                                 (dispatchInvoiceDetail?.show_company_detail == true || dispatchInvoiceDetail?.show_company_detail == 'true' || dispatchInvoiceDetail?.show_company_detail == '1') &&
                                                 (
                                                     <img alt="Logo"
-                                                        src={toAbsoluteUrl('media/svg/brand-logos/lloyds-of-london-logo.svg')}
-                                                        className="w-100" />
+                                                        src={toAbsoluteUrl('media/logos/default_dark_2.png')}
+                                                        className="w-50" 
+                                                        height={50}
+                                                        />
                                                 )
                                             }
 
