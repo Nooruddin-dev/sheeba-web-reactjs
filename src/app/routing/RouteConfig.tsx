@@ -34,6 +34,7 @@ import EditJobCardPage from '../areas/cardManagement/pages/EditJobCardPage';
 import ProductionEntriesPage from '../areas/cardManagement/pages/ProductionEntriesPage';
 import CardDispatchInfoPage from '../areas/cardManagement/pages/CardDispatchInfoPage';
 import MachineBasedReportPage from '../areas/cardManagement/pages/MachineBasedReportPage';
+import VendorOrderDetailsPage from '../areas/orders/pages/VendorOrderDetailsPage';
 
 
 
@@ -102,6 +103,10 @@ export default function RouteConfig() {
 
         <Route path="/site/purchase-order-detail/:purchase_order_id" element={
           <LoginProtectedRoute> <PurchaseOrderDetailPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/site/vendor/purchase-order-details/:purchase_order_id" element={
+          <VendorOrderDetailsPage />
         } />
 
         <Route path="/grn/vochers-list" element={

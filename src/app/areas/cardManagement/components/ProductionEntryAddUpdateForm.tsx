@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { KTIcon } from '../../../../_sitecommon/helpers';
 import SiteErrorMessage from '../../common/components/shared/SiteErrorMessage';
 import ReactSelect from 'react-select';
-import { gerProductionEntryListBySearchTermApi, getJobCardDetailByIdForEditApi, getProductDetailById } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
+import { gerProductionEntryListBySearchTermApi, getAllProductsForProductionEntryApi, getJobCardDetailByIdForEditApi, getProductDetailById } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
 import { showErrorMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 import { makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { MachineTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
@@ -43,7 +43,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
 }) => {
 
-    const { register, watch, handleSubmit, reset, getValues, setValue, formState: { errors } } = useForm({ defaultValues });
+    const { control, register, watch, handleSubmit, reset, getValues, setValue, formState: { errors } } = useForm({ defaultValues });
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [isEditCase, setIsEditCase] = useState(false);
 
@@ -52,14 +52,19 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
     const [selectedProductionEntryDropDown, setSelectedProductionEntryDropDown] = useState<any>(null);
     const [selectedSearchProductionEntryOptions, setSelectedSearchProductionEntryOptions] = useState([]);
     const [searchQueryProductionEntry, setSearchQueryProductionEntry] = useState('');
+    const [selectedProductOption, setSelectedProductOption] = useState<any>(null);
+    const [productOptions, setProductOptions] = useState<any>([]);
 
+    const handleProductChange = (option: any) => {
+        setSelectedProductOption(option);
+    };
 
     try {
         const wasteValue = watch("waste_value") || 0;
         const gross_value = watch("gross_value") || 0;
         const tare_core = watch("tare_core") || 0;
 
-      
+
 
         const netTotalValue = convertToTwoDecimalFloat(gross_value) - convertToTwoDecimalFloat(wasteValue) - convertToTwoDecimalFloat(tare_core);
         setValue("net_value", netTotalValue);
@@ -81,6 +86,15 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
         } else {
             formData.job_card_product_id = null;
         }
+
+
+
+        if (isMaterialFieldEnabled() == true && selectedProductOption == undefined || selectedProductOption == null) {
+            showErrorMsg('Please select valid product/material');
+            return false;
+        }
+
+        formData.job_card_product_id = selectedProductOption?.value;
 
 
 
@@ -112,13 +126,9 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
                     //setValue('weight_value', data.weight_value);
 
-                    setCartAllProducts(data.job_card_products);
 
-                    if ((defaultValues && defaultValues.production_entry_idEditForm && defaultValues.production_entry_idEditForm > 0)) {
-                        setTimeout(() => {
-                            setValue('job_card_product_id', defaultValues?.job_card_product_id);
-                        }, 20);
-                    }
+
+
 
 
                 }
@@ -160,6 +170,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
     }, [])
 
+
     // Fetch options when the search query changes
     useEffect(() => {
         if (searchQueryProductionEntry && stringIsNullOrWhiteSpace(searchQueryProductionEntry) == false) {
@@ -168,6 +179,10 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
             setSelectedSearchProductionEntryOptions([]); // Clear options if search query is empty
         }
     }, [searchQueryProductionEntry]);
+
+
+
+
 
 
     const gerProductionEntryListBySearchTermService = () => {
@@ -189,6 +204,41 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                 console.error('Error fetching job card data:', error);
             });
     };
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                getAllProductsForProductionEntryApi()
+                    .then((res: any) => {
+                        const { data } = res;
+                        if (data) {
+
+                            setCartAllProducts(data);
+
+                            const productOptionsLocal = data?.map((product: any) => ({
+                                value: product.productid,
+                                label: product.sku + ' -- ' + product.product_name,
+                            }));
+                            setProductOptions(productOptionsLocal);
+
+                            if ((defaultValues && defaultValues.production_entry_idEditForm && defaultValues.production_entry_idEditForm > 0)) {
+                                const selectedProdLocal = productOptionsLocal?.find((x: { value: any; }) => x.value == defaultValues?.job_card_product_id);
+                                setSelectedProductOption(selectedProdLocal);
+                            }
+                        }
+
+
+                    })
+                    .catch((err: any) => console.log(err, "err"));
+
+            } catch (error) {
+                console.error("Error fetching products:", error);
+
+            }
+        };
+
+        fetchProducts();
+    }, []);
 
 
 
@@ -353,7 +403,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                             <div className='col-lg-4' style={{ display: isMaterialFieldEnabled() == true ? 'block' : 'none' }}>
                                 <div className="mb-10">
                                     <label className="form-label">Material </label>
-                                    <select
+                                    {/* <select
                                         className={`form-select form-select-solid ${formSubmitted ? (errors.job_card_product_id ? 'is-invalid' : 'is-valid') : ''}`}
 
                                         aria-label="Select example"
@@ -367,8 +417,32 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                                                 {item.sku} - {item.product_name}
                                             </option>
                                         ))}
-                                    </select>
+                                    </select> */}
                                     {errors.job_card_product_id && <SiteErrorMessage errorMsg='Material is required' />}
+
+                                    {/* <Controller
+                                        name="job_card_product_id"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <ReactSelect
+                                                {...field}
+                                                options={productOptions}
+                                                isSearchable
+                                                placeholder="Select a product..."
+
+                                            />
+                                        )}
+                                    /> */}
+
+                                    <ReactSelect
+                                        inputId="flavor-select"  // Associates an ID with the input field
+                                        value={selectedProductOption}
+                                        onChange={handleProductChange}
+                                        options={productOptions}
+                                        placeholder="Select a flavor"
+                                    />
+
+
                                 </div>
                             </div>
 
@@ -418,7 +492,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
 
 
-                        
+
 
                             <div className='col-lg-4'>
                                 <div className="mb-10">
@@ -450,7 +524,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                                 </div>
                             </div>
 
-                          
+
                             <div className='col-lg-4'>
                                 <div className="mb-10">
                                     <label className="form-label  required">Tare/Core</label>
@@ -484,7 +558,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
 
 
-                          
+
 
 
 

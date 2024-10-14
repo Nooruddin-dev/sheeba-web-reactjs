@@ -167,8 +167,8 @@ const PurchaseOrderReceiptModal: React.FC<PurchaseOrderStatusFormInterface> = ({
                                                 </div>
 
                                                 <div className="flex-root d-flex flex-column">
-                                                    <span className="text-muted">Created By</span>
-                                                    <span className="fs-5">{orderDetails?.orderMainDetail?.createdByUserName}</span>
+                                                    <span className="text-muted"></span>
+                                                    <span className="fs-5"></span>
                                                 </div>
 
 

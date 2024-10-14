@@ -123,6 +123,22 @@ useEffect(() => {
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
+                                                    <label className="form-label  ">Job Card No</label>
+                                                    <input
+                                                        type="text"
+
+                                                        className={`form-control form-control-solid`}
+                                                        id="order_date"
+                                                        value={jobCardDetailForPrinting?.job_card_no}
+
+                                                        placeholder="Enter order date"
+                                                    />
+
+                                                </div>
+                                            </div>
+
+                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
                                                     <label className="form-label  ">Order Date</label>
                                                     <input
                                                         type="date"
@@ -296,7 +312,7 @@ useEffect(() => {
 
                                                 </div>
                                             </div>
-
+{/* 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <label className="form-label  ">Amount (Quanity * Rate)</label>
@@ -311,9 +327,9 @@ useEffect(() => {
                                                     />
 
                                                 </div>
-                                            </div>
+                                            </div> */}
 
-
+{/* 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <label className="form-label ">Tax Amount</label>
@@ -328,9 +344,9 @@ useEffect(() => {
                                                     />
 
                                                 </div>
-                                            </div>
+                                            </div> */}
 
-                                            <div className='col-lg-4'>
+                                            {/* <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <label className="form-label  ">Total Rate Amount after Tax</label>
                                                     <input
@@ -344,7 +360,7 @@ useEffect(() => {
                                                     />
 
                                                 </div>
-                                            </div>
+                                            </div> */}
 
 
 

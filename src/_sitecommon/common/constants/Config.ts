@@ -1,6 +1,6 @@
 
 const VERSION = "1";
-export const API_BASE_URL = 'https://api.sheebapolybag.com'; //--Live: http://noornashad-001-site5.etempurl.com, Local: https://localhost:7044
+export const API_BASE_URL = 'http://localhost:3009'; //--Live: http://noornashad-001-site5.etempurl.com, Local: https://localhost:7044
 export const API_URL = `${API_BASE_URL}/api/v${VERSION}`;
 export const APP_BASE_URL = "http://localhost:3000/"; //--Live: http://noornashad-001-site1.etempurl.com/, Local: http://localhost:3000/
 
@@ -71,7 +71,7 @@ export const API_ENDPOINTS = {
   GET_JOB_DISPATCH_REPORT_DATA: `/${controllerUrlExtensions.JOB_CARD}/get-job-dispatch-report-data`,
   GET_JOB_DISPATCH_REPORT_DATA_BY_ID: `/${controllerUrlExtensions.JOB_CARD}/get-job-dispatch-report-data-by-id`,
   GET_MACHINE_BASED_REPORT_DATA: `/${controllerUrlExtensions.JOB_CARD}/get-machine-based-report-api`,
-
+  GET_ALL_PRODUCTS_FOR_PRODUCTION: `/${controllerUrlExtensions.JOB_CARD}/get-all-products-for-production-entry`,
 
 
 }

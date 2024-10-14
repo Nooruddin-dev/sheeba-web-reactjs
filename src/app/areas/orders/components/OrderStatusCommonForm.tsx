@@ -75,6 +75,7 @@ const OrderStatusCommonForm: React.FC<OrderStatusCommonFormInterface> = ({
 
                                     >
                                          <option  value={PurchaseOrderStatusTypesEnum.Complete}>Complete</option>
+                                         <option  value={PurchaseOrderStatusTypesEnum.Approve}>Approve</option>
                                          <option  value={PurchaseOrderStatusTypesEnum.Cancel}>Cancel</option>
                                         
 

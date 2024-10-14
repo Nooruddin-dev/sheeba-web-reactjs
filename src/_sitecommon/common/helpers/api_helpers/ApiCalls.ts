@@ -210,3 +210,12 @@ export const getMachineBasedReportDataApi = (queryUrl: string) => {
         `${API_ENDPOINTS.GET_MACHINE_BASED_REPORT_DATA}?${queryUrl}`
     );
 }
+
+
+
+
+export const getAllProductsForProductionEntryApi = () => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_ALL_PRODUCTS_FOR_PRODUCTION}`
+    );
+}

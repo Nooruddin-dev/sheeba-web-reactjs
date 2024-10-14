@@ -90,6 +90,8 @@ export enum PurchaseOrderStatusTypesEnum {
   Pending = 1,
   Complete = 2,
   Cancel = 3,
+  Approve = 4,
+
 }
 
 

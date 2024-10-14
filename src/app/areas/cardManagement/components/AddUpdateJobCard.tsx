@@ -565,6 +565,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                         product_name: dataResponse.product_name,
                         weight_qty: dataResponse.weight_qty,
                         job_size: dataResponse.job_size,
+                        job_card_no: dataResponse.job_card_no,
                         micron: dataResponse.micron,
                         sealing_method: dataResponse.sealing_method,
                         job_card_reference: dataResponse.job_card_reference,
