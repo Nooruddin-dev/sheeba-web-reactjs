@@ -45,9 +45,9 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
 
 
 
-useEffect(() => {
-    setTimeout(handlePrintReceipt, 1000); // Delay of 1 second
-}, [])
+    useEffect(() => {
+        setTimeout(handlePrintReceipt, 1000); // Delay of 1 second
+    }, [])
 
 
 
@@ -88,16 +88,16 @@ useEffect(() => {
                                     <div className="text-sm-end">
 
                                         <a href="#" className="d-block mw-150px ms-sm-auto">
-                                           
 
-{
+
+                                            {
                                                 (jobCardDetailForPrinting?.show_company_detail == true || jobCardDetailForPrinting?.show_company_detail == 'true' || jobCardDetailForPrinting?.show_company_detail == '1') &&
                                                 (
                                                     <img alt="Logo"
                                                         src={toAbsoluteUrl('media/logos/default_dark_2.png')}
-                                                        className="w-50" 
+                                                        className="w-50"
                                                         height={50}
-                                                        />
+                                                    />
                                                 )
                                             }
                                         </a>
@@ -208,6 +208,7 @@ useEffect(() => {
                                                     <input
                                                         type="number"
                                                         min={0}
+                                                        step="any"
                                                         className={`form-control form-control-solid`}
                                                         id="weight_qty"
                                                         value={jobCardDetailForPrinting?.weight_qty}
@@ -240,7 +241,7 @@ useEffect(() => {
                                                     <label className="form-label  ">Micron</label>
                                                     <input
                                                         type="number"
-
+                                                        step="any"
                                                         className={`form-control form-control-solid `}
                                                         id="micron"
                                                         value={jobCardDetailForPrinting?.micron}
@@ -304,6 +305,7 @@ useEffect(() => {
                                                     <input
                                                         type="number"
                                                         min={0}
+                                                        step="any"
                                                         className={`form-control form-control-solid `}
                                                         id="card_rate"
                                                         value={jobCardDetailForPrinting?.card_rate}
@@ -312,7 +314,7 @@ useEffect(() => {
 
                                                 </div>
                                             </div>
-{/* 
+                                            {/* 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <label className="form-label  ">Amount (Quanity * Rate)</label>
@@ -329,7 +331,7 @@ useEffect(() => {
                                                 </div>
                                             </div> */}
 
-{/* 
+                                            {/* 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <label className="form-label ">Tax Amount</label>
@@ -384,7 +386,7 @@ useEffect(() => {
                                                                 <th className='min-w-100px'>Dispatch Place</th>
                                                                 <th className='min-w-80px'>Weight/Quantity</th>
 
-                                                               
+
                                                             </tr>
                                                         </thead>
 
@@ -464,7 +466,7 @@ useEffect(() => {
                                                                     <tr>
                                                                         <td className="text-start">{productItem.product_name}</td>
 
-                                                                    
+
                                                                         <td className="text-end">{productItem.sku}</td>
                                                                     </tr>
                                                                 ))
@@ -481,8 +483,8 @@ useEffect(() => {
 
 
 
-                                                    
-                                                      
+
+
                                                     </tbody>
                                                 </table>
                                             </div>

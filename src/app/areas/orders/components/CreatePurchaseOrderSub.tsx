@@ -713,9 +713,9 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                 <div
                     className='card rounded-0 shadow-none border-0 bgi-no-repeat bgi-position-x-end bgi-size-cover mt-3 bgclor'
                     style={{
-                       
+
                         backgroundSize: 'auto 100%',
-                        
+
                     }}
                 >
 
@@ -864,6 +864,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                                                         className='order-unit-field'
                                                                                         type="number"
                                                                                         min={0}
+                                                                                        step="any"
                                                                                         value={productUnit.unit_value || 0}
                                                                                         // onChange={(e) => handleUnitValueChangeForRollType(index, unitIndex, parseFloat(e.target.value))}
                                                                                         readOnly={true}
@@ -888,6 +889,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                                             className='form-select form-select-solid item-cart-price'
                                                                             type="number"
                                                                             min={1}
+                                                                            step="any"
                                                                             value={productItem.price || 0}
                                                                             onChange={(e) => hanldeProductPriceChange(index, parseInt(e.target.value, 10))}
 
@@ -924,7 +926,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                                             className='form-control'
                                                                             type="number"
                                                                             min={0}
-
+                                                                            step="any"
                                                                             value={productItem.tax_value || 0}
                                                                             onChange={(e) => hanldeProductTaxValue(index, parseInt(e.target.value, 10))}
                                                                             placeholder="Enter tax value"
@@ -957,7 +959,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                                         </i>
                                                                     </a>
 
-                                                                  
+
 
 
                                                                 </td>
@@ -1014,6 +1016,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                                         className='form-control'
                                                                         type="number"
                                                                         min={0}
+                                                                        step="any"
                                                                         value={orderLevelTaxValue || 0}
 
                                                                         onChange={(e) => setOrderLevelTaxValue(parseInt(e.target.value, 10))}

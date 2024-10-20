@@ -342,6 +342,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                     <input
                                         type="number"
                                         min={0}
+                                        step="any"
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.weight_value ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="weight_value" {...register("weight_value", { required: false })}
                                         readOnly={isEditCase}
@@ -415,6 +416,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                                                     <input
                                                                         type="number"
                                                                         min={0}
+                                                                        step="any"
                                                                         value={unitSubItem.unit_value ?? 0}
                                                                         className={`form-control form-control-solid`}
                                                                         readOnly={isEditCase}

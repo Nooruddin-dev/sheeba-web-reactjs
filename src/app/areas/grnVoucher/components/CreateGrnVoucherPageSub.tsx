@@ -47,7 +47,7 @@ export default function CreateGrnVoucherPageSub() {
     const [formSubmitted, setFormSubmitted] = useState(false);
 
 
-    
+
     const [purchaseOrderId, setPurchaseOrderId] = useState<any>(null);
     const [latestGrnVoucherId, setLatestGrnVoucherId] = useState<any>(0);
 
@@ -76,7 +76,7 @@ export default function CreateGrnVoucherPageSub() {
 
     const createPurchaseOrder = (data: any) => {
 
-        const {po_number, receiver_name, receiver_contact, grn_date,  show_company_detail } = data;
+        const { po_number, receiver_name, receiver_contact, grn_date, show_company_detail } = data;
         if (stringIsNullOrWhiteSpace(po_number) || stringIsNullOrWhiteSpace(receiver_name) || stringIsNullOrWhiteSpace(receiver_contact)
             || stringIsNullOrWhiteSpace(grn_date)) {
             showErrorMsg('Please fill all required fields');
@@ -88,7 +88,7 @@ export default function CreateGrnVoucherPageSub() {
             return false;
         }
 
-        let cartAllProductsLocal = cartAllProducts?.filter((x: { is_item_checked: boolean; })=>x.is_item_checked == true);
+        let cartAllProductsLocal = cartAllProducts?.filter((x: { is_item_checked: boolean; }) => x.is_item_checked == true);
         if (cartAllProductsLocal == undefined || cartAllProductsLocal == null || cartAllProductsLocal.length < 1) {
             showErrorMsg('Please select at least one item!');
             return false;
@@ -98,8 +98,8 @@ export default function CreateGrnVoucherPageSub() {
 
 
 
-       
-        cartAllProducts?.filter((x: { is_item_checked: boolean; })=>x.is_item_checked == true)?.forEach((item: any) => {
+
+        cartAllProducts?.filter((x: { is_item_checked: boolean; }) => x.is_item_checked == true)?.forEach((item: any) => {
 
             cartGrnVoucherItemsLocal.push({
                 product_id: item.product_id,
@@ -123,14 +123,14 @@ export default function CreateGrnVoucherPageSub() {
             })
         });
 
-        if(cartGrnVoucherItemsLocal == undefined || cartGrnVoucherItemsLocal == null || cartGrnVoucherItemsLocal.length == 0){
+        if (cartGrnVoucherItemsLocal == undefined || cartGrnVoucherItemsLocal == null || cartGrnVoucherItemsLocal.length == 0) {
             showErrorMsg('No item found for this order!');
             return false;
         }
 
 
         let formData = {
-            purchase_order_id : purchaseOrderId,
+            purchase_order_id: purchaseOrderId,
             po_number: po_number,
             receiver_name: receiver_name,
             receiver_contact: receiver_contact,
@@ -200,7 +200,7 @@ export default function CreateGrnVoucherPageSub() {
                     if (data?.purchase_orders_items && data?.purchase_orders_items.length > 0) {
                         for (const element of data?.purchase_orders_items) {
                             element.is_item_checked = true;
-                            element.price =  parseFloat(element?.po_rate ?? "0")?.toFixed(2);
+                            element.price = parseFloat(element?.po_rate ?? "0")?.toFixed(2);
 
                             const orderItemTax = data?.order_taxes?.find(
                                 (x: { line_item_id: number; }) => x.line_item_id === element.line_item_id
@@ -257,7 +257,7 @@ export default function CreateGrnVoucherPageSub() {
     };
 
     const handleCheckboxOrderItemChange = (index: number, checked: boolean) => {
-        
+
         const updatedItems = cartAllProducts.map((item: any, idx: number) =>
             idx === index ? { ...item, is_item_checked: checked } : item
         );
@@ -321,33 +321,33 @@ export default function CreateGrnVoucherPageSub() {
 
     useEffect(() => {
         //--only get checked item from "cartAllProducts"
-        let cartAllProductsLocal = cartAllProducts?.filter((x: { is_item_checked: boolean; })=>x.is_item_checked == true);
-        if(cartAllProductsLocal ){
-            
+        let cartAllProductsLocal = cartAllProducts?.filter((x: { is_item_checked: boolean; }) => x.is_item_checked == true);
+        if (cartAllProductsLocal) {
+
             let itemTotal = calculateItemsSubTotal(cartAllProductsLocal);
             setCartItemTotlal(itemTotal);
-    
+
             let orderLevelTaxValueLocal = 0;
             if (orderLevelTaxRateType && !stringIsNullOrWhiteSpace(orderLevelTaxRateType)) {
                 orderLevelTaxValueLocal = calculateTaxValueNewFunc(itemTotal, orderLevelTaxRateType, (orderLevelTaxValue ?? 0));
-    
+
                 itemTotal = itemTotal + orderLevelTaxValueLocal;
                 setOrderLevelTaxFinalAmount(orderLevelTaxValueLocal);
             }
-    
+
             //--calcualte all taxes (product level + order level)
             let itemsGrandTotalTax = cartAllProductsLocal?.reduce((total: any, product: any) => total + product.itemTotalTax, 0);
             const itemsGrandTotalTaxNumber = convertToTwoDecimalFloat(itemsGrandTotalTax ?? "0");
 
             let grandTaxAmount = convertToTwoDecimalFloat((orderLevelTaxValueLocal + itemsGrandTotalTaxNumber));
             grandTaxAmount = grandTaxAmount ?? 0;
-    
+
             setGrandTaxAmount(convertToTwoDecimalFloat(grandTaxAmount));
-           
-    
+
+
             setOrderTotal(convertToTwoDecimalFloat(itemTotal));
         }
-        
+
     }, [cartAllProducts, orderLevelTaxRateType, orderLevelTaxValue]);
 
 
@@ -484,7 +484,7 @@ export default function CreateGrnVoucherPageSub() {
 
                                     <div className='col-lg-4'>
                                         <div className="mb-10">
-                                       
+
                                             <div className="form-check mt-10">
                                                 <input className="form-check-input" type="checkbox"
                                                     id="show_company_detail" {...register("show_company_detail")}
@@ -531,9 +531,9 @@ export default function CreateGrnVoucherPageSub() {
                 <div
                     className='card rounded-0 shadow-none border-0 bgi-no-repeat bgi-position-x-end bgi-size-cover mt-3 bgclor'
                     style={{
-                       
+
                         backgroundSize: 'auto 100%',
-                       
+
                     }}
                 >
 
@@ -642,8 +642,9 @@ export default function CreateGrnVoucherPageSub() {
                                                 <th className='min-w-150px'> Cost</th>
 
                                                 <th className='min-w-100px'>Quantity</th>
+                                                <th className='min-w-100px'>Remaining Quantity</th>
                                                 <th className='min-w-100px'>Weight</th>
-                                                
+
                                                 <th className='min-w-80px'>Amount</th>
                                                 <th className='min-w-200px'>Item Tax</th>
 
@@ -695,6 +696,7 @@ export default function CreateGrnVoucherPageSub() {
                                                                             className='form-select form-select-solid item-cart-price'
                                                                             type="number"
                                                                             min={1}
+                                                                            step="any"
                                                                             readOnly={true}
                                                                             disabled={true}
                                                                             value={productItem.price || 0}
@@ -710,6 +712,7 @@ export default function CreateGrnVoucherPageSub() {
                                                                         className='form-select form-select-solid '
                                                                         type="number"
                                                                         min={1}
+
                                                                         value={productItem.quantity || 1}
                                                                         onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10))}
 
@@ -720,7 +723,18 @@ export default function CreateGrnVoucherPageSub() {
                                                                     <input
                                                                         className='form-select form-select-solid '
                                                                         type="number"
+                                                                        min={0}
+                                                                        readOnly={true}
+                                                                        value={productItem.remaining_quantity}
+                                                                    />
+                                                                </td>
+
+                                                                <td className='text-end '>
+                                                                    <input
+                                                                        className='form-select form-select-solid '
+                                                                        type="number"
                                                                         min={1}
+                                                                        step="any"
                                                                         value={productItem.weight_value || 1}
                                                                         onChange={(e) => handleWeightValueChange(index, parseInt(e.target.value, 10))}
 
@@ -746,6 +760,7 @@ export default function CreateGrnVoucherPageSub() {
                                                                             className='form-control'
                                                                             type="number"
                                                                             min={0}
+                                                                            step="any"
                                                                             readOnly={true}
                                                                             value={productItem.tax_value || 0}
                                                                             onChange={(e) => hanldeProductTaxValue(index, parseInt(e.target.value, 10))}
@@ -820,6 +835,7 @@ export default function CreateGrnVoucherPageSub() {
                                                                         className='form-control'
                                                                         type="number"
                                                                         min={0}
+                                                                        step="any"
                                                                         value={orderLevelTaxValue || 0}
                                                                         readOnly={true}
                                                                         onChange={(e) => setOrderLevelTaxValue(parseInt(e.target.value, 10))}
@@ -894,7 +910,7 @@ export default function CreateGrnVoucherPageSub() {
                         />
                         :
                         <>
-                        </> 
+                        </>
                 }
 
 

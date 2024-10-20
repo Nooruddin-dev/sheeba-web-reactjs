@@ -278,7 +278,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                         setIsOpenReceiptModal(true);
                     }, 1000);
 
-                  //  navigate('/job-management/cards-list');
+                    //  navigate('/job-management/cards-list');
 
                 } else if (res?.data?.response?.success == false && !stringIsNullOrWhiteSpace(res?.data?.response?.responseMessage)) {
                     showErrorMsg(res?.data?.response?.responseMessage);
@@ -529,20 +529,20 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
     }, []);
 
 
-    
+
     //--get job card detail for printing invoice
     useEffect(() => {
-        
-        const job_card_id_for_api = (job_card_id && parseInt(job_card_id ?? '0') > 0) ? job_card_id :  (latestJobCardId && latestJobCardId > 0  ? latestJobCardId : 0);
 
-        if(job_card_id_for_api && job_card_id_for_api > 0){
+        const job_card_id_for_api = (job_card_id && parseInt(job_card_id ?? '0') > 0) ? job_card_id : (latestJobCardId && latestJobCardId > 0 ? latestJobCardId : 0);
+
+        if (job_card_id_for_api && job_card_id_for_api > 0) {
             getJobCardDetailByIdForEdit(job_card_id_for_api);
         }
     }, [job_card_id, latestJobCardId]);
 
     const getJobCardDetailByIdForEdit = (job_card_id_for_api: any) => {
 
-     
+
 
         getJobCardDetailByIdForEditApi(job_card_id_for_api)
             .then((res: any) => {
@@ -554,7 +554,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
                     let orderdatelocal = dataResponse.order_date;
                     orderdatelocal = orderdatelocal?.split('T')[0];
-    
+
                     let dispatch_date_local = dataResponse.dispatch_date;
                     dispatch_date_local = dispatch_date_local?.split('T')[0];
 
@@ -578,36 +578,36 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                         jobCardAllProducts: [],
                         jobDistributionFields: [],
                     }
-    
-                
-    
+
+
+
                     // set job card products
                     if (dataResponse.job_card_products && dataResponse.job_card_products.length > 0) {
                         try {
-    
+
                             const jobCardAllProductsLocal: any = [];
                             for (const element of dataResponse.job_card_products) {
                                 jobCardAllProductsLocal.push({
                                     job_card_product_id: element.job_card_product_id,
                                     productid: element.product_id,
                                     sku: element?.sku,
-    
+
                                     product_name: element.product_name
                                 });
                             }
-    
-                           finalJobDetail.jobCardAllProducts = jobCardAllProductsLocal;
-    
+
+                            finalJobDetail.jobCardAllProducts = jobCardAllProductsLocal;
+
                         } catch (error) {
                             console.error("Error setting products/materials", error);
                         }
                     }
-    
-    
+
+
                     // set job card dispatch info
                     if (dataResponse.job_card_dispatch_info && dataResponse.job_card_dispatch_info.length > 0) {
                         try {
-    
+
                             const jobDistributionFieldsLocal: any = [];
                             for (const element of dataResponse.job_card_dispatch_info) {
                                 jobDistributionFieldsLocal.push({
@@ -618,9 +618,9 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                                     unique_key: element.unique_key
                                 });
                             }
-    
+
                             finalJobDetail.jobDistributionFields = jobDistributionFieldsLocal;
-                          
+
                         } catch (error) {
                             console.error("Error setting products/materials", error);
                         }
@@ -733,6 +733,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                                         <input
                                             type="number"
                                             min={0}
+                                            step="any"
                                             className={`form-control form-control-solid ${formSubmitted ? (errors.weight_qty ? 'is-invalid' : 'is-valid') : ''}`}
                                             id="weight_qty" {...register("weight_qty", { required: true })}
                                             onChange={(e) => handleQuantityChangeJobMaster(parseInt(e.target.value, 10))}
@@ -765,7 +766,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                                         <label className="form-label required ">Micron</label>
                                         <input
                                             type="number"
-
+                                            step="any"
                                             className={`form-control form-control-solid ${formSubmitted ? (errors.micron ? 'is-invalid' : 'is-valid') : ''}`}
                                             id="micron" {...register("micron", { required: true })}
 
@@ -829,6 +830,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                                         <input
                                             type="number"
                                             min={0}
+                                            step="any"
                                             className={`form-control form-control-solid ${formSubmitted ? (errors.card_rate ? 'is-invalid' : 'is-valid') : ''}`}
                                             id="card_rate" {...register("card_rate", { required: true })}
                                             onChange={(e) => hanldeCardMasterRateChange(parseFloat(e.target.value))}
@@ -844,7 +846,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                                         <input
                                             type="number"
                                             min={0}
-
+                                            step="any"
                                             className={`form-control form-control-solid ${formSubmitted ? (errors.card_amount ? 'is-invalid' : 'is-valid') : ''}`}
                                             id="card_amount" {...register("card_amount", { required: true })}
                                             readOnly={true}
@@ -880,6 +882,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                                                 className='form-control'
                                                 type="number"
                                                 min={0}
+                                                step="any"
                                                 value={card_tax_value || 0}
 
                                                 onChange={(e) => setCard_tax_value(parseInt(e.target.value, 10))}
@@ -898,7 +901,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                                         <input
                                             type="number"
                                             min={0}
-
+                                            step="any"
                                             className={`form-control form-control-solid`}
                                             id="card_tax_amount" {...register("card_tax_amount", { required: true })}
                                             readOnly={true}
@@ -914,6 +917,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                                         <input
                                             type="number"
                                             min={0}
+                                            step="any"
                                             className={`form-control form-control-solid`}
                                             id="card_total_amount" {...register("card_total_amount", { required: true })}
                                             readOnly={true}
@@ -978,6 +982,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                             <label htmlFor="fieldValue" className="form-label">Weight/Quantity</label>
                             <input
                                 type="number"
+                                step="any"
                                 className="form-control"
                                 id="fieldValue"
                                 value={dispatch_weight_quantity}
@@ -1118,9 +1123,9 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
             <div
                 className='card rounded-0 shadow-none border-0 bgi-no-repeat bgi-position-x-end bgi-size-cover mt-3 bgclor'
                 style={{
-                   
+
                     backgroundSize: 'auto 100%',
-                    
+
                 }}
             >
 
@@ -1370,7 +1375,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                                     job_card_id && stringIsNullOrWhiteSpace(job_card_id) == false
                                         ?
                                         <button className="btn btn-primary fs-3 me-3"
-                                        onClick={handleOpenCloseOrderReceiptModal}
+                                            onClick={handleOpenCloseOrderReceiptModal}
                                         >
                                             <FontAwesomeIcon icon={faPrint} style={{ marginRight: '4px' }} />
 

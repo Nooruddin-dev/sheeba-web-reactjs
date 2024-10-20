@@ -452,6 +452,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                                     <input
                                         type="number"
                                         min={0}
+                                        step="any" 
                                         className={`form-control form-control-solid `}
                                         id="weight_value" {...register("weight_value", { required: false })}
                                         readOnly={false}
@@ -499,7 +500,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                                     <label className="form-label">Gross</label>
                                     <input
                                         type="number"
-
+                                        step="any" 
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.gross_value ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="gross_value" {...register("gross_value", { required: false })}
                                         readOnly={false}
@@ -514,7 +515,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                                     <label className="form-label  required">Waste</label>
                                     <input
                                         type="number"
-
+                                        step="any" 
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.waste_value ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="waste_value" {...register("waste_value", { required: true })}
                                         readOnly={false}
@@ -531,6 +532,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                                     <input
                                         type="number"
                                         min={0}
+                                        step="any" 
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.tare_core ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="tare_core" {...register("tare_core", { required: false })}
                                         readOnly={false}
@@ -546,7 +548,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
                                     <label className="form-label  required">Net</label>
                                     <input
                                         type="number"
-
+                                        step="any" 
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.net_value ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="net_value" {...register("net_value", { required: true })}
                                         readOnly={true}

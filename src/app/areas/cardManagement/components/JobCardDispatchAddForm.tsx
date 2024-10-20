@@ -266,6 +266,7 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
                                     <label className="form-label required">Bag/Roll</label>
                                     <input
                                         type="number"
+                                        step="any"
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.total_bags ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="total_bags" {...register("total_bags", { required: false })}
                                         min={0}
@@ -282,6 +283,7 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
                                     <label className="form-label required">Quantity</label>
                                     <input
                                         type="number"
+                                        step="any"
                                         min={1}
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.quantity ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="quantity" {...register("quantity", { required: false })}
@@ -326,7 +328,7 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
                                     <label className="form-label required"> Weight</label>
                                     <input
                                         type="number"
-
+                                        step="any"
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.net_weight ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="net_weight" {...register("net_weight", { required: false })}
 
@@ -343,7 +345,7 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
                                     <label className="form-label required"> Tare</label>
                                     <input
                                         type="number"
-
+                                        step="any"
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.tare_value ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="tare_value" {...register("tare_value", { required: false })}
 
@@ -360,7 +362,7 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
                                     <label className="form-label required"> Total</label>
                                     <input
                                         type="number"
-
+                                        step="any"
                                         className={`form-control form-control-solid`}
                                         id="total_value" {...register("total_value", { required: false })}
                                         readOnly={true}
