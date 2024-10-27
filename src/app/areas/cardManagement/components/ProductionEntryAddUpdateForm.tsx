@@ -78,18 +78,18 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
     const onSubmitProductEntryForm = (data: any) => {
         const formData = { ...data };
-
+        
         if (isMaterialFieldEnabled() == true) {
-            if (stringIsNullOrWhiteSpace(formData?.job_card_product_id) == true) {
-                showErrorMsg("Please select material");
+            if ((selectedProductOption == undefined || selectedProductOption == null)) {
+                showErrorMsg("Please select valid product/material");
+                return false;
             }
         } else {
             formData.job_card_product_id = null;
         }
 
 
-
-        if (isMaterialFieldEnabled() == true && selectedProductOption == undefined || selectedProductOption == null) {
+        if (isMaterialFieldEnabled() == true && (selectedProductOption == undefined || selectedProductOption == null)) {
             showErrorMsg('Please select valid product/material');
             return false;
         }
