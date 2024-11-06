@@ -41,7 +41,7 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
     const { register, watch, handleSubmit, reset, getValues, setValue, formState: { errors } } = useForm({ defaultValues });
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [isEditCase, setIsEditCase] = useState(false);
-
+    const [selectedOptionBagRoll, setselectedOptionBagRoll] = useState("Bag");
 
     const [deliveryChallanLineItems, setDeliveryChallanLineItems] = useState<any>([]);
 
@@ -51,14 +51,27 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
     try {
         const total_bags_local = watch("total_bags") || 0;
         const quantity_local = watch("quantity") || 0;
+        const net_weight_local = watch("net_weight") || 0;
+        const tare_value_local = watch("tare_value") || 0;
         const netTotalValue = convertToTwoDecimalFloat(total_bags_local) * convertToTwoDecimalFloat(quantity_local);
-        setValue("total_value", netTotalValue);
+       
+        if(selectedOptionBagRoll == 'Roll'){
+            setValue("total_value", (convertToTwoDecimalFloat(net_weight_local) - convertToTwoDecimalFloat(tare_value_local)));
+        }else if(selectedOptionBagRoll == 'Bag'){
+            setValue("total_value", netTotalValue);
+        }
+
+       
 
     } catch (error) {
         console.error("An error occured in calculating total value: ", error);
     }
 
-
+    const handleOptionChangeBagType = (e: any) => {
+        setselectedOptionBagRoll(e.target.value); // Update the selected option
+        // You can use this updated `setselectedOptionBagRoll` in other logic as well
+        console.log("Selected option:", e.target.value);
+    };
 
     const onSubmitProductEntryForm = (data: any) => {
         const formData = { ...data };
@@ -68,7 +81,11 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
             return;
         }
 
-        formData.deliveryChallanLineItems = deliveryChallanLineItems
+        formData.deliveryChallanLineItems = deliveryChallanLineItems;
+      
+        if(selectedOptionBagRoll == 'Roll'){
+            formData.quantity = 0;
+        }
 
         onSubmit(formData);
 
@@ -88,7 +105,9 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
 
         //-- get values from react hook form here
         const total_bags = getValues('total_bags');
-        const quantity = getValues('quantity');
+        let quantity = getValues('quantity');
+        
+        quantity = quantity == undefined || quantity == null || quantity == '' ? 0 : quantity;
         const dispatch_unit_id = getValues('dispatch_unit_id');
         const net_weight = getValues('net_weight');
         const tare_value = getValues('tare_value');
@@ -100,10 +119,14 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
             return false;
         }
 
-        if (quantity === null || quantity === undefined || isNaN(quantity) || quantity <= 0) {
-            showErrorMsg("Quantity should be a valid number and greater than 0!")
-            return false;
+
+        if(selectedOptionBagRoll == 'Bag'){
+            if (quantity === null || quantity === undefined || isNaN(quantity) || quantity <= 0) {
+                showErrorMsg("Quantity should be a valid number and greater than 0!")
+                return false;
+            }
         }
+
 
         if (dispatch_unit_id === null || dispatch_unit_id === undefined || stringIsNullOrWhiteSpace(dispatch_unit_id) == true) {
             showErrorMsg("Select valid unit!")
@@ -120,14 +143,23 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
             return false;
         }
 
-        const total_value = total_bags * quantity;
+        let total_value = 0;
+        if(selectedOptionBagRoll == 'Roll'){
+             total_value = net_weight - tare_value;
+        }else if(selectedOptionBagRoll == 'Bag'){
+             total_value = total_bags * quantity;
+        }
+
+
+
+       
 
         const isExistsItemAlready = deliveryChallanLineItems?.filter((x: { total_bags: any; quantity: any; dispatch_unit_id: number }) => x.total_bags == total_bags && x.quantity == quantity && x.dispatch_unit_id == dispatch_unit_id)?.length > 0 ? true : false;
         if (isExistsItemAlready === true) {
             showErrorMsg("Item already exists!")
         } else {
             const unique_kye_new = generateUniqueIdWithDate();
-            setDeliveryChallanLineItems([...deliveryChallanLineItems, { total_bags, quantity, dispatch_unit_id, net_weight, tare_value, total_value, unique_kye_new }]);
+            setDeliveryChallanLineItems([...deliveryChallanLineItems, { total_bags, bagRollType: selectedOptionBagRoll   , quantity, dispatch_unit_id, net_weight, tare_value, total_value, unique_kye_new }]);
 
             reset({ total_bags: '', quantity: '', dispatch_unit_id: '', net_weight: '', tare_value: '', total_value: '' });
 
@@ -258,7 +290,20 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
 
 
 
-
+                            <div className='col-lg-3'>
+                                <div className="mb-10">
+                                    {/* Dropdown for selecting Bag or Roll */}
+                                    <label className="form-label">Type</label>
+                                    <select
+                                        value={selectedOptionBagRoll}
+                                        onChange={handleOptionChangeBagType}
+                                        className="form-control form-control-solid"
+                                    >
+                                        <option value="Bag">Bag</option>
+                                        <option value="Roll">Roll</option>
+                                    </select>
+                                </div>
+                            </div>
 
 
                             <div className='col-lg-3'>
@@ -270,7 +315,7 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.total_bags ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="total_bags" {...register("total_bags", { required: false })}
                                         min={0}
-                                        placeholder="Enter bags"
+                                        placeholder="Enter bags/Rolls"
                                     />
 
                                     {errors.total_bags && <SiteErrorMessage errorMsg='No. of bags is required' />}
@@ -278,23 +323,28 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
                                 </div>
                             </div>
 
-                            <div className='col-lg-3'>
-                                <div className="mb-10">
-                                    <label className="form-label required">Quantity</label>
-                                    <input
-                                        type="number"
-                                        step="any"
-                                        min={1}
-                                        className={`form-control form-control-solid ${formSubmitted ? (errors.quantity ? 'is-invalid' : 'is-valid') : ''}`}
-                                        id="quantity" {...register("quantity", { required: false })}
+                            {
+                                selectedOptionBagRoll === 'Bag' &&
+                                <div className='col-lg-3'>
+                                    <div className="mb-10">
+                                        <label className="form-label required">Quantity</label>
+                                        <input
+                                            type="number"
+                                            step="any"
+                                            min={1}
+                                            className={`form-control form-control-solid ${formSubmitted ? (errors.quantity ? 'is-invalid' : 'is-valid') : ''}`}
+                                            id="quantity" {...register("quantity", { required: false })}
 
-                                        placeholder="Enter quantity"
-                                    />
+                                            placeholder="Enter quantity"
+                                        />
 
-                                    {errors.quantity && <SiteErrorMessage errorMsg='Quantity is required' />}
+                                        {errors.quantity && <SiteErrorMessage errorMsg='Quantity is required' />}
 
+                                    </div>
                                 </div>
-                            </div>
+                            }
+
+
 
                             <div className='col-lg-3'>
                                 <div className="mb-10">

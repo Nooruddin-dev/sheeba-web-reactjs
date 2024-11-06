@@ -119,6 +119,7 @@ export default function JobCardsListPage() {
             item_name: item_name,
             show_company_detail: show_company_detail ?? true,
             
+            
             deliveryChallanLineItems: deliveryChallanLineItems,
        
         };

@@ -426,17 +426,25 @@ export default function MachineBasedReportPage() {
                                 <thead>
                                     <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
                                         <th colSpan={1} role="columnheader" className="min-w-150px ps-3 rounded-start" style={{ cursor: 'pointer' }}>Job Card#</th>
+                                        <th colSpan={1} role="columnheader" className="min-w-150px" style={{ cursor: 'pointer' }}>Job Date</th>
                                         <th colSpan={1} role="columnheader" className="min-w-150px" style={{ cursor: 'pointer' }}>Item</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Machine Type</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Roll</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-150px" style={{ cursor: 'pointer' }}>Trim</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Waste</th>
+                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Machine Name</th>
+
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Size</th>
+
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Gross</th>
+
+                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Waste</th>
+                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Tare</th>
+
+                                        {/* <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Roll</th>
+                                        <th colSpan={1} role="columnheader" className="min-w-150px" style={{ cursor: 'pointer' }}>Trim</th>
+                                        */}
+                                      
+                                      
                                      
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Net</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-150px pe-3 rounded-end" style={{ cursor: 'pointer' }}>Job Date</th>
-                                 
+                                        <th colSpan={1} role="columnheader" className="min-w-125px rounded-end" style={{ cursor: 'pointer' }}>Net</th>
+                                    
 
                                     </tr>
                                 </thead>
@@ -452,6 +460,14 @@ export default function MachineBasedReportPage() {
                                                         {record.job_card_no}
                                                     </td>
 
+                                                    
+                                                    <td role="cell" className=''>
+                                                        <div className=''>
+                                                        {getDateCommonFormatFromJsonDate(record.prod_entry_date)}
+                                                        </div>
+                                                    </td>
+
+
                                                     <td>
                                                         <div className="d-flex align-items-center">
 
@@ -464,37 +480,40 @@ export default function MachineBasedReportPage() {
                                                     </td>
 
                                                     <td role="cell" className=''>
-                                                        <div className=''>{record?.machine_type_name}</div>
-                                                    </td>
-
-                                                    <td role="cell">
-                                                        <div className=''></div>
+                                                        <div className=''>{record?.machine_name}</div>
                                                     </td>
 
                                                     <td role="cell" className=''>
-                                                        <div className=''></div>
+                                                        <div className=''>{record?.job_size}</div>
+                                                    </td>
+
+                                                    <td role="cell" className=''>
+                                                        <div className=''>{record?.gross_value}</div>
                                                     </td>
 
                                                     <td role="cell" className=''>
                                                         <div className=''>{record?.waste_value}</div>
                                                     </td>
-                                                    <td role="cell" className=''>
-                                                        <div className=''>{record?.job_size}</div>
-                                                    </td>
-                                                    <td role="cell" className=''>
-                                                        <div className=''>{record?.gross_value}</div>
-                                                    </td>
                                                    
-                                                    <td role="cell" >
+
+                                                    {/* <td role="cell">
+                                                        <div className=''></div>
+                                                    </td>
+
+                                                    <td role="cell" className=''>
+                                                        <div className=''></div>
+                                                    </td> */}
+
+<td role="cell">
+                                                        <div className=''></div>
+                                                    </td>
+                                                  
+                                                   
+                                                    <td role="cell" className='pe-3'>
                                                         <div className=''>{record?.net_value}</div>
                                                     </td>
                                                    
 
-                                                    <td role="cell" className='pe-3'>
-
-                                                    {getDateCommonFormatFromJsonDate(record.prod_entry_date)}
-
-                                                    </td>
 
 
 
