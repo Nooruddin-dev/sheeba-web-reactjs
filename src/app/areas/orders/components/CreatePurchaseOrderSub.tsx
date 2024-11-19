@@ -15,7 +15,7 @@ import ReactSelect from 'react-select';
 import { showErrorMsg, showSuccessMsg, showWarningMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 import { makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { OrderTaxStatusEnum, taxRulesTypesConst } from '../../../../_sitecommon/common/enums/GlobalEnums';
-import { calculateItemAmount, calculateItemLevelTaxValueNew, calculateItemsSubTotal, calculateOrderItemAmount, calculateTaxValue, calculateTaxValueNewFunc, createOrderUnitLabel, getTaxRateByTaxRuleId } from '../../../../_sitecommon/common/helpers/global/OrderHelper';
+import { calculateItemAmount, calculateItemLevelTaxValueNewForPO, calculateItemsSubTotal, calculateOrderItemAmount, calculateOrderItemAmountForPO, calculateTaxValue, calculateTaxValueNewFunc, createOrderUnitLabel, getTaxRateByTaxRuleId } from '../../../../_sitecommon/common/helpers/global/OrderHelper';
 import { useNavigate } from 'react-router';
 import PurchaseOrderReceiptModal from '../components/PurchaseOrderReceiptModal';
 import { convertToTwoDecimalFloat, generateUniqueIdWithDate } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
@@ -111,7 +111,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
 
             cartProductsLocal.push({
                 productid: item.productid,
-                quantity: item.quantity ?? 1,
+                weight_value: item.weight_value ?? 1,
                 price: item?.price,
 
                 product_units_info: item?.product_units_info,
@@ -200,6 +200,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
 
         getProductDetailById(productidSelected)
             .then((res: any) => {
+                debugger;
                 const { data } = res;
                 if (data) {
                     data.unique_id = generateUniqueIdWithDate();
@@ -220,10 +221,10 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
         // setSelectedCustomerObject(allCustomers?.find((x: { busnPartnerId: any; }) => x.busnPartnerId == selectedOption?.value));
     };
 
-    const handleQuantityChange = (index: number, newQuantity: number) => {
+    const handleWeightChange = (index: number, newWeight: number) => {
         setCartAllProducts((prevCart: any) => {
             const updatedCart = [...prevCart];
-            updatedCart[index] = { ...updatedCart[index], quantity: newQuantity };
+            updatedCart[index] = { ...updatedCart[index], weight_value: newWeight };
             return updatedCart;
         });
     };
@@ -366,7 +367,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                 if (data) {
                                     data.unique_id = generateUniqueIdWithDate();
                                     data.price = orderEditElement.po_rate;
-                                    data.quantity = orderEditElement.quantity;
+                                    data.weight_value = orderEditElement.weight_value || orderEditElement.weight;
 
 
                                     if (orderDetailForEditClone?.order_taxes?.length > 0) {
@@ -822,7 +823,8 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
 
                                                 <th className='min-w-150px'> Cost</th>
 
-                                                <th className='min-w-100px'>Quantity</th>
+                                                <th className='min-w-100px'>Weight</th>
+                                                <th className='min-w-100px'>Unit</th>
                                                 <th className='min-w-80px'>Amount</th>
                                                 <th className='min-w-200px'>Item Tax</th>
 
@@ -903,12 +905,15 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                                         className='form-select form-select-solid '
                                                                         type="number"
                                                                         min={1}
-                                                                        value={productItem.quantity || 1}
-                                                                        onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10))}
+                                                                        value={productItem.weight_value || 1}
+                                                                        onChange={(e) => handleWeightChange(index, parseInt(e.target.value, 10))}
 
                                                                     />
                                                                 </td>
-                                                                <td role="cell" className="">{calculateItemAmount(productItem.price, productItem.quantity)}</td>
+                                                                <td>
+                                                                    <span>{productItem.unit_short_name}</span>
+                                                                </td>
+                                                                <td role="cell" className="">{calculateItemAmount(productItem.price, productItem.weight_value)}</td>
 
                                                                 <td role="cell" className="">
                                                                     <div className="tax-container">
@@ -937,12 +942,12 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
 
 
                                                                 <td className='text-center '>
-                                                                    {calculateItemLevelTaxValueNew(productItem)}
+                                                                    {calculateItemLevelTaxValueNewForPO(productItem)}
 
 
                                                                 </td>
 
-                                                                <td className="text-center">{calculateOrderItemAmount(productItem)}</td>
+                                                                <td className="text-center">{calculateOrderItemAmountForPO(productItem)}</td>
 
 
 

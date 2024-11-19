@@ -62,6 +62,17 @@ export const calculateItemLevelTaxValueNew = (productItem: any) => {
     return (itemTotalTax ?? 0);
 }
 
+export const calculateItemLevelTaxValueNewForPO = (productItem: any) => {
+
+    let taxRateType = productItem.tax_rate_type;
+    if (taxRateType == undefined || taxRateType == null || stringIsNullOrWhiteSpace(taxRateType) == true) {
+        return 0;
+    }
+    let amount = (productItem.price ?? 0) * (productItem.weight_value ?? 1);
+    let itemTotalTax = calculateTaxValueNewFunc(amount, taxRateType, (productItem.tax_value ?? 0));
+    return (itemTotalTax ?? 0);
+}
+
 
 export const calculateItemAmount = (po_rate: any, itemQuantity: any) => {
 
@@ -84,6 +95,26 @@ export const calculateOrderItemAmount = (productItem: any) => {
 
     let itemAmount = calculateItemAmount(itemPrice, itemQuantity);
     itemTotalTax = calculateItemLevelTaxValueNew(productItem);
+
+
+    const itemTotal: number = itemAmount + itemTotalTax;
+    productItem.itemTotal = itemTotal;
+    productItem.itemTotalTax = itemTotalTax;
+
+
+
+
+    return itemTotal;
+
+}
+
+export const calculateOrderItemAmountForPO = (productItem: any) => {
+    const itemValue: number = parseInt(productItem?.weight_value ?? 1) ?? 1;
+    const itemPrice: number = parseInt(productItem?.price ?? 0) ?? 0;
+    let itemTotalTax: number = 0;
+
+    let itemAmount = calculateItemAmount(itemPrice, itemValue);
+    itemTotalTax = calculateItemLevelTaxValueNewForPO(productItem);
 
 
     const itemTotal: number = itemAmount + itemTotalTax;

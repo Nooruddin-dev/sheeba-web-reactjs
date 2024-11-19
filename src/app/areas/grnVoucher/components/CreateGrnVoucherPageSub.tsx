@@ -106,8 +106,11 @@ export default function CreateGrnVoucherPageSub() {
                 order_line_item_id: item.line_item_id, //--order line item id
                 product_sku_code: item.code_sku,
 
-                quantity: item.quantity ?? 1,
-                weight_value: item.weight_value ?? 0,
+                // quantity: item.quantity ?? 1,
+                // weight_value: item.weight_value ?? 0,
+
+                quantity: item.weight_value || 1,
+                weight_value: item.quantity || 1,
 
 
                 po_rate: item?.price,
@@ -223,7 +226,6 @@ export default function CreateGrnVoucherPageSub() {
                         );
                         setOrderLevelTaxRateType(orderLevelTaxLocal?.tax_rate_type ?? "Percentage");
                         setOrderLevelTaxValue(orderLevelTaxLocal?.tax_value ?? 0);
-
 
                         setCartAllProducts(data?.purchase_orders_items);
                     }
@@ -713,8 +715,8 @@ export default function CreateGrnVoucherPageSub() {
                                                                         type="number"
                                                                         min={1}
 
-                                                                        value={productItem.quantity || 1}
-                                                                        onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10))}
+                                                                        value={productItem.weight_value || 1}
+                                                                        onChange={(e) => handleWeightValueChange(index, parseInt(e.target.value, 10))}
 
                                                                     />
                                                                 </td>
@@ -725,7 +727,7 @@ export default function CreateGrnVoucherPageSub() {
                                                                         type="number"
                                                                         min={0}
                                                                         readOnly={true}
-                                                                        value={productItem.remaining_quantity}
+                                                                        value={productItem.remaining_weight}
                                                                     />
                                                                 </td>
 
@@ -735,8 +737,8 @@ export default function CreateGrnVoucherPageSub() {
                                                                         type="number"
                                                                         min={1}
                                                                         step="any"
-                                                                        value={productItem.weight_value || 1}
-                                                                        onChange={(e) => handleWeightValueChange(index, parseInt(e.target.value, 10))}
+                                                                        value={productItem.quantity || 1}
+                                                                        onChange={(e) => handleQuantityChange(index, parseInt(e.target.value, 10))}
 
                                                                     />
                                                                 </td>

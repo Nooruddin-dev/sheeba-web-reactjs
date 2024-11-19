@@ -1,8 +1,8 @@
 
 const VERSION = "1";
-export const API_BASE_URL = 'http://localhost:3009'; //--Live: http://noornashad-001-site5.etempurl.com, Local: https://localhost:7044
+export const API_BASE_URL = 'https://api.sheebapolybag.com'; /** Live: 'https://api.sheebapolybag.com'; Local: https://localhost:7044 */
 export const API_URL = `${API_BASE_URL}/api/v${VERSION}`;
-export const APP_BASE_URL = "http://localhost:3000/"; //--Live: http://noornashad-001-site1.etempurl.com/, Local: http://localhost:3000/
+export const APP_BASE_URL = 'https://sheebapolybag.com/'; /** Live: 'https://sheebapolybag.com/'; Local: "http://localhost:3000/"; */
 
 export const pageShowTimeDuration = 500;
 

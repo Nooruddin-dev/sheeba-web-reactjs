@@ -309,7 +309,7 @@ export default function PurchaseOrderDetailPage() {
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>Order Item ID</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}> Product Name</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}> Price</th>
-                                                                                <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Quantity</th>
+                                                                                <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Weight</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Item Tax</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px pe-3 rounded-end" style={{ cursor: 'pointer' }}>Order Item Total</th>
                                                                              
