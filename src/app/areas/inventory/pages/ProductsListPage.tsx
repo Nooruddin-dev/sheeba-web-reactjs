@@ -448,6 +448,7 @@ export default function ProductsListPage() {
                                         {/* <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Cost</th> */}
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>SKU</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Stock Quantity</th>
+                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Stock Weight</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Created On</th>
 
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Status</th>
@@ -500,6 +501,10 @@ export default function ProductsListPage() {
 
                                                     <td role="cell">
                                                         <div className=' fw-bolder'> {record?.stockquantity}</div>
+                                                    </td>
+
+                                                    <td role="cell">
+                                                        <div className=' fw-bolder'> {record?.weight_value} {record?.unit_short_name}</div>
                                                     </td>
 
                                                     <td role="cell">

@@ -504,8 +504,8 @@ export default function MachineBasedReportPage() {
                                                         <div className=''></div>
                                                     </td> */}
 
-<td role="cell">
-                                                        <div className=''></div>
+                                                    <td role="cell">
+                                                        <div className=''>{record?.tare_core}</div>
                                                     </td>
                                                   
                                                    

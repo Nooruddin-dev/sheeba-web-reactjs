@@ -145,7 +145,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
         const machineId = watch("machine_id");
         const machine_type_id = allMachinesList?.find((x: { machine_id: string; }) => x.machine_id == machineId)?.machine_type_id;
-        if (machine_type_id == MachineTypesEnum.Printing || machine_type_id == MachineTypesEnum.Slitting || machine_type_id == MachineTypesEnum.Extruder) {
+        if (machine_type_id == MachineTypesEnum.Printing || machine_type_id == MachineTypesEnum.Lamination || machine_type_id == MachineTypesEnum.Extruder) {
             return true;
         } else {
             return false;
