@@ -315,7 +315,7 @@ export default function MachineBasedReportPage() {
                 </KTCard>
 
 
-                <div className='card printable-area' id="card_dispatch_info" ref={componentRefForReceipt}>
+                <div className='card printable-area machine-based-report' id="card_dispatch_info" ref={componentRefForReceipt}>
 
                     {/* <CommonListSearchHeader
                         searchFields={HtmlSearchFields}

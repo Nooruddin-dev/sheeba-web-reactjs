@@ -258,7 +258,7 @@ const PurchaseOrderReceiptModal: React.FC<PurchaseOrderStatusFormInterface> = ({
 
                                                                                     row.unit_sub_type == "Micon" ?
                                                                                         <>
-                                                                                            <li style={{ border: "1px solid #999", marginBottom: "4px", listStyle: "none" }}>
+                                                                                            <li style={{ border: "1px solid rgb(153 153 153 / 33%)", marginBottom: "4px", listStyle: "none" }}>
                                                                                                 {row.unit_sub_type} - {row.unit_value}
                                                                                             </li>
 
@@ -266,7 +266,7 @@ const PurchaseOrderReceiptModal: React.FC<PurchaseOrderStatusFormInterface> = ({
                                                                                         </>
                                                                                         :
                                                                                         <>
-                                                                                            <li style={{ border: "1px solid #999", marginBottom: "4px", listStyle: "none" }}>
+                                                                                            <li style={{ border: "1px solid rgb(153 153 153 / 33%)", marginBottom: "4px", listStyle: "none" }}>
                                                                                                 {row.unit_sub_type} ({row.unit_short_name}) - {row.unit_value}
                                                                                             </li>
 

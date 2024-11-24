@@ -110,7 +110,7 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                     </div>
                                 </div>
 
-                                <div className="pb-12">
+                                <div className="pb-12 printview_jobcard">
 
                                     <div className="d-flex flex-column gap-7 gap-md-10">
 
@@ -383,8 +383,8 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                             <tr className='fw-bold text-muted'>
 
                                                                 {/* <th className='min-w-80px'>Product Id</th> */}
-                                                                <th className='min-w-100px'>Dispatch Place</th>
-                                                                <th className='min-w-80px'>Weight/Quantity</th>
+                                                                <th className='width-25'>Dispatch Place</th>
+                                                                <th className='width-75'>Weight/Quantity</th>
 
 
                                                             </tr>
@@ -453,8 +453,8 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                 <table className="table align-middle table-row-dashed fs-6 gy-5 mb-0">
                                                     <thead>
                                                         <tr className="border-bottom fs-6 fw-bold text-muted bg-light">
-                                                            <th className="min-w-175px pb-2 ps-3 rounded-start">Product Name</th>
-                                                            <th className="min-w-100px text-end pb-2 pe-3 rounded-end">Code</th>
+                                                            <th className=" width-25">Product Name</th>
+                                                            <th className="width-75">Code</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody className="fw-semibold text-gray-600">
@@ -464,10 +464,10 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                                 ?
                                                                 jobCardDetailForPrinting?.jobCardAllProducts?.map((productItem: any) => (
                                                                     <tr>
-                                                                        <td className="text-start">{productItem.product_name}</td>
+                                                                        <td className="width-25">{productItem.product_name}</td>
 
 
-                                                                        <td className="text-end">{productItem.sku}</td>
+                                                                        <td className="width-75">{productItem.sku}</td>
                                                                     </tr>
                                                                 ))
                                                                 :

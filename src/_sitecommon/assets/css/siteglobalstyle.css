@@ -345,7 +345,8 @@ font-size: 16px !important;
   & .card-body {
     padding: 0rem;
     &.container-xxl{
-      max-width: 1520px;
+      max-width: 100%;
+            padding: 2rem;
     }
   }
 }
@@ -356,6 +357,50 @@ width: 200px;
 .loginscreen{
   background: #ccc;
 }
+input.form-select{
+  padding: 0.775rem 1rem 0.775rem 1rem;
+} 
+/* 
+.table-responsive .table-row-dashed tbody tr:nth-of-type(even){
+  background: #f5f5f5;
+ 
+} */
+.table-responsive .table-row-dashed tbody tr{
+  border-bottom:1px solid #ccc !important;
+}
+input.order-unit-field{
+  padding: 0;
+}
+.card-body .table-responsive .mb-2{
+  margin-bottom: 0px;
+}
+.table-responsive tr th.min-w-100px:first-child{
+  min-width:150px !important;
+}
+
+.printview_jobcard{
+  & .col-lg-4{
+    width: 25%;
+  }
+}
+.width-25{
+  width: 25% !important;
+}
+.width-75{
+  width: 75% !important;
+}
+.machine-based-report .dataTable.no-footer tr.text-start th.min-w-125px{
+  min-width: 100px !important;
+}
+@media print {
+  .card.printable-area .col-lg-4{width: 40%; float: left;}
+  .machine-based-report .dataTable.no-footer tr.text-start th.min-w-125px{
+    min-width: 80px !important;
+  }
+}
+
+
+
 /* .app-header-menu .menu .menu-item .menu-link.active .menu-title{
 
 } */
