@@ -306,7 +306,7 @@ export default function PurchaseOrderDetailPage() {
                                                                             <tr className='text-start text-muted fw-bolder fs-7  gs-0 bg-light-info'
                                                                                 style={{ border: '1.5px solid #999' }}
                                                                             >
-                                                                                <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>Order Item ID</th>
+                                                                                <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>SKU</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}> Product Name</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}> Price</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Weight</th>
@@ -324,7 +324,7 @@ export default function PurchaseOrderDetailPage() {
                                                                                     orderDetails?.order_items?.map((record: any) => (
                                                                                         <tr>
                                                                                             <td className='ps-3'>
-                                                                                                <span className="text-muted fw-semibold text-muted d-block fs-7">{record.line_item_id}</span>
+                                                                                                <span className="text-muted fw-semibold text-muted d-block fs-7">{record.sku}</span>
                                                                                             </td>
                                                                                             <td>
                                                                                                 <div className='d-flex align-items-center'>

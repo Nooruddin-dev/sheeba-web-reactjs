@@ -256,11 +256,13 @@ export default function GrnVoucherDetailPage() {
                                                                             <tr className='text-start text-muted fw-bolder fs-6  gs-0 bg-light-info'
                                                                                 style={{ border: '1.5px solid #999' }}
                                                                             >
-                                                                                <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>GRN Item ID</th>
-                                                                                <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}> Product Name</th>
+                                                                                {/* <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>GRN Item ID</th> */}
+                                                                                <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}> Product Name</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}> SKU Code</th>
+                                                                                <th colSpan={1} role="columnheader" className="min-w-150px" style={{ cursor: 'pointer' }}></th>
 
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Quantity</th>
+                                                                                <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Weight</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}> Amount</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Item Tax</th>
                                                                                 <th colSpan={1} role="columnheader" className="min-w-125px pe-3 rounded-end" style={{ cursor: 'pointer' }}> Item Total Amount</th>
@@ -275,10 +277,10 @@ export default function GrnVoucherDetailPage() {
                                                                                     ?
                                                                                     grnVoucherDetail?.grn_voucher_line_items?.map((record: any) => (
                                                                                         <tr>
-                                                                                            <td className='ps-3'>
+                                                                                            {/* <td className='ps-3'>
                                                                                                 <span className="text-muted fw-semibold text-muted d-block fs-6">{record.grn_line_item_id}</span>
-                                                                                            </td>
-                                                                                            <td>
+                                                                                            </td> */}
+                                                                                            <td className='ps-3'>
                                                                                                 <div className='d-flex align-items-center'>
                                                                                                     {/* <div className='symbol symbol-45px me-5'>
                                                                                                     <img src={toAbsoluteUrlCustom(record.productDefaultImage)} alt='' />
@@ -295,8 +297,36 @@ export default function GrnVoucherDetailPage() {
                                                                                             </td>
 
                                                                                             <td role='cell'>{record.product_sku_code}</td>
+                                                                                            <td role='cell'>
+                                                                                                <ul>
+                                                                                                    {record.inventory_units_info?.filter((x: { unit_type: number; })=>x.unit_type == 3).map((row: any) => (
+
+                                                                                                        row.unit_sub_type == "Micon" ?
+                                                                                                            <>
+                                                                                                                <li style={{ border: "1px solid #999", marginBottom: "4px", listStyle: "none" }}>
+                                                                                                                    {row.unit_sub_type} - {row.unit_value}
+                                                                                                                </li>
+
+                                                                                                             
+                                                                                                            </>
+                                                                                                            :
+                                                                                                            <>
+                                                                                                                <li style={{ border: "1px solid #999", marginBottom: "4px", listStyle: "none" }}>
+                                                                                                                    {row.unit_sub_type} ({row.unit_short_name}) - {row.unit_value}
+                                                                                                                </li>
+                                                                                                              
+                                                                                                            </>
+
+                                                                                                    ))}
+                                                                                                </ul>
+
+
+
+
+                                                                                            </td>
 
                                                                                             <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{record.quantity}</td>
+                                                                                            <td className='text-gray-900 fw-bold text-hover-primary fs-6'>10000</td>
                                                                                             <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{record.amount}</td>
 
                                                                                             <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{record.item_tax_amount_total}</td>

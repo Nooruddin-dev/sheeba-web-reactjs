@@ -216,8 +216,9 @@ const PurchaseOrderReceiptModal: React.FC<PurchaseOrderStatusFormInterface> = ({
                                                     <table className="table align-middle table-row-dashed fs-6 gy-5 mb-0">
                                                         <thead>
                                                             <tr className="border-bottom fs-6 fw-bold text-muted bg-light">
-                                                                <th className="min-w-175px pb-2 ps-3 rounded-start">Order Item ID</th>
-                                                                <th className="min-w-175px pb-2">Product Name</th>
+                                                                {/* <th className="min-w-175px pb-2 ps-3 rounded-start">Order Item ID</th> */}
+                                                                <th className="min-w-175px pb-2 ps-3 rounded-start">Product Name</th>
+                                                                <th className="min-w-70px text-end pb-2"></th>
                                                                 <th className="min-w-70px text-end pb-2">Cost</th>
                                                                 <th className="min-w-80px text-end pb-2">Weight</th>
                                                                 <th className="min-w-80px text-end pb-2">Amount</th>
@@ -232,7 +233,7 @@ const PurchaseOrderReceiptModal: React.FC<PurchaseOrderStatusFormInterface> = ({
                                                                     ?
                                                                     orderDetails?.order_items?.map((record: any) => (
                                                                         <tr>
-                                                                            <td className="text-start">{record.line_item_id}</td>
+                                                                            {/* <td className="text-start">{record.line_item_id}</td> */}
 
                                                                             <td className='text-start'>
                                                                                 <div className="d-flex align-items-center">
@@ -250,6 +251,30 @@ const PurchaseOrderReceiptModal: React.FC<PurchaseOrderStatusFormInterface> = ({
 
                                                                                 </div>
                                                                             </td>
+
+                                                                            <td className="text-start">
+                                                                            <ul>
+                                                                                {record.inventory_units_info?.filter((x: { unit_type: number; })=>x.unit_type == 3)?.map((row: any) => (
+
+                                                                                    row.unit_sub_type == "Micon" ?
+                                                                                        <>
+                                                                                            <li style={{ border: "1px solid #999", marginBottom: "4px", listStyle: "none" }}>
+                                                                                                {row.unit_sub_type} - {row.unit_value}
+                                                                                            </li>
+
+
+                                                                                        </>
+                                                                                        :
+                                                                                        <>
+                                                                                            <li style={{ border: "1px solid #999", marginBottom: "4px", listStyle: "none" }}>
+                                                                                                {row.unit_sub_type} ({row.unit_short_name}) - {row.unit_value}
+                                                                                            </li>
+
+                                                                                        </>
+
+                                                                                ))}
+                                                                            </ul>
+                                                                        </td>
 
                                                                             <td className="text-end">{record.po_rate}</td>
                                                                             <td className="text-end">{record.quantity}</td>

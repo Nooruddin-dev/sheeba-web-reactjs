@@ -200,7 +200,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
 
         getProductDetailById(productidSelected)
             .then((res: any) => {
-                debugger;
+             
                 const { data } = res;
                 if (data) {
                     data.unique_id = generateUniqueIdWithDate();

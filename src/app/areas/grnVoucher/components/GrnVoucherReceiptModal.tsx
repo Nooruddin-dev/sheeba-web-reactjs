@@ -115,9 +115,9 @@ const GrnVoucherReceiptModal: React.FC<GrnVoucherReceiptInterface> = ({
                                                 (grnVoucherDetail?.show_company_detail == true || grnVoucherDetail?.show_company_detail == 'true' || grnVoucherDetail?.show_company_detail == '1') &&
                                                 (
                                                     <img alt="Logo"
-                                                    src={toAbsoluteUrl('media/logos/default_dark_2.png')}
-                                                    className="w-50" 
-                                                    height={50}
+                                                        src={toAbsoluteUrl('media/logos/default_dark_2.png')}
+                                                        className="w-50"
+                                                        height={50}
                                                     />
                                                 )
                                             }
@@ -187,10 +187,12 @@ const GrnVoucherReceiptModal: React.FC<GrnVoucherReceiptInterface> = ({
                                                     <thead>
                                                         <tr className="border-bottom fs-6 fw-bold text-muted bg-light">
 
-                                                            <th className="min-w-175px pb-2 ps-3 rounded-start">GRN Item ID</th>
-                                                            <th className="min-w-175px pb-2">Product Name</th>
+                                                            {/* <th className="min-w-175px pb-2 ps-3 rounded-start">GRN Item ID</th> */}
+                                                            <th className="min-w-175px pb-2 ps-3 rounded-start">Product Name</th>
                                                             <th className="min-w-70px text-end pb-2">SKU Code</th>
+                                                            <th className="min-w-70px text-end pb-2"></th>
                                                             <th className="min-w-80px text-end pb-2">Quantity</th>
+                                                            <th className="min-w-80px text-end pb-2">Weight</th>
                                                             <th className="min-w-80px text-end pb-2">Amount</th>
                                                             <th className="min-w-80px text-end pb-2">Item Tax</th>
                                                             <th className="min-w-100px text-end pb-2 pe-3 rounded-end"> Item Total Amount</th>
@@ -206,7 +208,7 @@ const GrnVoucherReceiptModal: React.FC<GrnVoucherReceiptInterface> = ({
                                                                 ?
                                                                 grnVoucherDetail?.grn_voucher_line_items?.map((record: any) => (
                                                                     <tr>
-                                                                        <td className="text-start">{record.grn_line_item_id}</td>
+                                                                        {/* <td className="text-start">{record.grn_line_item_id}</td> */}
 
                                                                         <td className='text-start'>
                                                                             <div className="d-flex align-items-center">
@@ -226,7 +228,32 @@ const GrnVoucherReceiptModal: React.FC<GrnVoucherReceiptInterface> = ({
                                                                         </td>
                                                                         <td className="text-end">{record.product_sku_code}</td>
 
+                                                                        <td className="text-start">
+                                                                            <ul>
+                                                                                {record.inventory_units_info?.filter((x: { unit_type: number; })=>x.unit_type == 3)?.map((row: any) => (
+
+                                                                                    row.unit_sub_type == "Micon" ?
+                                                                                        <>
+                                                                                            <li style={{ border: "1px solid #999", marginBottom: "4px", listStyle: "none" }}>
+                                                                                                {row.unit_sub_type} - {row.unit_value}
+                                                                                            </li>
+
+
+                                                                                        </>
+                                                                                        :
+                                                                                        <>
+                                                                                            <li style={{ border: "1px solid #999", marginBottom: "4px", listStyle: "none" }}>
+                                                                                                {row.unit_sub_type} ({row.unit_short_name}) - {row.unit_value}
+                                                                                            </li>
+
+                                                                                        </>
+
+                                                                                ))}
+                                                                            </ul>
+                                                                        </td>
+
                                                                         <td className="text-end">{record.quantity}</td>
+                                                                        <td className="text-end">10000</td>
                                                                         <td className="text-end">{record.amount}</td>
 
                                                                         <td className="text-end">{record.item_tax_amount_total}</td>
