@@ -14,7 +14,7 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import ReactSelect from 'react-select';
 import { showErrorMsg, showSuccessMsg, showWarningMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 import { makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
-import { OrderTaxStatusEnum, taxRulesTypesConst } from '../../../../_sitecommon/common/enums/GlobalEnums';
+import { OrderTaxStatusEnum, taxRulesTypesConst, UnitTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
 import { calculateItemAmount, calculateItemLevelTaxValueNewForPO, calculateItemsSubTotal, calculateOrderItemAmount, calculateOrderItemAmountForPO, calculateTaxValue, calculateTaxValueNewFunc, createOrderUnitLabel, getTaxRateByTaxRuleId } from '../../../../_sitecommon/common/helpers/global/OrderHelper';
 import { useNavigate } from 'react-router';
 import PurchaseOrderReceiptModal from '../components/PurchaseOrderReceiptModal';
@@ -859,7 +859,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                                 <td role="cell" className="">
                                                                     {productItem.product_units_info && productItem.product_units_info.length > 0 ? (
                                                                         <div className='d-flex flex-column' style={{ maxHeight: "100px", overflow: "auto" }}>
-                                                                            {productItem.product_units_info?.map((productUnit: any, unitIndex: number) => (
+                                                                            {productItem.product_units_info?.filter((x: { unit_type: any; })=>x.unit_type == UnitTypesEnum.Roll)?.map((productUnit: any, unitIndex: number) => (
                                                                                 <div key={unitIndex} className="mb-2 d-flex justify-content-between align-items-center">
                                                                                     <label>{createOrderUnitLabel(productUnit)}</label>
                                                                                     <input
