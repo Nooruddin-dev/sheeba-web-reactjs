@@ -268,13 +268,28 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
-                                                    <label className="form-label  ">Reference</label>
+                                                    <label className="form-label  ">Sales Person</label>
                                                     <input
                                                         type="text"
 
                                                         className={`form-control form-control-solid `}
                                                         id="job_card_reference"
                                                         value={jobCardDetailForPrinting?.job_card_reference}
+                                                        placeholder="Enter reference"
+                                                    />
+
+                                                </div>
+                                            </div>
+
+                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
+                                                    <label className="form-label  ">PO Reference</label>
+                                                    <input
+                                                        type="text"
+
+                                                        className={`form-control form-control-solid `}
+                                                        id="po_reference"
+                                                        value={jobCardDetailForPrinting?.po_reference}
                                                         placeholder="Enter reference"
                                                     />
 
@@ -299,7 +314,7 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
 
 
 
-                                            <div className='col-lg-4'>
+                                            {/* <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <label className="form-label  ">Rate</label>
                                                     <input
@@ -313,7 +328,7 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                     />
 
                                                 </div>
-                                            </div>
+                                            </div> */}
                                             {/* 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">

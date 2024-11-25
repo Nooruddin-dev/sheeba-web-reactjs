@@ -326,7 +326,7 @@ export default function GrnVoucherDetailPage() {
                                                                                             </td>
 
                                                                                             <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{record.quantity}</td>
-                                                                                            <td className='text-gray-900 fw-bold text-hover-primary fs-6'>10000</td>
+                                                                                            <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{record.weight_value}</td>
                                                                                             <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{record.amount}</td>
 
                                                                                             <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{record.item_tax_amount_total}</td>

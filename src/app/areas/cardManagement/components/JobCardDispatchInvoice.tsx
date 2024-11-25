@@ -123,10 +123,16 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
 
                                         </a>
 
-                                        <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
-                                            <div>Sheeba Inventory system, Karachi</div>
-                                            {/* <div>Mississippi 96522</div> */}
-                                        </div>
+                                        {
+                                            (dispatchInvoiceDetail?.show_company_detail == true || dispatchInvoiceDetail?.show_company_detail == 'true' || dispatchInvoiceDetail?.show_company_detail == '1') &&
+                                            (
+
+                                            <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
+                                                <div>Sheeba Inventory System, Karachi</div>
+                                            </div>
+                                            )
+                                        }
+
 
                                     </div>
                                 </div>
@@ -192,7 +198,7 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
                                                         <td className="text-start bg-light p-3">Dispatch#</td>
                                                         <td className='text-start p-3'>
                                                             <div className="d-flex align-items-center">
-                                                                <div className="ms-5">  <div className="fw-bold"> {dispatchInvoiceDetail?.card_dispatch_no}</div>   </div>
+                                                                <div className="ms-5">  <div className="fw-bold">{dispatchInvoiceDetail?.card_dispatch_no}/{dispatchInvoiceDetail?.job_card_no}</div>   </div>
                                                             </div>
                                                         </td>
                                                     </tr>
