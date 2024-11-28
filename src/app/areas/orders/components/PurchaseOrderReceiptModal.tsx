@@ -123,10 +123,15 @@ const PurchaseOrderReceiptModal: React.FC<PurchaseOrderStatusFormInterface> = ({
                                             }
                                             </a>
 
-                                            <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
-                                                <div>Sheeba Inventory system, Karachi</div>
-                                                {/* <div>Mississippi 96522</div> */}
-                                            </div>
+                                            {
+                                                (orderDetails?.show_company_detail == true || orderDetails?.show_company_detail == 'true' || orderDetails?.show_company_detail == '1') &&
+                                                (
+        
+                                                    <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
+                                                        <div>Sheeba Inventory System, Karachi</div>
+                                                    </div>
+                                                )
+                                            }
 
                                         </div>
                                     </div>

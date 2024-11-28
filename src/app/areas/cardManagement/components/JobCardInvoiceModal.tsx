@@ -224,7 +224,7 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
 
 
 
-                                            <div className='col-lg-4'>
+                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
                                                         <div className="print-form-label">Rate:</div>
@@ -249,7 +249,7 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
 
                                       
 
-                                        {/* <div className="separator"></div> */}
+                                         <div className="separator"></div> 
 
                                         <div className="row">
                                             <div className="col-lg-12 col-md-12">

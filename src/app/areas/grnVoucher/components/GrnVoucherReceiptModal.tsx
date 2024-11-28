@@ -123,10 +123,15 @@ const GrnVoucherReceiptModal: React.FC<GrnVoucherReceiptInterface> = ({
                                             }
                                         </a>
 
-                                        <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
-                                            <div>Sheeba Inventory system, Karachi</div>
-                                            {/* <div>Mississippi 96522</div> */}
-                                        </div>
+                                        {
+                                            (grnVoucherDetail?.show_company_detail == true || grnVoucherDetail?.show_company_detail == 'true' || grnVoucherDetail?.show_company_detail == '1') &&
+                                            (
+    
+                                                <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
+                                                    <div>Sheeba Inventory System, Karachi</div>
+                                                </div>
+                                            )
+                                        }
 
                                     </div>
                                 </div>
@@ -253,9 +258,8 @@ const GrnVoucherReceiptModal: React.FC<GrnVoucherReceiptInterface> = ({
                                                                         </td>
 
                                                                         <td className="text-end">{record.quantity}</td>
-                                                                        <td className="text-end">10000</td>
+                                                                        <td className="text-end">{record.weight_value}</td>
                                                                         <td className="text-end">{record.amount}</td>
-
                                                                         <td className="text-end">{record.item_tax_amount_total}</td>
                                                                         <td className="text-end">{record.grn_item_total}</td>
                                                                     </tr>

@@ -183,7 +183,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
 
     const createUpdateJobCard = (data: any) => {
-        const { order_date, dispatch_date, company_name, product_name, weight_qty, job_size, micron, sealing_method, job_card_reference, special_request, card_rate, card_amount, card_tax_amount, card_total_amount } = data;
+        const { order_date, dispatch_date, company_name, product_name, weight_qty, job_size, micron, sealing_method, job_card_reference, po_reference, special_request, card_rate, card_amount, card_tax_amount, card_total_amount } = data;
 
 
         if (stringIsNullOrWhiteSpace(order_date) || stringIsNullOrWhiteSpace(dispatch_date)
@@ -239,6 +239,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
             micron: micron,
             sealing_method: sealing_method,
             job_card_reference: job_card_reference,
+            po_reference: po_reference,
             special_request: special_request,
 
 
@@ -468,6 +469,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                 setValue('micron', jobCardDetailForEdit.micron);
                 setValue('sealing_method', jobCardDetailForEdit.sealing_method);
                 setValue('job_card_reference', jobCardDetailForEdit.job_card_reference);
+                setValue('po_reference', jobCardDetailForEdit.po_reference);
                 setValue('special_request', jobCardDetailForEdit.special_request);
                 setValue('card_rate', jobCardDetailForEdit.card_rate);
                 setValue('card_amount', jobCardDetailForEdit.card_amount);
@@ -569,6 +571,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                         micron: dataResponse.micron,
                         sealing_method: dataResponse.sealing_method,
                         job_card_reference: dataResponse.job_card_reference,
+                        po_reference: dataResponse.po_reference,
                         special_request: dataResponse.special_request,
                         card_rate: dataResponse.card_rate,
                         card_amount: dataResponse.card_amount,
@@ -793,7 +796,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
                                 <div className='col-lg-4'>
                                     <div className="mb-10">
-                                        <label className="form-label required ">Reference</label>
+                                        <label className="form-label required ">Sales Person</label>
                                         <input
                                             type="text"
 
@@ -803,6 +806,21 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                                             placeholder="Enter reference"
                                         />
                                         {errors.job_card_reference && <SiteErrorMessage errorMsg='Reference is required' />}
+                                    </div>
+                                </div>
+
+                                <div className='col-lg-4'>
+                                    <div className="mb-10">
+                                        <label className="form-label required ">PO Reference</label>
+                                        <input
+                                            type="text"
+
+                                            className={`form-control form-control-solid ${formSubmitted ? (errors.po_reference ? 'is-invalid' : 'is-valid') : ''}`}
+                                            id="po_reference" {...register("po_reference", { required: true })}
+
+                                            placeholder="Enter PO reference"
+                                        />
+                                        {errors.job_card_reference && <SiteErrorMessage errorMsg='PO reference is required' />}
                                     </div>
                                 </div>
 
