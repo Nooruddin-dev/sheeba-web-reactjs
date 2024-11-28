@@ -34,7 +34,18 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
 }) => {
     // const [jobCardDetail, setJobCardDetail] = useState<any>({});
 
-
+    const [jobTablePrintData] = useState([
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+        { id: 6 },
+        { id: 7 },
+        // { id: 8 },
+        // { id: 9 },
+        // { id: 10 },
+    ]);
 
     const componentRefForReceipt = useRef(null);
     const handlePrintReceipt = useReactToPrint({
@@ -123,177 +134,91 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
-                                                    <label className="form-label  ">Job Card No</label>
-                                                    <input
-                                                        type="text"
-
-                                                        className={`form-control form-control-solid`}
-                                                        id="order_date"
-                                                        value={jobCardDetailForPrinting?.job_card_no}
-
-                                                        placeholder="Enter order date"
-                                                    />
-
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Job No:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.job_card_no}</div>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
-                                                    <label className="form-label  ">Order Date</label>
-                                                    <input
-                                                        type="date"
-
-                                                        className={`form-control form-control-solid`}
-                                                        id="order_date"
-                                                        value={jobCardDetailForPrinting?.order_date}
-
-                                                        placeholder="Enter order date"
-                                                    />
-
-                                                </div>
-                                            </div>
-
-
-                                            <div className='col-lg-4'>
-                                                <div className="mb-10">
-                                                    <label className="form-label  ">Dispatch Date</label>
-                                                    <input
-                                                        type="date"
-
-                                                        className={`form-control form-control-solid`}
-                                                        id="dispatch_date"
-                                                        value={jobCardDetailForPrinting?.dispatch_date}
-
-                                                        placeholder="Enter dispath date"
-                                                    />
-
-                                                </div>
-                                            </div>
-
-
-                                            <div className='col-lg-4'>
-                                                <div className="mb-10">
-                                                    <label className="form-label  ">Company Name</label>
-                                                    <input
-                                                        type="text"
-
-                                                        className={`form-control form-control-solid `}
-                                                        id="company_name"
-                                                        value={jobCardDetailForPrinting?.company_name}
-                                                        placeholder="Enter company name"
-                                                    />
-
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Order Date:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.order_date}</div>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
-                                                    <label className="form-label  ">Product Name</label>
-                                                    <input
-                                                        type="text"
-
-                                                        className={`form-control form-control-solid `}
-                                                        id="product_name"
-                                                        value={jobCardDetailForPrinting?.product_name}
-                                                        placeholder="Enter product name"
-                                                    />
-
-                                                </div>
-                                            </div>
-
-
-                                            <div className='col-lg-4'>
-                                                <div className="mb-10">
-                                                    <label className="form-label  ">Weight/Quantity</label>
-                                                    <input
-                                                        type="number"
-                                                        min={0}
-                                                        step="any"
-                                                        className={`form-control form-control-solid`}
-                                                        id="weight_qty"
-                                                        value={jobCardDetailForPrinting?.weight_qty}
-                                                        placeholder="Enter weight/qty"
-                                                    />
-
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Dispatch Date:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.dispatch_date}</div>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
-                                                    <label className="form-label  ">Size</label>
-                                                    <input
-                                                        type="text"
-
-                                                        className={`form-control form-control-solid `}
-                                                        id="job_size"
-                                                        value={jobCardDetailForPrinting?.job_size}
-                                                        placeholder="Enter size"
-                                                    />
-
-                                                </div>
-                                            </div>
-
-
-
-
-                                            <div className='col-lg-4'>
-                                                <div className="mb-10">
-                                                    <label className="form-label  ">Micron</label>
-                                                    <input
-                                                        type="number"
-                                                        step="any"
-                                                        className={`form-control form-control-solid `}
-                                                        id="micron"
-                                                        value={jobCardDetailForPrinting?.micron}
-                                                        placeholder="Enter micron"
-                                                    />
-
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Company Name:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.company_name}</div>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
-                                                    <label className="form-label  ">Sealing Method</label>
-                                                    <input
-                                                        type="text"
-
-                                                        className={`form-control form-control-solid `}
-                                                        id="sealing_method"
-                                                        value={jobCardDetailForPrinting?.sealing_method}
-                                                        placeholder="Enter sealing method"
-                                                    />
-
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Product Name:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.product_name}</div>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
-                                                    <label className="form-label  ">Reference</label>
-                                                    <input
-                                                        type="text"
-
-                                                        className={`form-control form-control-solid `}
-                                                        id="job_card_reference"
-                                                        value={jobCardDetailForPrinting?.job_card_reference}
-                                                        placeholder="Enter reference"
-                                                    />
-
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Weight/Quantity:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.weight_qty}</div>
+                                                    </div>
                                                 </div>
                                             </div>
 
+                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Size:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.job_size}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
-                                                    <label className="form-label  ">Special Request</label>
-                                                    <input
-                                                        type="text"
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Micron:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.micron}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                                        className={`form-control form-control-solid `}
-                                                        id="special_request"
-                                                        value={jobCardDetailForPrinting?.special_request}
-                                                        placeholder="Enter special request"
-                                                    />
+                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Sealing Method:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.sealing_method}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
+                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Reference:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.job_card_reference}</div>
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -301,77 +226,30 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
-                                                    <label className="form-label  ">Rate</label>
-                                                    <input
-                                                        type="number"
-                                                        min={0}
-                                                        step="any"
-                                                        className={`form-control form-control-solid `}
-                                                        id="card_rate"
-                                                        value={jobCardDetailForPrinting?.card_rate}
-                                                        placeholder="Enter rate"
-                                                    />
-
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Rate:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.card_rate}</div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            {/* 
-                                            <div className='col-lg-4'>
+
+                                            <div className='col-lg-4 last_pane'>
                                                 <div className="mb-10">
-                                                    <label className="form-label  ">Amount (Quanity * Rate)</label>
-                                                    <input
-                                                        type="number"
-                                                        min={0}
-                                                        value={jobCardDetailForPrinting?.card_amount}
-                                                        className={`form-control form-control-solid `}
-                                                        id="card_amount"
-                                                        readOnly={true}
-                                                        placeholder="Amount (Quantity * Rate)"
-                                                    />
-
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Special Request:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.special_request}</div>
+                                                    </div>
                                                 </div>
-                                            </div> */}
-
-                                            {/* 
-                                            <div className='col-lg-4'>
-                                                <div className="mb-10">
-                                                    <label className="form-label ">Tax Amount</label>
-                                                    <input
-                                                        type="number"
-                                                        min={0}
-                                                        value={jobCardDetailForPrinting?.card_tax_amount}
-                                                        className={`form-control form-control-solid`}
-                                                        id="card_tax_amount"
-                                                        readOnly={true}
-                                                        placeholder="Tax Amount"
-                                                    />
-
-                                                </div>
-                                            </div> */}
-
-                                            {/* <div className='col-lg-4'>
-                                                <div className="mb-10">
-                                                    <label className="form-label  ">Total Rate Amount after Tax</label>
-                                                    <input
-                                                        type="number"
-                                                        min={0}
-                                                        className={`form-control form-control-solid`}
-                                                        id="card_total_amount"
-                                                        readOnly={true}
-                                                        placeholder="Total Rate Amount after Tax"
-                                                        value={jobCardDetailForPrinting?.card_total_amount}
-                                                    />
-
-                                                </div>
-                                            </div> */}
-
-
+                                            </div>
 
 
 
                                         </div>
 
 
-                                        <div className="separator"></div>
+                                      
+
+                                        {/* <div className="separator"></div> */}
 
                                         <div className="row">
                                             <div className="col-lg-12 col-md-12">
@@ -441,58 +319,82 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
 
                                         </div>
 
-                                        <div className="separator"></div>
-
-                                        <div className="d-flex justify-content-between flex-column">
-                                            <div>
-                                                <h3>Selected Materials</h3>
+                                        <div className="row" style={{ direction: 'rtl' }}>
+                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section-urdu'>
+                                                        <div className="print-form-label print-urdu-label">سائز:</div>
+                                                        <div className="print-form-value "></div>
+                                                    </div>
+                                                </div>
                                             </div>
 
+                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section-urdu'>
+                                                        <div className="print-form-label print-urdu-label">کرنٹ:</div>
+                                                        <div className="print-form-value "></div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                            <div className="table-responsive border-bottom mb-9">
-                                                <table className="table align-middle table-row-dashed fs-6 gy-5 mb-0">
-                                                    <thead>
-                                                        <tr className="border-bottom fs-6 fw-bold text-muted bg-light">
-                                                            <th className=" width-25">Product Name</th>
-                                                            <th className="width-75">Code</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody className="fw-semibold text-gray-600">
+                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section-urdu'>
+                                                        <div className="print-form-label print-urdu-label">وزن:</div>
+                                                        <div className="print-form-value "></div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                                        {
-                                                            jobCardDetailForPrinting?.jobCardAllProducts != undefined && jobCardDetailForPrinting?.jobCardAllProducts?.length > 0
-                                                                ?
-                                                                jobCardDetailForPrinting?.jobCardAllProducts?.map((productItem: any) => (
-                                                                    <tr>
-                                                                        <td className="width-25">{productItem.product_name}</td>
-
-
-                                                                        <td className="width-75">{productItem.sku}</td>
-                                                                    </tr>
-                                                                ))
-                                                                :
-                                                                <tr>
-                                                                    <td colSpan={20}>
-                                                                        <div className='d-flex text-center w-100 align-content-center justify-content-center'>
-                                                                            No matching records found
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                        }
-
-
-
-
-
-
-                                                    </tbody>
-                                                </table>
+                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section-urdu'>
+                                                        <div className="print-form-label print-urdu-label">مائیکرن:</div>
+                                                        <div className="print-form-value "></div>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                         </div>
 
 
+
+
                                         <div className="separator"></div>
+
+                                        <div className="row">
+                                            <div className="col-lg-12">
+                                                <table className="print-job-card-empty-table" >
+                                                    <thead>
+                                                        <tr>
+                                                            <th className=""></th>
+                                                            <th className=""></th>
+                                                            <th className=""></th>
+                                                            <th className=""></th>
+                                                            <th className=""></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {jobTablePrintData.map((row: any, rowIndex: any) => (
+                                                            <tr key={rowIndex}>
+                                                                <td className=""></td>
+                                                                <td className=""></td>
+                                                                <td className=""></td>
+                                                                <td className=""></td>
+                                                                <td className=""></td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+
+
+                                        {/* <div className="separator"></div> */}
+
+
 
 
 

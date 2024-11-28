@@ -713,6 +713,7 @@ export default function CreateGrnVoucherPageSub() {
                                                                     <input
                                                                         className='form-select form-select-solid '
                                                                         type="number"
+                                                                        step="any"
                                                                         min={1}
 
                                                                         value={productItem.weight_value || 1}
@@ -725,6 +726,7 @@ export default function CreateGrnVoucherPageSub() {
                                                                     <input
                                                                         className='form-select form-select-solid '
                                                                         type="number"
+                                                                        step="any"
                                                                         min={0}
                                                                         readOnly={true}
                                                                         value={productItem.remaining_weight}
