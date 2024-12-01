@@ -50,7 +50,7 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
     const componentRefForReceipt = useRef(null);
     const handlePrintReceipt = useReactToPrint({
         content: () => componentRefForReceipt.current,
-        documentTitle: 'Order Receipt',
+        documentTitle: 'Job Card',
 
     });
 
@@ -93,14 +93,10 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
 
                             <div className="mw-lg-950px mx-auto w-100">
 
-                                <div className="d-flex justify-content-between flex-column flex-sm-row mb-19">
-                                    <h4 className="fw-bolder text-gray-800 fs-2qx pe-5 pb-7">JOB CARD INVOICE</h4>
-
+                                <div className="d-flex justify-content-between flex-column flex-sm-row mt-15">
+                                    <h4 className="fw-bolder text-gray-800 fs-2qx pe-5 pb-7">JOB CARD #{jobCardDetailForPrinting?.job_card_no}</h4>
                                     <div className="text-sm-end">
-
                                         <a href="#" className="d-block mw-150px ms-sm-auto">
-
-
                                             {
                                                 (jobCardDetailForPrinting?.show_company_detail == true || jobCardDetailForPrinting?.show_company_detail == 'true' || jobCardDetailForPrinting?.show_company_detail == '1') &&
                                                 (
@@ -112,49 +108,17 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                 )
                                             }
                                         </a>
-
-                                        <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
-                                            <div>Sheeba Inventory system, Karachi</div>
-                                            {/* <div>Mississippi 96522</div> */}
-                                        </div>
-
                                     </div>
                                 </div>
-
                                 <div className="pb-12 printview_jobcard">
-
-                                    <div className="d-flex flex-column gap-7 gap-md-10">
-
-
-                                        <div className='row'>
-
-
-
-
+                                    <div className="d-flex flex-column gap-md-5">
+                                        <div className='row mb-10'>
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
-                                                        <div className="print-form-label">Job No:</div>
-                                                        <div className="print-form-value">{jobCardDetailForPrinting?.job_card_no}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className='col-lg-4'>
-                                                <div className="mb-10">
-                                                    <div className='print-form-section'>
-                                                        <div className="print-form-label">Order Date:</div>
-                                                        <div className="print-form-value">{jobCardDetailForPrinting?.order_date}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className='col-lg-4'>
-                                                <div className="mb-10">
-                                                    <div className='print-form-section'>
-                                                        <div className="print-form-label">Dispatch Date:</div>
-                                                        <div className="print-form-value">{jobCardDetailForPrinting?.dispatch_date}</div>
+                                                        <div className="print-form-label">Order Date | Dispatch Date</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.order_date} | {jobCardDetailForPrinting?.dispatch_date}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -216,15 +180,13 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
-                                                        <div className="print-form-label">Reference:</div>
+                                                        <div className="print-form-label">Sales Person:</div>
                                                         <div className="print-form-value">{jobCardDetailForPrinting?.job_card_reference}</div>
                                                     </div>
                                                 </div>
                                             </div>
 
-
-
-                                             <div className='col-lg-4'>
+                                            <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
                                                         <div className="print-form-label">Rate:</div>
@@ -233,7 +195,7 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                 </div>
                                             </div>
 
-                                            <div className='col-lg-4 last_pane'>
+                                            <div className='col-lg-4' style={{width: "100%"}}>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
                                                         <div className="print-form-label">Special Request:</div>
@@ -242,80 +204,31 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                 </div>
                                             </div>
 
-
-
-                                        </div>
-
-
-                                      
-
-                                         <div className="separator"></div> 
-
-                                        <div className="row">
-                                            <div className="col-lg-12 col-md-12">
-                                                <div className='table-responsive'>
-
-                                                    <table className='table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4'>
-
-                                                        <thead>
-                                                            <tr className='fw-bold text-muted'>
-
-                                                                {/* <th className='min-w-80px'>Product Id</th> */}
-                                                                <th className='width-25'>Dispatch Place</th>
-                                                                <th className='width-75'>Weight/Quantity</th>
-
-
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody>
-
-                                                            {
-                                                                jobCardDetailForPrinting?.jobDistributionFields != undefined && jobCardDetailForPrinting?.jobDistributionFields.length > 0
-                                                                    ?
-                                                                    <>
-                                                                        {jobCardDetailForPrinting?.jobDistributionFields?.map((dispathItem: any, index: number) => (
-                                                                            <tr key={index}>
-
-
-                                                                                <td role="cell" className="ps-3">
-                                                                                    <div className='d-flex align-items-center'>
-
-                                                                                        <div className='d-flex justify-content-start flex-column'>
-                                                                                            <a className='text-gray-900 fw-bold text-hover-primary fs-6'>
-                                                                                                {makeAnyStringShortAppendDots(dispathItem?.dispatch_place, 20)}
-                                                                                            </a>
-
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </td>
-                                                                                <td role="cell" className="">{dispathItem.dispatch_weight_quantity}</td>
-
-                                                                            </tr>
-                                                                        ))}
-
-
-                                                                    </>
-                                                                    :
-                                                                    <tr>
-                                                                        <td colSpan={10}>
-                                                                            <div className='d-flex p-5 justify-content-center align-content-center'>
-                                                                                <h4 className='text-center'>No dispatch found</h4>
-                                                                            </div>
-                                                                        </td>
-
-
-                                                                    </tr>
-                                                            }
-
-                                                        </tbody>
-
-                                                    </table>
-
+                                            <div className='col-lg-4' style={{width: "50%"}}>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Materials</div>
+                                                        {
+                                                            jobCardDetailForPrinting?.jobCardAllProducts?.map((product: any) => (
+                                                                <div className="print-form-value">{product.product_name}</div>
+                                                            ))
+                                                        }
+                                                    </div>
                                                 </div>
-
                                             </div>
 
+                                            <div className='col-lg-4' style={{width: "50%"}}>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Dispatch</div>
+                                                        {
+                                                            jobCardDetailForPrinting?.jobDistributionFields?.map((item: any) => (
+                                                                <div className="print-form-value">{item.dispatch_place}: {item.dispatch_weight_quantity}</div>
+                                                            ))
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                         </div>
 
@@ -356,63 +269,80 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                 </div>
                                             </div>
 
+                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section-urdu'>
+                                                        <div className="print-form-label print-urdu-label" style={{ width: "90px" }}>پیِس کاوزن:</div>
+                                                        <div className="print-form-value "></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section-urdu'>
+                                                        <div className="print-form-label print-urdu-label">مکسنگ:</div>
+                                                        <div className='row'>
+                                                            <div className='col-lg-12'>
+                                                                <table className="print-job-card-empty-table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-
-
-
-
-                                        <div className="separator"></div>
 
                                         <div className="row">
                                             <div className="col-lg-12">
-                                                <table className="print-job-card-empty-table" >
+                                                <table className="print-job-card-empty-table">
                                                     <thead>
                                                         <tr>
-                                                            <th className=""></th>
-                                                            <th className=""></th>
-                                                            <th className=""></th>
-                                                            <th className=""></th>
-                                                            <th className=""></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {jobTablePrintData.map((row: any, rowIndex: any) => (
                                                             <tr key={rowIndex}>
-                                                                <td className=""></td>
-                                                                <td className=""></td>
-                                                                <td className=""></td>
-                                                                <td className=""></td>
-                                                                <td className=""></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
                                                             </tr>
                                                         ))}
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
-
-
-
-                                        {/* <div className="separator"></div> */}
-
-
-
-
-
-
-
                                     </div>
-
                                 </div>
-
-
-
                             </div>
-
                         </div>
-
                     </div>
-
-
                 </div>
 
                 <div className='admin-modal-footer'>

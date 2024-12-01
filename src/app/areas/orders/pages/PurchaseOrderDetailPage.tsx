@@ -418,6 +418,7 @@ export default function PurchaseOrderDetailPage() {
                         </form>
                         {isOpenReceiptModal === true ? (
                             <PurchaseOrderReceiptModal
+                                afterPrint={setIsOpenReceiptModal}
                                 data={orderDetails ? orderDetails : undefined}
                                 orderId={orderDetails ? undefined : purchase_order_id}
                             />

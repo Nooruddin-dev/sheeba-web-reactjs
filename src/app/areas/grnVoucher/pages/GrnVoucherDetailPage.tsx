@@ -269,20 +269,17 @@ export default function GrnVoucherDetailPage() {
                             </div>
                         </form>
 
-                        {
-                            isOpenReceiptModal == true
-                                ?
-                                <GrnVoucherReceiptModal
-                                    data={undefined}
-                                    voucherId={voucher_id}
-                                />
-                                :
-                                <>
-                                </>
-                        }
+
                     </KTCardBody>
                 </KTCard>
             </AdminLayout>
+            {
+                isOpenReceiptModal === true
+                &&
+                <GrnVoucherReceiptModal
+                    afterPrint={setIsOpenReceiptModal}
+                    voucherId={voucher_id} />
+            }
         </>
     )
 }

@@ -430,7 +430,7 @@ export default function CreateGrnVoucherPageSub() {
                     isOpenReceiptModal === true
                         ?
                         <GrnVoucherReceiptModal
-                            data={undefined}
+                            afterPrint={setIsOpenReceiptModal}
                             voucherId={latestGrnVoucherId} />
                         :
                         <>

@@ -9,7 +9,8 @@ import { getPurchaseOrderDetailsByIdApi } from '../../../../_sitecommon/common/h
 import { formatNumber } from '../../common/util';
 
 
-const PurchaseOrderReceiptModal: React.FC<{ data?: any, orderId?: string }> = ({
+const PurchaseOrderReceiptModal: React.FC<{ afterPrint: any, data?: any, orderId?: string }> = ({
+    afterPrint,
     data,
     orderId
 }) => {
@@ -18,6 +19,7 @@ const PurchaseOrderReceiptModal: React.FC<{ data?: any, orderId?: string }> = ({
     const handlePrintReceipt = useReactToPrint({
         content: () => componentRefForReceipt.current,
         documentTitle: 'Purchase Order',
+        onAfterPrint: () => { afterPrint(false); }
     });
 
     useEffect(() => {

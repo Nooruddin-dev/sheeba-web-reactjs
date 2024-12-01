@@ -918,6 +918,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                 isOpenReceiptModal == true
                     ?
                     <PurchaseOrderReceiptModal
+                        afterPrint={setIsOpenReceiptModal}
                         data={undefined}
                         orderId={latestOrderId}
                     />

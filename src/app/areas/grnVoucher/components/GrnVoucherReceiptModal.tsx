@@ -8,25 +8,26 @@ import { getDateCommonFormatFromJsonDate } from '../../../../_sitecommon/common/
 import { getGrnVoucherDetailByIdApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
 import { formatNumber } from '../../common/util';
 
-const GrnVoucherReceiptModal: React.FC<{ data: any, voucherId: any }> = ({
-    data,
+const GrnVoucherReceiptModal: React.FC<{ afterPrint: any, voucherId: any }> = ({
+    afterPrint,
     voucherId,
 }) => {
     const [grnVoucherDetail, setGrnVoucherDetail] = useState<any>(null);
     const componentRefForReceipt = useRef(null);
     const handlePrintReceipt = useReactToPrint({
         content: () => componentRefForReceipt.current,
-        documentTitle: 'Order Receipt',
+        documentTitle: 'GRN Voucher',
+        onAfterPrint: () => { afterPrint(false) }
     });
 
     useEffect(() => {
-        if (!data) {
-            getGrnVoucherDetailByIdService();
-        }
+        getGrnVoucherDetailByIdService();
     }, [voucherId]);
 
     useEffect(() => {
-        setTimeout(handlePrintReceipt);
+        if (grnVoucherDetail) {
+            setTimeout(handlePrintReceipt);
+        }
     }, [grnVoucherDetail]);
 
     const getGrnVoucherDetailByIdService = () => {
@@ -35,8 +36,6 @@ const GrnVoucherReceiptModal: React.FC<{ data: any, voucherId: any }> = ({
                 const { data } = res;
                 if (data) {
                     setGrnVoucherDetail(res?.data);
-                } else {
-                    setGrnVoucherDetail({});
                 }
             })
             .catch((err: any) => console.log(err, "err"));

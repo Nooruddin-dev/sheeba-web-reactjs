@@ -404,6 +404,7 @@ export default function VendorOrderDetailsPage() {
                             ?
 
                             <PurchaseOrderReceiptModal
+                                afterPrint={setIsOpenReceiptModal}
                                 data={undefined}
                                 orderId={purchase_order_id}
                             />
