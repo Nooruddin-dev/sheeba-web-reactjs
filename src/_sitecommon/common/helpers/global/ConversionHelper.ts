@@ -2,7 +2,7 @@
 import { format, differenceInCalendarDays } from 'date-fns';
 import { stringIsNullOrWhiteSpace } from './ValidationHelper';
 
-export const makeAnyStringShortAppenDots = (inputString: string, length: number) => {
+export const makeAnyStringShortAppendDots = (inputString: string, length: number) => {
 
   length = length ?? 50;
 

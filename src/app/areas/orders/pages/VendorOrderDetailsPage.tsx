@@ -36,6 +36,15 @@ export default function VendorOrderDetailsPage() {
         setIsOpenOrderItemVariantsModal(!isOpenOrderItemVariantsModal);
     }
 
+    window.addEventListener("afterprint", () => {
+        setIsOpenReceiptModal(false);
+    });
+
+
+    const print = () => {
+        setIsOpenReceiptModal(true);
+    };
+
     useEffect(() => {
         getPurchaseOrderDetailsByIdService();
     }, []);
@@ -395,8 +404,7 @@ export default function VendorOrderDetailsPage() {
                             ?
 
                             <PurchaseOrderReceiptModal
-                                isOpen={isOpenReceiptModal}
-                                closeModal={handleOpenCloseOrderReceiptModal}
+                                data={undefined}
                                 orderId={purchase_order_id}
                             />
                             :

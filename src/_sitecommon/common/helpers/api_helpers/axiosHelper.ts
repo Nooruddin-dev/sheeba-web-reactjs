@@ -18,7 +18,6 @@ export const apiRequest = axios.create({
 });
 apiRequest.interceptors.response.use(
   (response: AxiosResponse<any, any>) => {
-    console.log(response);
     
     if (response.status === 200 || response.status === 201) {
       return response; // Return the response for successful requests

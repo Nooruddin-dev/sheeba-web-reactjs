@@ -383,7 +383,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
 
 
                                                                     {
-                                                                        unitSubItem.unit_sub_type == 'Micon'
+                                                                        unitSubItem.unit_sub_type == 'Micron'
                                                                             ?
                                                                             <>
                                                                                 {/* <input

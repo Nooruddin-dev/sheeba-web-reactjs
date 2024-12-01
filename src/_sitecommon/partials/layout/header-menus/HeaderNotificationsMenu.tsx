@@ -15,7 +15,7 @@ import {
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../../app/globalStore/rootReducer'
 import BusinessPartnerTypesEnum from '../../../common/enums/BusinessPartnerTypesEnum'
-import { getDaysDiffFromAnyDate, getTimeSlotFromCreateOnDate, makeAnyStringShortAppenDots } from '../../../common/helpers/global/ConversionHelper'
+import { getDaysDiffFromAnyDate, getTimeSlotFromCreateOnDate, makeAnyStringShortAppendDots } from '../../../common/helpers/global/ConversionHelper'
 
 
 const HeaderNotificationsMenu: FC = () => {
@@ -122,7 +122,7 @@ const HeaderNotificationsMenu: FC = () => {
                   </span>
 
                   <a href='#' className='text-gray-800 text-hover-primary fw-bold'>
-                    {makeAnyStringShortAppenDots(log.message, 45)}
+                    {makeAnyStringShortAppendDots(log.message, 45)}
                   </a>
 
                   {/* <span className='badge badge-light fs-8'>

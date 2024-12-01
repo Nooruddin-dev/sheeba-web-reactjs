@@ -73,6 +73,44 @@ export const calculateItemLevelTaxValueNewForPO = (productItem: any) => {
     return (itemTotalTax ?? 0);
 }
 
+export const calculatePurchaseOrderLineItem = (productItem: any) => {
+    // Calculate subtotal
+    productItem.subtotal = (productItem.price || 0) * (productItem.weight || 0);
+    productItem.discounted_subtotal = (productItem.subtotal || 0) - (productItem.discount || 0);
+
+    // Calculate taxes
+    productItem.tax_1_amount = (productItem.discounted_subtotal/100) * (productItem.tax_1_percentage || 0);
+    productItem.tax_2_amount = (productItem.discounted_subtotal/100) * (productItem.tax_2_percentage || 0);
+    productItem.tax_3_amount = (productItem.tax_1_amount/100) * (productItem.tax_3_percentage || 0);
+    productItem.total_tax = productItem.tax_1_amount + productItem.tax_2_amount + productItem.tax_3_amount;
+
+    // Calculate total
+    productItem.total = productItem.discounted_subtotal + productItem.total_tax;
+    return productItem;
+}
+
+
+export const calculatePurchaseOrderCartSummary = (cart: any, allProducts: any, new_tax_percentage?: any, new_discount?: any) => {
+    const tax_percentage = new_tax_percentage ?? cart.tax_percentage;
+    const discount = new_discount ?? cart.discount;
+    let subtotal = 0;
+    let total_line_item_tax = 0;
+    let total_line_item_discount = 0;
+    let tax_amount = 0;
+    let total_tax = 0;
+    let total_discount = 0;
+    allProducts.forEach((productItem: any) => {
+        subtotal += productItem.total;
+        total_line_item_tax += productItem.total_tax || 0;
+        total_line_item_discount += productItem.discount || 0;
+    });
+    tax_amount = (subtotal / 100) * (tax_percentage || 0);
+    total_tax = total_line_item_tax + tax_amount;
+    total_discount = total_line_item_discount + (discount || 0);
+    const total = subtotal + tax_amount - discount;
+    return { subtotal, total_line_item_tax, total_line_item_discount, tax_percentage, discount, tax_amount, total_discount, total_tax, total }
+}
+
 
 export const calculateItemAmount = (po_rate: any, itemQuantity: any) => {
 

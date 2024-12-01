@@ -8,7 +8,7 @@ import SiteErrorMessage from '../../common/components/shared/SiteErrorMessage';
 import ReactSelect from 'react-select';
 import { gerProductionEntryListBySearchTermApi, getAllProductsForProductionEntryApi, getJobCardDetailByIdForEditApi, getProductDetailById } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
 import { showErrorMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
-import { makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
+import { makeAnyStringShortAppendDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { MachineTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
 import { convertToTwoDecimalFloat } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
 

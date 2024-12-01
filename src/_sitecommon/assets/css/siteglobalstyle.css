@@ -262,7 +262,7 @@ body #root .card-body{
             font-size: 14px !important; 
             margin-left: 0 !important;
             color: #000 !important;
-            border-bottom: 1px solid #cccccc8a !important;
+            border-bottom: 1px solid #cccccc8a;
           }
           
         }

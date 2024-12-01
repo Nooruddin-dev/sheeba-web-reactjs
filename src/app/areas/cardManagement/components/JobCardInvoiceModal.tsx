@@ -14,7 +14,7 @@ import { useReactToPrint } from 'react-to-print';
 import { KTIcon, toAbsoluteUrl, toAbsoluteUrlCustom } from '../../../../_sitecommon/helpers';
 import { stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 import { GetDefaultCurrencySymbol, getOrderDetailStatusBoundaryClass } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
-import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
+import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppendDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { getJobCardDetailByIdForEditApi, getPurchaseOrderDetailsByIdApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
 
 interface JobCardInvoiceModalInterface {
@@ -283,7 +283,7 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
 
                                                                                         <div className='d-flex justify-content-start flex-column'>
                                                                                             <a className='text-gray-900 fw-bold text-hover-primary fs-6'>
-                                                                                                {makeAnyStringShortAppenDots(dispathItem?.dispatch_place, 20)}
+                                                                                                {makeAnyStringShortAppendDots(dispathItem?.dispatch_place, 20)}
                                                                                             </a>
 
                                                                                         </div>

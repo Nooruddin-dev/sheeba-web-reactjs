@@ -14,7 +14,7 @@ import { useReactToPrint } from 'react-to-print';
 import { KTIcon, toAbsoluteUrl, toAbsoluteUrlCustom } from '../../../../_sitecommon/helpers';
 import { stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 import { GetDefaultCurrencySymbol, getOrderDetailStatusBoundaryClass } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
-import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
+import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppendDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { getJobDispatchReportDataByIdApi, getPurchaseOrderDetailsByIdApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
 import { DeliveryChallanUnits } from '../../../../_sitecommon/common/constants/DeliveryChallanUnits';
 
@@ -246,7 +246,7 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
 
                                                                                     <div className='d-flex justify-content-start flex-column'>
                                                                                         <a className='text-gray-900 fw-bold text-hover-primary fs-6'>
-                                                                                            {makeAnyStringShortAppenDots(dispathItem?.total_bags, 20)}
+                                                                                            {makeAnyStringShortAppendDots(dispathItem?.total_bags, 20)}
                                                                                         </a>
 
                                                                                     </div>

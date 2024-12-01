@@ -8,7 +8,7 @@ import SiteErrorMessage from '../../common/components/shared/SiteErrorMessage';
 import ReactSelect from 'react-select';
 import { gerProductionEntryListBySearchTermApi, getJobCardDetailByIdForEditApi, getProductDetailById } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
 import { showErrorMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
-import { makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
+import { makeAnyStringShortAppendDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { MachineTypesEnum, sqlDeleteTypesConst } from '../../../../_sitecommon/common/enums/GlobalEnums';
 import { convertToTwoDecimalFloat, generateUniqueIdWithDate } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
 import { calculateTaxValueNewFunc } from '../../../../_sitecommon/common/helpers/global/OrderHelper';
@@ -474,7 +474,7 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
 
                                                                         <div className='d-flex justify-content-start flex-column'>
                                                                             <a className='text-gray-900 fw-bold text-hover-primary fs-6'>
-                                                                                {makeAnyStringShortAppenDots(dispathItem?.total_bags, 20)}
+                                                                                {makeAnyStringShortAppendDots(dispathItem?.total_bags, 20)}
                                                                             </a>
 
                                                                         </div>

@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faPlus, faPrint } from '@fortawesome/free-solid-svg-icons';
 import ReactSelect from 'react-select';
 import { showErrorMsg, showSuccessMsg, showWarningMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
-import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
+import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppendDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { OrderTaxStatusEnum, sqlDeleteTypesConst } from '../../../../_sitecommon/common/enums/GlobalEnums';
 import { calculateItemsSubTotal, calculateJobCardAmountMaster, calculateTaxValueNewFunc } from '../../../../_sitecommon/common/helpers/global/OrderHelper';
 import { useNavigate, useParams } from 'react-router';
@@ -420,7 +420,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                 if (data && data != undefined && data != null) {
                     const customerOptions = res?.data?.map((product: any) => ({
                         value: product.productid,
-                        label: `${product.sku} -- ${makeAnyStringShortAppenDots(product.product_name, 40)}`
+                        label: `${product.sku} -- ${makeAnyStringShortAppendDots(product.product_name, 40)}`
                     }));
                     setSelectedSearchProductOptions(customerOptions);
                 } else {
@@ -1050,7 +1050,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
                                                                     <div className='d-flex justify-content-start flex-column'>
                                                                         <a className='text-gray-900 fw-bold text-hover-primary fs-6'>
-                                                                            {makeAnyStringShortAppenDots(dispathItem?.dispatch_place, 20)}
+                                                                            {makeAnyStringShortAppendDots(dispathItem?.dispatch_place, 20)}
                                                                         </a>
 
                                                                     </div>
@@ -1269,7 +1269,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
                                                                     <div className='d-flex justify-content-start flex-column'>
                                                                         <a className='text-gray-900 fw-bold text-hover-primary fs-6'>
-                                                                            {makeAnyStringShortAppenDots(productItem?.product_name, 20)}
+                                                                            {makeAnyStringShortAppendDots(productItem?.product_name, 20)}
                                                                         </a>
 
                                                                     </div>

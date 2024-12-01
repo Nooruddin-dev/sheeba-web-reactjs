@@ -2,359 +2,232 @@
 /* eslint-disable */
 
 import React, { useEffect, useRef, useState } from 'react';
-import ReactModal from 'react-modal';
-
-import { useForm } from 'react-hook-form';
-
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPrint } from '@fortawesome/free-solid-svg-icons';
-
 import { useReactToPrint } from 'react-to-print';
-import { KTIcon, toAbsoluteUrl, toAbsoluteUrlCustom } from '../../../../_sitecommon/helpers';
-import { stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
-import { GetDefaultCurrencySymbol, getOrderDetailStatusBoundaryClass } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
-import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
+import { toAbsoluteUrl } from '../../../../_sitecommon/helpers';
+import { getDateCommonFormatFromJsonDate } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { getPurchaseOrderDetailsByIdApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
-
-interface PurchaseOrderStatusFormInterface {
-    isOpen: boolean,
-    closeModal: any,
-    orderId: any
-
-}
+import { formatNumber } from '../../common/util';
 
 
-
-const PurchaseOrderReceiptModal: React.FC<PurchaseOrderStatusFormInterface> = ({
-    isOpen,
-    closeModal,
-    orderId,
-
+const PurchaseOrderReceiptModal: React.FC<{ data?: any, orderId?: string }> = ({
+    data,
+    orderId
 }) => {
-    const [orderDetails, setOrderDetails] = useState<any>({});
-
-
-
+    const [orderDetails, setOrderDetails] = useState<any>(data);
     const componentRefForReceipt = useRef(null);
     const handlePrintReceipt = useReactToPrint({
         content: () => componentRefForReceipt.current,
-        documentTitle: 'Order Receipt',
-
+        documentTitle: 'Purchase Order',
     });
 
+    useEffect(() => {
+        if (orderDetails) {
+            setTimeout(handlePrintReceipt);
+        }
+    }, [orderDetails])
 
 
     useEffect(() => {
-        getOrderDetailsByIdService();
+        if (orderId) {
+            getOrderDetailsById();
+        }
     }, [orderId]);
 
-    const getOrderDetailsByIdService = () => {
-
-
+    const getOrderDetailsById = () => {
         getPurchaseOrderDetailsByIdApi(orderId)
             .then((res: any) => {
-
                 const { data } = res;
                 if (data) {
                     setOrderDetails(res?.data);
-                } else {
-                    setOrderDetails({});
                 }
-
-           
-
-                setTimeout(handlePrintReceipt, 1000); // Delay of 1 second
-
-
             })
             .catch((err: any) => console.log(err, "err"));
     };
 
-
     return (
-        // <ReactModal
-        //     isOpen={isOpen}
-        //     onRequestClose={closeModal}
-        //     contentLabel="Example Modal"
-        //     className={"admin-large-modal"}
-        //     shouldCloseOnOverlayClick={false} 
-        // >
-
-
-            <div className='admin-modal-area' style={{display: 'none'}}>
-                <div className='admin-modal-header'>
-                    <h2>Purchase Order Receipt</h2>
-
-                    <div className='btn btn-sm btn-icon btn-active-color-primary' onClick={closeModal}>
-                        <KTIcon className='fs-1' iconName='cross' />
-                    </div>
-
-                </div>
-                <form
-
-                >
-                    <div className='modal-body py-lg-10 px-lg-10 custom-modal-height'>
-
-
-                        <div className="card" ref={componentRefForReceipt}>
-
-                            <div className="card-body py-5">
-
-                                <div className="mw-lg-950px mx-auto w-100">
-
-                                    <div className="d-flex justify-content-between flex-column flex-sm-row mb-19">
-                                        <h4 className="fw-bolder text-gray-800 fs-2qx pe-5 pb-7">PURCHASE ORDER RECEIPT</h4>
-
-                                        <div className="text-sm-end">
-
-                                            <a href="#" className="d-block mw-150px ms-sm-auto">
-                                               
-
-{
+        <div className='admin-modal-area' style={{ display: 'none' }}>
+            <form>
+                <div className='modal-body py-lg-10 px-lg-10 custom-modal-height'>
+                    <div className="card" ref={componentRefForReceipt}>
+                        <div className="card-body py-5">
+                            <div className="mw-lg-950px mx-auto w-100">
+                                <div className="d-flex justify-content-between flex-column flex-sm-row mb-19">
+                                    <h4 className="fw-bolder text-gray-800 fs-2qx pe-5 pb-7">Purchase Order</h4>
+                                    <div className="text-sm-end">
+                                        <a href="#" className="d-block mw-150px ms-sm-auto">
+                                            {
                                                 (orderDetails?.show_company_detail == true || orderDetails?.show_company_detail == 'true' || orderDetails?.show_company_detail == '1') &&
                                                 (
                                                     <img alt="Logo"
                                                         src={toAbsoluteUrl('media/logos/default_dark_2.png')}
-                                                        className="w-50" 
-                                                        height={50}
-                                                        />
+                                                        className="w-50"
+                                                        height={50} />
                                                 )
                                             }
-                                            </a>
+                                        </a>
+                                        {
+                                            (orderDetails?.show_company_detail == true || orderDetails?.show_company_detail == 'true' || orderDetails?.show_company_detail == '1') &&
+                                            (
 
-                                            {
-                                                (orderDetails?.show_company_detail == true || orderDetails?.show_company_detail == 'true' || orderDetails?.show_company_detail == '1') &&
-                                                (
-        
-                                                    <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
-                                                        <div>Sheeba Inventory System, Karachi</div>
-                                                    </div>
-                                                )
-                                            }
-
-                                        </div>
+                                                <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
+                                                    <div>Sheeba Inventory System, Karachi</div>
+                                                </div>
+                                            )
+                                        }
                                     </div>
-
-                                    <div className="pb-12">
-
-                                        <div className="d-flex flex-column gap-7 gap-md-10">
-
-                                            {/* <div className="fw-bold fs-2">Dear User,
-
-
-
-                                                <br />
-                                                <span className="text-muted fs-5">Here are the order details for the selected order.</span>
-                                            </div> */}
-
-                                            <div className="separator"></div>
-
-                                            <div className="d-flex flex-column flex-sm-row gap-7 gap-md-10 fw-bold">
-                                                <div className="flex-root d-flex flex-column">
-                                                    <span className="text-muted"> PO Number:</span>
-                                                    <span className="fs-5">{orderDetails?.po_number}</span>
-                                                </div>
-
-                                                <div className="flex-root d-flex flex-column">
-                                                    <span className="text-muted">  PO Ref:</span>
-                                                    <span className="fs-5">{orderDetails?.po_reference}</span>
-                                                </div>
-
-                                                <div className="flex-root d-flex flex-column">
-                                                    <span className="text-muted">   Delivery Date:</span>
-                                                    <span className="fs-5">{getDateCommonFormatFromJsonDate(orderDetails?.delivery_date)}</span>
-                                                </div>
-
-                                                <div className="flex-root d-flex flex-column">
-                                                    <span className="text-muted">       Company Name:</span>
-                                                    <span className="fs-5">{orderDetails?.company_name}</span>
-                                                </div>
-
-                                                <div className="flex-root d-flex flex-column">
-                                                    <span className="text-muted"></span>
-                                                    <span className="fs-5"></span>
-                                                </div>
-
-
-
-
-
-
-                                            </div>
-
-                                            <div className="d-flex flex-column flex-sm-row gap-7 gap-md-10 fw-bold ">
-                                                <div className="flex-root d-flex flex-column">
-                                                    <span className="text-muted">      Vendor:</span>
-                                                    <span className="fs-5">{orderDetails?.vendor_first_name} {orderDetails?.vendor_last_name}</span>
-                                                </div>
-
-                                                <div className="flex-root d-flex flex-column">
-                                                    <span className="text-muted">       Sale Representative:</span>
-                                                    <span className="fs-5">{orderDetails?.sale_representative_first_name} {orderDetails?.sale_representative_last_name}</span>
-                                                </div>
-
-                                                <div className="flex-root d-flex flex-column">
-                                                    <span className="text-muted"> Purchaser Name:</span>
-                                                    <span className="fs-5">{orderDetails?.purchaser_name}</span>
-                                                </div>
-
-                                                <div className="flex-root d-flex flex-column">
-                                                    <span className="text-muted"> Payment Terms:</span>
-                                                    <span className="fs-5">{orderDetails?.payment_terms}</span>
-                                                </div>
-                                                <div className="flex-root d-flex flex-column">
-                                                    <span className="text-muted">Remarks:</span>
-                                                    <span className="fs-5">{orderDetails?.remarks}</span>
-                                                </div>
-
-
-
-
-
-
-                                            </div>
-
-                                            <div className="d-flex justify-content-between flex-column">
-
-                                                <div className="table-responsive border-bottom mb-9">
-                                                    <table className="table align-middle table-row-dashed fs-6 gy-5 mb-0">
-                                                        <thead>
-                                                            <tr className="border-bottom fs-6 fw-bold text-muted bg-light">
-                                                                {/* <th className="min-w-175px pb-2 ps-3 rounded-start">Order Item ID</th> */}
-                                                                <th className="min-w-175px pb-2 ps-3 rounded-start">Product Name</th>
-                                                                <th className="min-w-70px text-end pb-2"></th>
-                                                                <th className="min-w-70px text-end pb-2">Cost</th>
-                                                                <th className="min-w-80px text-end pb-2">Weight</th>
-                                                                <th className="min-w-80px text-end pb-2">Amount</th>
-                                                                <th className="min-w-80px text-end pb-2">Item Tax</th>
-                                                                <th className="min-w-100px text-end pb-2 pe-3 rounded-end">Order Item Total</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody className="fw-semibold text-gray-600">
-
-                                                            {
-                                                                orderDetails?.order_items != undefined && orderDetails?.order_items?.length > 0
-                                                                    ?
-                                                                    orderDetails?.order_items?.map((record: any) => (
-                                                                        <tr>
-                                                                            {/* <td className="text-start">{record.line_item_id}</td> */}
-
-                                                                            <td className='text-start'>
-                                                                                <div className="d-flex align-items-center">
-
-                                                                                    {/* <a href="#" className="symbol symbol-50px">
-                                                                                        <span className="symbol-label"
-                                                                                            style={{ backgroundImage: `url(${toAbsoluteUrlCustom(record.productDefaultImage)})` }}
-                                                                                        ></span>
-                                                                                    </a> */}
-
-                                                                                    <div className="ms-5">
-                                                                                        <div className="fw-bold">  {record.product_name}</div>
-                                                                                        {/* <div className="fs-7 text-muted">Attribute Names Only</div> */}
-                                                                                    </div>
-
-                                                                                </div>
-                                                                            </td>
-
-                                                                            <td className="text-start">
-                                                                            <ul>
-                                                                                {record.inventory_units_info?.filter((x: { unit_type: number; })=>x.unit_type == 3)?.map((row: any) => (
-
-                                                                                    row.unit_sub_type == "Micon" ?
-                                                                                        <>
-                                                                                            <li style={{ border: "1px solid rgb(153 153 153 / 33%)", marginBottom: "4px", listStyle: "none" }}>
-                                                                                                {row.unit_sub_type} - {row.unit_value}
-                                                                                            </li>
-
-
-                                                                                        </>
-                                                                                        :
-                                                                                        <>
-                                                                                            <li style={{ border: "1px solid rgb(153 153 153 / 33%)", marginBottom: "4px", listStyle: "none" }}>
-                                                                                                {row.unit_sub_type} ({row.unit_short_name}) - {row.unit_value}
-                                                                                            </li>
-
-                                                                                        </>
-
-                                                                                ))}
-                                                                            </ul>
-                                                                        </td>
-
-                                                                            <td className="text-end">{record.po_rate}</td>
-                                                                            <td className="text-end">{record.quantity}</td>
-                                                                            <td className="text-end">{record.amount}</td>
-
-                                                                            <td className="text-end">{record.tax_amount}</td>
-                                                                            <td className="text-end">{record.item_total}</td>
-                                                                        </tr>
-                                                                    ))
-                                                                    :
-                                                                    <tr>
-                                                                        <td colSpan={20}>
-                                                                            <div className='d-flex text-center w-100 align-content-center justify-content-center'>
-                                                                                No matching records found
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                            }
-
-
-
-
-                                                            {/* <tr>
-                                                                <td colSpan={4} className="text-end">Subtotal</td>
-                                                                <td className="text-end">$264.00</td>
-                                                            </tr> */}
-                                                            <tr>
-
-                                                                <td colSpan={6} className="fs-3 text-gray-900 fw-bold text-end">Tax</td>
-                                                                <td className="text-gray-900 fs-3 fw-bolder text-end">{orderDetails?.order_tax_total}</td>
-                                                            </tr>
-                                                            {/* <tr>
-                                                                <td colSpan={4} className="text-end">Shipping Charges</td>
-                                                                <td className="text-end">{GetDefaultCurrencySymbol()}{orderDetails?.orderMainDetail?.orderTotalShippingCharges ?? 0}</td>
-                                                            </tr> */}
-                                                            <tr>
-                                                                <td colSpan={6} className="fs-3 text-gray-900 fw-bold text-end">Grand Total</td>
-                                                                <td className="text-gray-900 fs-3 fw-bolder text-end">{orderDetails?.order_total}</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-
-
                                 </div>
 
+                                <div className="pb-12">
+                                    <div className="d-flex flex-column gap-7 gap-md-10">
+                                        <div className="separator"></div>
+                                        <div className="d-flex flex-column flex-sm-row gap-7 gap-md-10 fw-bold">
+                                            <div className="flex-root d-flex flex-column">
+                                                <span className="text-muted">PO Number:</span>
+                                                <span className="fs-5">{orderDetails?.po_number}</span>
+                                            </div>
+                                            <div className="flex-root d-flex flex-column">
+                                                <span className="text-muted">PO Ref:</span>
+                                                <span className="fs-5">{orderDetails?.po_reference}</span>
+                                            </div>
+                                            <div className="flex-root d-flex flex-column">
+                                                <span className="text-muted">Delivery Date:</span>
+                                                <span className="fs-5">{getDateCommonFormatFromJsonDate(orderDetails?.delivery_date)}</span>
+                                            </div>
+                                            <div className="flex-root d-flex flex-column">
+                                                <span className="text-muted">Company Name:</span>
+                                                <span className="fs-5">{orderDetails?.company_name}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="d-flex flex-column flex-sm-row gap-7 gap-md-10 fw-bold ">
+                                            <div className="flex-root d-flex flex-column">
+                                                <span className="text-muted">Vendor:</span>
+                                                <span className="fs-5">{orderDetails?.vendor_first_name} {orderDetails?.vendor_last_name}</span>
+                                            </div>
+
+                                            <div className="flex-root d-flex flex-column">
+                                                <span className="text-muted">Sale Representative:</span>
+                                                <span className="fs-5">{orderDetails?.sale_representative_first_name} {orderDetails?.sale_representative_last_name}</span>
+                                            </div>
+
+                                            <div className="flex-root d-flex flex-column">
+                                                <span className="text-muted">Purchaser Name:</span>
+                                                <span className="fs-5">{orderDetails?.purchaser_name}</span>
+                                            </div>
+
+                                            <div className="flex-root d-flex flex-column">
+                                                <span className="text-muted">Payment Terms:</span>
+                                                <span className="fs-5">{orderDetails?.payment_terms}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="d-flex justify-content-between flex-column">
+                                            <div className="table-responsive border-bottom mb-9">
+                                                <table className="table align-middle table-row-dashed fs-6 gy-5 mb-0">
+                                                    <thead>
+                                                        <tr className="border-bottom fs-6 fw-bold text-muted bg-light">
+                                                            <th className="min-w-175px pb-2 ps-3 rounded-start">Product</th>
+                                                            <th className="min-w-70px text-end pb-2">Cost</th>
+                                                            <th className="min-w-80px text-end pb-2">Weight</th>
+                                                            <th className="min-w-80px text-end pb-2">Subtotal</th>
+                                                            <th className="min-w-80px text-end pb-2">Discount</th>
+                                                            <th className="min-w-80px text-end pb-2">Sales Tax %</th>
+                                                            <th className="min-w-80px text-end pb-2">Further Tax %</th>
+                                                            <th className="min-w-80px text-end pb-2">Advance Tax %</th>
+                                                            <th className="min-w-100px text-end pb-2 pe-2">Total Tax</th>
+                                                            <th className="min-w-100px text-end pb-2 pe-3 rounded-end">Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="fw-semibold text-gray-600">
+                                                        {
+                                                            orderDetails?.order_items != undefined && orderDetails?.order_items?.length > 0
+                                                                ?
+                                                                orderDetails?.order_items?.map((record: any, index: number) => (
+                                                                    <tr key={"order-item-" + index}>
+                                                                        <td className='text-start'>
+                                                                            <div className="d-flex align-items-center">
+                                                                                <div className="ms-5">
+                                                                                    <div className="fw-bold">{record.product_name}</div>
+                                                                                    <ul>
+                                                                                        {record.inventory_units_info?.filter((x: { unit_type: number; }) => x.unit_type == 3)?.map((row: any, index2: number) => (
+                                                                                            row.unit_sub_type == "Micron" ?
+                                                                                                <div key={"order-unit-" + index + "-" + index2}>
+                                                                                                    {row.unit_sub_type}: {row.unit_value} {row.unit_short_name}
+                                                                                                </div>
+                                                                                                :
+                                                                                                <div key={"order-unit-" + index + "-" + index2}>
+                                                                                                    {row.unit_sub_type}: {row.unit_value} {row.unit_short_name}
+                                                                                                </div>
+                                                                                        ))}
+                                                                                    </ul>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td className="text-end">{formatNumber(record.po_rate, 2)}</td>
+                                                                        <td className="text-end">{formatNumber(record.weight, 2)}</td>
+                                                                        <td className="text-end">{formatNumber(record.subtotal, 2)}</td>
+                                                                        <td className="text-end">{formatNumber(record.discount, 2)}</td>
+                                                                        <td className="text-end">{formatNumber(record.tax_1_percentage, 2)}</td>
+                                                                        <td className="text-end">{formatNumber(record.tax_2_percentage, 2)}</td>
+                                                                        <td className="text-end">{formatNumber(record.tax_3_percentage, 2)}</td>
+                                                                        <td className="text-end">{formatNumber(record.total_tax, 2)}</td>
+                                                                        <td className="text-end">{formatNumber(record.total, 2)}</td>
+                                                                    </tr>
+                                                                ))
+                                                                :
+                                                                <tr>
+                                                                    <td colSpan={20}>
+                                                                        <div className='d-flex text-center w-100 align-content-center justify-content-center'>
+                                                                            No matching records found
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                        }
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr className='border-none'>
+                                                            <td colSpan={9} className="fs-4 text-gray-900 fw-bold text-end pb-0 border-none">Subtotal</td>
+                                                            <td className="text-gray-900 fs-4 fw-bolder text-end pb-0 border-none">{formatNumber(orderDetails?.order_subtotal, 2)}</td>
+                                                        </tr>
+                                                        <tr className='border-none'>
+                                                            <td colSpan={9} className="fs-4 text-gray-900 fw-bold text-end pb-0 border-none">Discount</td>
+                                                            <td className="text-gray-900 fs-4 fw-bolder text-end pb-0 border-none">{formatNumber(orderDetails?.order_discount, 2)}</td>
+                                                        </tr>
+                                                        <tr className='border-none'>
+                                                            <td colSpan={9} className="fs-4 text-gray-900 fw-bold text-end pb-0 border-none">Tax</td>
+                                                            <td className="text-gray-900 fs-4 fw-bolder text-end pb-0 border-none">
+                                                                <div className='pb-0 border-none'>{formatNumber(orderDetails?.order_tax_amount, 2)}</div>
+                                                                <div className='pb-0 border-none' style={{fontSize: "12px !important"}}>({formatNumber(orderDetails?.order_tax_percentage, 2)} %)</div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr className='border-none'>
+                                                            <td colSpan={9} className="fs-4 text-gray-900 fw-bold text-end pb-0 border-none">Total Discount</td>
+                                                            <td className="text-gray-900 fs-4 fw-bolder text-end pb-0 border-none">{formatNumber(orderDetails?.order_total_discount, 2)}</td>
+                                                        </tr>
+                                                        <tr className='border-none'>
+                                                            <td colSpan={9} className="fs-4 text-gray-900 fw-bold text-end pb-0 border-none">Total Tax</td>
+                                                            <td className="text-gray-900 fs-4 fw-bolder text-end pb-0 border-none">{formatNumber(orderDetails?.order_total_tax, 2)}</td>
+                                                        </tr>
+                                                        <tr className='border-none'>
+                                                            <td colSpan={9} className="fs-4 text-gray-900 fw-bold text-end pb-0 border-none">Total</td>
+                                                            <td className="text-gray-900 fs-4 fw-bolder text-end pb-0 border-none">{formatNumber(orderDetails?.order_total, 2)}</td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex-root d-flex flex-column">
+                                    <span className="text-muted">Remarks:</span>
+                                    <span className="fs-5">{orderDetails?.remarks}</span>
+                                </div>
                             </div>
-
                         </div>
-
-
                     </div>
-
-                    <div className='admin-modal-footer'>
-                        <button className="btn btn-light" onClick={closeModal}>Close</button>
-                        <button type="button" className="btn btn-success my-1 me-12" onClick={handlePrintReceipt}>
-
-                            <FontAwesomeIcon icon={faPrint} className='me-2' />
-                            Print Receipt
-
-                        </button>
-                        {/* <button className="btn btn-danger" type='submit'>Update</button> */}
-                    </div>
-                </form>
-            </div>
-
-
-        // </ReactModal>
+                </div>
+            </form>
+        </div>
     )
 }
 

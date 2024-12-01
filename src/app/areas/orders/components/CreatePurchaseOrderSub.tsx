@@ -1,10 +1,8 @@
 /* eslint-disable */
 
-import React, { useEffect, useRef, useState } from 'react'
-import AdminLayout from '../../common/components/layout/AdminLayout';
-import AdminPageHeader from '../../common/components/layout/AdminPageHeader';
+import { useEffect, useRef, useState } from 'react'
 import { Content } from '../../../../_sitecommon/layout/components/content';
-import { KTCard, KTCardBody, KTIcon, toAbsoluteUrl } from '../../../../_sitecommon/helpers';
+import { KTCard, KTCardBody, KTIcon } from '../../../../_sitecommon/helpers';
 import { useForm } from 'react-hook-form';
 import SiteErrorMessage from '../../common/components/shared/SiteErrorMessage';
 import { createPurchaseOrderApi, gerProductsListBySearchTermApi, getAllUsersApi, getProductDetailById } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
@@ -12,13 +10,13 @@ import BusinessPartnerTypesEnum from '../../../../_sitecommon/common/enums/Busin
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import ReactSelect from 'react-select';
-import { showErrorMsg, showSuccessMsg, showWarningMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
-import { makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
-import { OrderTaxStatusEnum, taxRulesTypesConst, UnitTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
-import { calculateItemAmount, calculateItemLevelTaxValueNewForPO, calculateItemsSubTotal, calculateOrderItemAmount, calculateOrderItemAmountForPO, calculateTaxValue, calculateTaxValueNewFunc, createOrderUnitLabel, getTaxRateByTaxRuleId } from '../../../../_sitecommon/common/helpers/global/OrderHelper';
-import { useNavigate } from 'react-router';
+import { showErrorMsg, showSuccessMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
+import { makeAnyStringShortAppendDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
+import { UnitTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
+import { calculatePurchaseOrderLineItem, calculatePurchaseOrderCartSummary } from '../../../../_sitecommon/common/helpers/global/OrderHelper';
 import PurchaseOrderReceiptModal from '../components/PurchaseOrderReceiptModal';
-import { convertToTwoDecimalFloat, generateUniqueIdWithDate } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
+import { generateUniqueIdWithDate } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
+import { formatNumber } from '../../common/util';
 
 
 const customStyles = {
@@ -27,63 +25,31 @@ const customStyles = {
         border: 'none',
         boxShadow: 'none'
     }),
-    // input: (provided: any) => ({
-    //     ...provided,
-    //     border: 'none',
-    //     boxShadow: 'none'
-    // }),
-    // singleValue: (provided: any) => ({
-    //     ...provided,
-    //     border: 'none',
-    //     boxShadow: 'none'
-    // }),
-    // placeholder: (provided: any) => ({
-    //     ...provided,
-    //     border: 'none',
-    //     boxShadow: 'none'
-    // }),
 };
 
 export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone: any, isEditCloneCase: boolean }) {
     const { orderDetailForEditClone, isEditCloneCase } = props;
-
-    const navigate = useNavigate();
     const defaultValues: any = {};
     const formRefOrder = useRef<HTMLFormElement>(null);
-    const { register, handleSubmit, reset, getValues, setValue, formState: { errors } } = useForm({ defaultValues });
+    const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({ defaultValues });
     const [formSubmitted, setFormSubmitted] = useState(false);
-
-
     const [allVendorsList, setAllVendorsList] = useState<any>(null);
-
     const [allSaleRepresentativesList, setAllSaleRepresentativesList] = useState<any>(null);
     const [minDate, setMinDate] = useState('');
-    const [cartAllProducts, setCartAllProducts] = useState<any>([]);
+    const [maxDate, setMaxDate] = useState('');
+    const [cartProducts, setCartProducts] = useState<any>([]);
+    const [cartSummary, setCartSummary] = useState<any>({});
     const [searchQueryProduct, setSearchQueryProduct] = useState('');
     const [selectedSearchProductOptions, setSelectedSearchProductOptions] = useState([]);
     const [selectedProductDropDown, setSelectedProductDropDown] = useState<any>(null);
-
-
-
-    const [cartItemTotlal, setCartItemTotlal] = useState<number>(0);
-    const [orderTotal, setOrderTotal] = useState<number>(0);
-    const [grandTaxAmount, setGrandTaxAmount] = useState<number>(0);
-
-    const [orderLevelTaxRateType, setOrderLevelTaxRateType] = useState<any>(null);
-    const [orderLevelTaxValue, setOrderLevelTaxValue] = useState<any>(0);
-    const [orderLevelTaxFinalAmount, setOrderLevelTaxFinalAmount] = useState<number>(0);
-
     const [latestOrderId, setLatestOrderId] = useState<any>(0);
     const [isOpenReceiptModal, setIsOpenReceiptModal] = useState<boolean>(false);
 
-    const handleOpenCloseOrderReceiptModal = () => {
-        setIsOpenReceiptModal(!isOpenReceiptModal);
-    }
-
-
+    const print = () => {
+        setIsOpenReceiptModal(true);
+    };
 
     const createPurchaseOrder = (data: any) => {
-
         const { po_reference, delivery_date, company_name, order_date, vendor_id, sale_representative_id, purchaser_name, payment_terms, remarks, show_company_detail } = data;
         if (stringIsNullOrWhiteSpace(po_reference) || stringIsNullOrWhiteSpace(delivery_date)
             || stringIsNullOrWhiteSpace(company_name) || stringIsNullOrWhiteSpace(order_date) || stringIsNullOrWhiteSpace(vendor_id)
@@ -92,35 +58,40 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
             return false;
         }
 
-        if (cartAllProducts == undefined || cartAllProducts == null || cartAllProducts.length < 1) {
-            showErrorMsg('Please add produt');
+        if (cartProducts == undefined || cartProducts == null || cartProducts.length < 1) {
+            showErrorMsg('Please add product');
             return false;
         }
 
-        let cartProductsLocal: any = []
+        const weightlessProduct = cartProducts.find((product: any) => !product.weight);
+        if (weightlessProduct) {
+            showErrorMsg(weightlessProduct.product_name + ' weight is required');
+            return false;
+        }
 
+        const pricelessProduct = cartProducts.find((product: any) => !product.price);
+        if (pricelessProduct) {
+            showErrorMsg(pricelessProduct.product_name + ' cost is required');
+            return false;
+        }
 
-
-
-        cartAllProducts?.forEach((item: any) => {
-
-            // let taxRateItem = getTaxRateByTaxRuleId(allTaxRules, item?.product_tax_rule_id);
-            // let itemTotalTax = calculateTaxValue(taxRateItem, item?.price);
-
-
-
-            cartProductsLocal.push({
-                productid: item.productid,
-                weight_value: item.weight_value ?? 1,
+        let lineItems: any = []
+        cartProducts?.forEach((item: any) => {
+            lineItems.push({
+                product_id: item.productid,
+                weight: item.weight,
                 price: item?.price,
-
                 product_units_info: item?.product_units_info,
-
-                tax_rate_type: item?.tax_rate_type,
-                tax_value: item.tax_value,
-                itemTotalTax: item.itemTotalTax,
-
-                itemTotal: item?.itemTotal,
+                subtotal: item.subtotal,
+                discount: item.discount || 0,
+                tax_1_percentage: item.tax_1_percentage || 0,
+                tax_1_amount: item.tax_1_amount,
+                tax_2_percentage: item.tax_2_percentage || 0,
+                tax_2_amount: item.tax_2_amount,
+                tax_3_percentage: item.tax_3_percentage || 0,
+                tax_3_amount: item.tax_3_amount,
+                total_tax: item.total_tax,
+                total: item.total,
             })
         });
 
@@ -136,158 +107,99 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
             payment_terms: payment_terms,
             remarks: remarks,
             show_company_detail: show_company_detail ?? true,
-
-
-            cartAllProducts: cartProductsLocal,
-
-            orderTotal: orderTotal,
-
-            orderLevelTaxRateType: orderLevelTaxRateType,
-            orderLevelTaxValue: orderLevelTaxValue,
-            orderLevelTaxAmount: orderLevelTaxFinalAmount,
-
-
+            products: lineItems,
+            order_subtotal: cartSummary.subtotal,
+            order_tax_percentage: cartSummary.tax_percentage || 0,
+            order_tax_amount: cartSummary.tax_amount,
+            order_discount: cartSummary.discount || 0,
+            order_total_discount: cartSummary.total_discount,
+            order_total_tax: cartSummary.total_tax,
+            order_total: cartSummary.total,
         }
 
         createPurchaseOrderApi(formData)
             .then((res: any) => {
-
                 if (res?.data?.response?.success == true && (res?.data?.response?.responseMessage == "Saved Successfully!" || res?.data?.response?.responseMessage == 'Updated Successfully!')) {
                     showSuccessMsg("Saved Successfully!");
-
-                    setCartAllProducts([]);
+                    setCartProducts([]);
                     setLatestOrderId(res?.data?.response?.primaryKeyValue);
-
-
-                    setIsOpenReceiptModal(true);
-
-                    //--reset the form using form reset() method
+                    print();
                     reset();
                     setFormSubmitted(false);
-                    //navigate('/site/purchase-orders-list');
-
                 } else if (res?.data?.response?.success == false && !stringIsNullOrWhiteSpace(res?.data?.response?.responseMessage)) {
                     showErrorMsg(res?.data?.response?.responseMessage);
                 }
                 else {
                     showErrorMsg("An error occured. Please try again!");
                 }
-
-
             })
             .catch((err: any) => {
                 console.error(err, "err");
                 showErrorMsg("An error occured. Please try again!");
             });
-
-        // reset(); // Clear the form after submission
     };
 
     const handleSelectProductDropDown = (selectedOption: any) => {
-        // Set the selected customer state
-
         setSelectedProductDropDown(null);
-
-        const productidSelected = selectedOption?.value;
-
-        // const productExists = cartAllProducts.some((item: { productid: any; }) => item.productid == productidSelected);
-        // if (productExists) {
-        //     showWarningMsg('Product already added in the list');
-        //     return false;
-        // }
-
-
-
-        getProductDetailById(productidSelected)
+        const productIdSelected = selectedOption?.value;
+        const productAlreadyInCart = cartProducts.some((product: any) => product.productid === productIdSelected);
+        if (productAlreadyInCart) {
+            showErrorMsg("Product is already added to this purchase order");
+            return;
+        }
+        getProductDetailById(productIdSelected)
             .then((res: any) => {
-             
                 const { data } = res;
                 if (data) {
                     data.unique_id = generateUniqueIdWithDate();
-
+                    data.price = 0;
+                    data.weight = 0;
+                    data.tax_1_percentage = 0;
+                    data.tax_2_percentage = 0;
+                    data.tax_3_percentage = 0;
+                    data.discount = 0;
                     if (data.product_latest_purchase_order_item && data.product_latest_purchase_order_item.po_rate &&
                         data.product_latest_purchase_order_item.po_rate > 0) {
                         data.price = data.product_latest_purchase_order_item.po_rate;
                     }
-
-                    setCartAllProducts((prevCart: any) => [...prevCart, data]);
+                    setCartProducts((prevCart: any) => {
+                        const product = calculatePurchaseOrderLineItem(data);
+                        return [...prevCart, product]
+                    });
                 }
 
 
             })
             .catch((err: any) => console.log(err, "err"));
-
-
-        // setSelectedCustomerObject(allCustomers?.find((x: { busnPartnerId: any; }) => x.busnPartnerId == selectedOption?.value));
     };
 
-    const handleWeightChange = (index: number, newWeight: number) => {
-        setCartAllProducts((prevCart: any) => {
-            const updatedCart = [...prevCart];
-            updatedCart[index] = { ...updatedCart[index], weight_value: newWeight };
-            return updatedCart;
-        });
-    };
-
-
-    const handleProductTaxRateTypeChange = (index: number, event: any) => {
-        const { value } = event.target;
-
-        //--first empty this row tax value if rate type change
-        setCartAllProducts((prevProducts: any) => {
-            const updatedProducts = [...prevProducts];
-            updatedProducts[index].tax_value = 0;
-            return updatedProducts;
+    const handleLineItemChange = (index: number, key: string, value: number) => {
+        setCartProducts((prevProducts: any) => {
+            const products = [...prevProducts];
+            products[index] = { ...products[index], [key]: value ?? 0 };
+            const updatedProduct = calculatePurchaseOrderLineItem(products[index])
+            products[index] = { ...products[index], ...updatedProduct };
+            return products;
         });
 
+    };
 
-        setCartAllProducts((prevProducts: any) => {
-            const updatedProducts = [...prevProducts];
-            updatedProducts[index].tax_rate_type = value;
-            return updatedProducts;
+    const handleCartTaxChange = (value: number) => {
+        setCartSummary((prevCart: any) => {
+            return { ...calculatePurchaseOrderCartSummary(prevCart, cartProducts, value) };
         });
-    };
+    }
 
-    const hanldeProductTaxValue = (index: number, value: number) => {
-
-
-        let taxRateType = cartAllProducts[index]?.tax_rate_type;
-        if (taxRateType == undefined || taxRateType == null || stringIsNullOrWhiteSpace(taxRateType) == true) {
-
-            showErrorMsg('Please select tax type from drop down!');
-            return false;
-        }
-
-        setCartAllProducts((prevProducts: any) => {
-            const updatedProducts = [...prevProducts];
-            updatedProducts[index].tax_value = value;
-            return updatedProducts;
+    const handleCartDiscountChange = (value: number) => {
+        setCartSummary((prevCart: any) => {
+            return { ...calculatePurchaseOrderCartSummary(prevCart, cartProducts, undefined, value) };
         });
-    };
-
-    const hanldeProductPriceChange = (index: number, value: number) => {
-        setCartAllProducts((prevProducts: any) => {
-            const updatedProducts = [...prevProducts];
-            updatedProducts[index].price = value;
-            return updatedProducts;
-        });
-    };
-
-    const handleUnitValueChangeForRollType = (productIndex: number, unitIndex: number, value: number) => {
-        const updatedProducts = [...cartAllProducts];
-        updatedProducts[productIndex].product_units_info[unitIndex].unit_value = value;
-        setCartAllProducts(updatedProducts);
-
-    };
-
-
+    }
 
     const removeProductFromCart = (e: any, productid: number) => {
         e.preventDefault();
-        setCartAllProducts((prevProducts: any) => prevProducts.filter((product: { productid: number; }) => product.productid !== productid));
+        setCartProducts((prevProducts: any) => prevProducts.filter((product: { productid: number; }) => product.productid !== productid));
     };
-
-
 
 
     const setMinDeliveryDate = () => {
@@ -299,39 +211,37 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
         setMinDate(`${yyyy}-${mm}-${dd}`);
     }
 
+    const setMaxOrderDate = () => {
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const dd = String(today.getDate()).padStart(2, '0');
+        setMaxDate(`${yyyy}-${mm}-${dd}`);
+    }
+
     useEffect(() => {
-        let itemTotal = calculateItemsSubTotal(cartAllProducts);
-        setCartItemTotlal(itemTotal);
+        setCartSummary((prevCart: any) => {
+            return { ...calculatePurchaseOrderCartSummary(prevCart, cartProducts, prevCart.tax_percentage) };
+        });
+    }, [cartProducts]);
 
-        let orderLevelTaxValueLocal = 0;
-        if (orderLevelTaxRateType && !stringIsNullOrWhiteSpace(orderLevelTaxRateType)) {
-            orderLevelTaxValueLocal = calculateTaxValueNewFunc(itemTotal, orderLevelTaxRateType, (orderLevelTaxValue ?? 0));
-
-            itemTotal = itemTotal + orderLevelTaxValueLocal;
-            setOrderLevelTaxFinalAmount(orderLevelTaxValueLocal);
-        }
-
-        //--calcualte all taxes (product level + order level)
-        let itemsGrandTotalTax = cartAllProducts?.reduce((total: any, product: any) => total + product.itemTotalTax, 0);
-
-        const itemsGrandTotalTaxNumber = convertToTwoDecimalFloat(itemsGrandTotalTax ?? "0");
-        let grandTaxAmount = convertToTwoDecimalFloat((orderLevelTaxValueLocal + itemsGrandTotalTaxNumber));
-
-        setGrandTaxAmount(convertToTwoDecimalFloat(grandTaxAmount));
-
-        setOrderTotal(convertToTwoDecimalFloat(itemTotal));
-
-
-
-
-    }, [cartAllProducts, orderLevelTaxRateType, orderLevelTaxValue]);
-
-
-    //-- Do not add any dependency in array of this useEffect()
     useEffect(() => {
         setMinDeliveryDate();
+        setMaxOrderDate();
         getAllVendorsListService();
         getAllSaleRepresentativesListService();
+        setCartSummary({
+            subtotal: 0,
+            total_line_item_discount: 0,
+            total_line_item_tax: 0,
+            discount: 0,
+            tax_percentage: 0,
+            tax_amount: 0,
+            total_discount: 0,
+            total_tax: 0,
+            total: 0,
+        })
 
         // Set the default value for show_company_detail
         setValue('show_company_detail', true);
@@ -347,55 +257,39 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                 setValue('payment_terms', orderDetailForEditClone.payment_terms);
                 setValue('remarks', orderDetailForEditClone.remarks);
 
-
-                //--get order level tax info and set order level taxes
-                const orderLevelTaxLocal = orderDetailForEditClone?.order_taxes?.find(
-                    (x: {
-                        line_item_id: undefined; purchase_order_id: number;
-                    }) => x.purchase_order_id === orderDetailForEditClone.purchase_order_id && (x.line_item_id == undefined || x.line_item_id == null)
-                );
-                setOrderLevelTaxRateType(orderLevelTaxLocal?.tax_rate_type ?? "Percentage");
-                setOrderLevelTaxValue(orderLevelTaxLocal?.tax_value ?? 0);
-
-
-                //-- get all products for that order and set in setCartAllProducts
+                //-- get all products for that order and set in setCartProducts
                 if (orderDetailForEditClone.order_items && orderDetailForEditClone.order_items.length > 0) {
                     try {
-                        const promises = orderDetailForEditClone.order_items.map((orderEditElement: any) =>
-                            getProductDetailById(orderEditElement.product_id).then((res) => {
+                        const promises = orderDetailForEditClone.order_items.map((orderItem: any) =>
+                            getProductDetailById(orderItem.product_id).then((res) => {
                                 const { data } = res;
                                 if (data) {
                                     data.unique_id = generateUniqueIdWithDate();
-                                    data.price = orderEditElement.po_rate;
-                                    data.weight_value = orderEditElement.weight_value || orderEditElement.weight;
-
-
-                                    if (orderDetailForEditClone?.order_taxes?.length > 0) {
-                                        const orderItemTax = orderDetailForEditClone?.order_taxes?.find(
-                                            (x: { line_item_id: number; }) => x.line_item_id === orderEditElement.line_item_id
-                                        );
-                                        if (orderItemTax) {
-                                            data.tax_rate_type = orderItemTax.tax_rate_type ?? 'Percentage';
-                                            data.tax_value = orderItemTax.tax_value ?? 0;
-                                        }
-                                    }
+                                    data.price = parseFloat(orderItem.po_rate);
+                                    data.weight = parseFloat(orderItem.weight);
+                                    data.discount = parseFloat(orderItem.discount);
+                                    data.tax_1_percentage = parseFloat(orderItem.tax_1_percentage);
+                                    data.tax_2_percentage = parseFloat(orderItem.tax_2_percentage);
+                                    data.tax_3_percentage = parseFloat(orderItem.tax_3_percentage);
                                 }
                                 return data;
                             })
                         );
 
                         const results = await Promise.all(promises);
-                        // Filter out any undefined data (in case any API call fails or returns no data)
                         const validResults = results?.filter((data) => data !== undefined);
-
-
-                        // Set the cart or any other useState variable with the aggregated results
-                        setCartAllProducts(validResults);
+                        setCartProducts(() => {
+                            const cartProducts = validResults.map((result) => calculatePurchaseOrderLineItem(result));
+                            setCartSummary(() => {
+                                const summary = calculatePurchaseOrderCartSummary({}, cartProducts, parseFloat(orderDetailForEditClone.order_discount), parseFloat(orderDetailForEditClone.order_tax_percentage));
+                                return summary;
+                            });
+                            return cartProducts;
+                        });
                     } catch (error) {
                         console.error("Error fetching product details", error);
                     }
                 }
-
             }
         }, 1000);
 
@@ -451,9 +345,6 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
             .catch((err: any) => console.log(err, "err"));
     };
 
-
-
-
     // Fetch options when the search query changes
     useEffect(() => {
         if (searchQueryProduct && stringIsNullOrWhiteSpace(searchQueryProduct) == false) {
@@ -473,7 +364,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                 if (data && data != undefined && data != null) {
                     const customerOptions = res?.data?.map((product: any) => ({
                         value: product.productid,
-                        label: `${product.sku} -- ${makeAnyStringShortAppenDots(product.product_name, 40)}`
+                        label: `${product.sku} -- ${makeAnyStringShortAppendDots(product.product_name, 40)}`
                     }));
                     setSelectedSearchProductOptions(customerOptions);
                 } else {
@@ -485,19 +376,11 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
             });
     };
 
-
-
     return (
         <>
-
-
             <Content>
                 <KTCard>
-
-
-
                     <KTCardBody className='py-4'>
-
                         <form ref={formRefOrder}
                             onSubmit={(e) => {
                                 handleSubmit(createPurchaseOrder)(e);
@@ -534,7 +417,6 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                             <label className="form-label required ">Delivery Date</label>
                                             <input
                                                 type="date"
-
                                                 className={`form-control form-control-solid ${formSubmitted ? (errors.delivery_date ? 'is-invalid' : 'is-valid') : ''}`}
                                                 id="delivery_date" {...register("delivery_date", { required: true })}
                                                 min={minDate} // Set the minimum date
@@ -565,10 +447,9 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                             <label className="form-label required "> Date</label>
                                             <input
                                                 type="date"
-
                                                 className={`form-control form-control-solid ${formSubmitted ? (errors.order_date ? 'is-invalid' : 'is-valid') : ''}`}
                                                 id="order_date" {...register("order_date", { required: true })}
-
+                                                max={maxDate}
                                                 placeholder="Enter date"
                                             />
                                             {errors.order_date && <SiteErrorMessage errorMsg='Date is required' />}
@@ -580,12 +461,9 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                             <label className="form-label required">Vendor </label>
                                             <select
                                                 className={`form-select form-select-solid ${formSubmitted ? (errors.vendor_id ? 'is-invalid' : 'is-valid') : ''}`}
-
                                                 aria-label="Select example"
-                                                id="vendor_id" {...register("vendor_id", { required: true })}
-                                            >
+                                                id="vendor_id" {...register("vendor_id", { required: true })}>
                                                 <option value=''>--Select--</option>
-
                                                 {allVendorsList?.map((item: any, index: any) => (
                                                     <option key={index} value={item.busnPartnerId}>
                                                         {item.firstName}
@@ -679,31 +557,9 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                             {errors.show_company_detail && <SiteErrorMessage errorMsg='Tax status is required' />}
                                         </div>
                                     </div>
-
-
-
-
-
-
-
-
-
-
-
-
                                 </div>
-
                             </div>
-
-                            {/* <div className='admin-modal-footer'>
-                              
-                                <button className="btn btn-danger" type='submit'>Create Order</button>
-                            </div> */}
-
                         </form>
-
-
-
                     </KTCardBody>
                 </KTCard>
 
@@ -815,142 +671,128 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
 
                                         <thead>
                                             <tr className='fw-bold text-muted'>
-
-
-                                                <th className='min-w-100px'>Product Name</th>
-                                                <th className='min-w-80px'>SKU</th>
-                                                <th className='min-w-300px'>Unit Info</th>
-
-                                                <th className='min-w-150px'> Cost</th>
-
-                                                <th className='min-w-100px'>Weight</th>
-                                                <th className='min-w-100px'>Unit</th>
-                                                <th className='min-w-80px'>Amount</th>
-                                                <th className='min-w-200px'>Item Tax</th>
-
-                                                <th className='min-w-80px'>Item Total Tax</th>
-                                                <th className='min-w-80px text-center'>Item Total</th>
-                                                <th className='min-w-50px text-start'>Actions</th>
+                                                <th className='min-w-80px text-start'>SKU</th>
+                                                <th className='min-w-200px text-start'>Product Name</th>
+                                                <th className='min-w-150px'>Cost</th>
+                                                <th className='min-w-150px'>Weight</th>
+                                                <th className='min-w-80px'>Unit</th>
+                                                <th className='min-w-150px'>Subtotal</th>
+                                                <th className='min-w-150px'>Discount</th>
+                                                <th className='min-w-150px'>Sales Tax %</th>
+                                                <th className='min-w-150px'>Further Tax %</th>
+                                                <th className='min-w-150px'>Advance Tax %</th>
+                                                <th className='min-w-150px'>Total Tax</th>
+                                                <th className='min-w-150px'>Total</th>
+                                                <th className='min-w-50px'></th>
                                             </tr>
                                         </thead>
 
                                         <tbody>
 
                                             {
-                                                cartAllProducts != undefined && cartAllProducts.length > 0
+                                                cartProducts != undefined && cartProducts.length > 0
                                                     ?
                                                     <>
-                                                        {cartAllProducts?.map((productItem: any, index: number) => (
+                                                        {cartProducts?.map((productItem: any, index: number) => (
                                                             <tr key={index}>
-
-
+                                                                <td role="cell">{productItem.sku}</td>
                                                                 <td role="cell" className="ps-3">
-                                                                    <div className='d-flex align-items-center'>
-
-                                                                        <div className='d-flex justify-content-start flex-column'>
-                                                                            <a className='text-gray-900 fw-bold text-hover-primary fs-6'>
-                                                                                {makeAnyStringShortAppenDots(productItem?.product_name, 20)}
-                                                                            </a>
-
-                                                                        </div>
+                                                                    <div>
+                                                                        <b>{productItem?.product_name}</b>
+                                                                    </div>
+                                                                    <div>
+                                                                        {productItem.product_units_info && productItem.product_units_info.length > 0 ? (
+                                                                            <div className='d-flex flex-column' style={{ maxHeight: "100px", overflow: "auto" }}>
+                                                                                {
+                                                                                    productItem.product_units_info
+                                                                                        ?.filter((x: { unit_type: any; }) => x.unit_type == UnitTypesEnum.Roll)
+                                                                                        ?.map((productUnit: any, unitIndex: number) => (
+                                                                                            <div key={unitIndex} className="d-flex justify-content-between align-items-center">
+                                                                                                <i>{productUnit.unit_sub_type}: {productUnit.unit_value} {productUnit.unit_short_name ?? ''}</i>
+                                                                                            </div>
+                                                                                        ))
+                                                                                }
+                                                                            </div>
+                                                                        ) : (
+                                                                            <div>
+                                                                                {/* Handle other unit types here */}
+                                                                            </div>
+                                                                        )}
                                                                     </div>
                                                                 </td>
-                                                                <td role="cell" className="">{productItem.sku}</td>
-                                                                <td role="cell" className="">
-                                                                    {productItem.product_units_info && productItem.product_units_info.length > 0 ? (
-                                                                        <div className='d-flex flex-column' style={{ maxHeight: "100px", overflow: "auto" }}>
-                                                                            {productItem.product_units_info?.filter((x: { unit_type: any; })=>x.unit_type == UnitTypesEnum.Roll)?.map((productUnit: any, unitIndex: number) => (
-                                                                                <div key={unitIndex} className="mb-2 d-flex justify-content-between align-items-center">
-                                                                                    <label>{createOrderUnitLabel(productUnit)}</label>
-                                                                                    <input
-                                                                                        className='order-unit-field'
-                                                                                        type="number"
-                                                                                        min={0}
-                                                                                        step="any"
-                                                                                        value={productUnit.unit_value || 0}
-                                                                                        // onChange={(e) => handleUnitValueChangeForRollType(index, unitIndex, parseFloat(e.target.value))}
-                                                                                        readOnly={true}
-                                                                                        placeholder={``}
-                                                                                    />
-                                                                                </div>
-                                                                            ))}
-                                                                        </div>
-                                                                    ) : (
-                                                                        <div>
-                                                                            {/* Handle other unit types here */}
-                                                                        </div>
-                                                                    )}
-
-                                                                </td>
-
-                                                                <td>
-                                                                    <a className='text-gray-900 fw-bold text-hover-primary d-block fs-6'>
-                                                                        {/* {productItem?.price} */}
-
-                                                                        <input
-                                                                            className='form-select form-select-solid item-cart-price'
-                                                                            type="number"
-                                                                            min={1}
-                                                                            step="any"
-                                                                            value={productItem.price || 0}
-                                                                            onChange={(e) => hanldeProductPriceChange(index, parseInt(e.target.value, 10))}
-
-                                                                        />
-                                                                    </a>
-
-                                                                </td>
-
-                                                                <td className='text-end '>
+                                                                <td role="cell">
                                                                     <input
-                                                                        className='form-select form-select-solid '
+                                                                        className='form-control'
                                                                         type="number"
                                                                         min={1}
-                                                                        value={productItem.weight_value || 1}
-                                                                        onChange={(e) => handleWeightChange(index, parseInt(e.target.value, 10))}
-
+                                                                        step="0.01"
+                                                                        value={productItem.price}
+                                                                        onChange={(e) => handleLineItemChange(index, 'price', parseFloat(e.target.value))}
+                                                                    />
+                                                                </td>
+                                                                <td role="cell">
+                                                                    <input
+                                                                        className='form-control'
+                                                                        type="number"
+                                                                        min={1}
+                                                                        step="0.01"
+                                                                        value={productItem.weight}
+                                                                        onChange={(e) => handleLineItemChange(index, 'weight', parseFloat(e.target.value))}
                                                                     />
                                                                 </td>
                                                                 <td>
                                                                     <span>{productItem.unit_short_name}</span>
                                                                 </td>
-                                                                <td role="cell" className="">{calculateItemAmount(productItem.price, productItem.weight_value)}</td>
-
-                                                                <td role="cell" className="">
-                                                                    <div className="tax-container">
-                                                                        <select
-                                                                            value={productItem.tax_rate_type ?? ''}
-                                                                            onChange={(event) => handleProductTaxRateTypeChange(index, event)}
-
-                                                                        >
-                                                                            <option value="">Select</option>
-                                                                            <option value="Percentage">Percentage</option>
-                                                                            <option value="Fixed">Fixed</option>
-
-                                                                        </select>
-                                                                        <input
-                                                                            className='form-control'
-                                                                            type="number"
-                                                                            min={0}
-                                                                            step="any"
-                                                                            value={productItem.tax_value || 0}
-                                                                            onChange={(e) => hanldeProductTaxValue(index, parseInt(e.target.value, 10))}
-                                                                            placeholder="Enter tax value"
-                                                                        />
-                                                                    </div>
+                                                                <td role="cell">
+                                                                    {productItem?.subtotal?.toFixed(2) || 0}
                                                                 </td>
-
-
-
-                                                                <td className='text-center '>
-                                                                    {calculateItemLevelTaxValueNewForPO(productItem)}
-
-
+                                                                <td role="cell">
+                                                                    <input
+                                                                        className='form-control'
+                                                                        type="number"
+                                                                        min={0}
+                                                                        step="0.01"
+                                                                        value={productItem.discount}
+                                                                        onChange={(e) => handleLineItemChange(index, 'discount', parseFloat(e.target.value))}
+                                                                    />
                                                                 </td>
-
-                                                                <td className="text-center">{calculateOrderItemAmountForPO(productItem)}</td>
-
-
-
+                                                                <td role="cell">
+                                                                    <input
+                                                                        className='form-control'
+                                                                        type="number"
+                                                                        min={0}
+                                                                        step="0.01"
+                                                                        value={productItem.tax_1_percentage}
+                                                                        onChange={(e) => handleLineItemChange(index, 'tax_1_percentage', parseFloat(e.target.value))}
+                                                                    />
+                                                                    <span>({formatNumber(productItem.tax_1_amount, 2)})</span>
+                                                                </td>
+                                                                <td role="cell">
+                                                                    <input
+                                                                        className='form-control'
+                                                                        type="number"
+                                                                        min={0}
+                                                                        step="0.01"
+                                                                        value={productItem.tax_2_percentage}
+                                                                        onChange={(e) => handleLineItemChange(index, 'tax_2_percentage', parseFloat(e.target.value))}
+                                                                    />
+                                                                    <span>({formatNumber(productItem.tax_2_amount, 2)})</span>
+                                                                </td>
+                                                                <td role="cell">
+                                                                    <input
+                                                                        className='form-control'
+                                                                        type="number"
+                                                                        min={0}
+                                                                        step="0.01"
+                                                                        value={productItem.tax_3_percentage}
+                                                                        onChange={(e) => handleLineItemChange(index, 'tax_3_percentage', parseFloat(e.target.value))}
+                                                                    />
+                                                                    <span>({formatNumber(productItem.tax_3_amount, 2)})</span>
+                                                                </td>
+                                                                <td role="cell">
+                                                                    {productItem?.total_tax?.toFixed(2) || 0}
+                                                                </td>
+                                                                <td role="cell">{productItem?.total?.toFixed(2) || 0}</td>
                                                                 <td className='text-center min-w-50px pe-3'>
                                                                     <a className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                                                                         onClick={(e) => removeProductFromCart(e, productItem?.productid)}
@@ -968,11 +810,8 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
 
 
                                                                 </td>
-
                                                             </tr>
                                                         ))}
-
-
                                                     </>
                                                     :
                                                     <tr>
@@ -981,14 +820,12 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                                 <h4 className='text-center'>No product found</h4>
                                                             </div>
                                                         </td>
-
-
                                                     </tr>
                                             }
 
                                         </tbody>
                                         {
-                                            cartAllProducts != undefined && cartAllProducts.length > 0
+                                            cartProducts != undefined && cartProducts.length > 0
                                                 ?
                                                 <tfoot className=''>
                                                     <tr className='mt-3 border-none'>
@@ -997,61 +834,52 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                     </tr>
 
                                                     <tr className='mt-3 border-none'>
-                                                        <td colSpan={2} className=' fw-bold'>Sub Total</td>
-                                                        <td id="subTotal">{cartItemTotlal}</td>
+                                                        <td colSpan={2} className=' fw-bold'>Subtotal</td>
+                                                        <td id="subTotal">{cartSummary.subtotal?.toFixed(2)}</td>
                                                     </tr>
 
                                                     <tr className='border-none'>
-                                                        <td colSpan={2} className=' fw-bold'>Tax</td>
-                                                        <td className='min-w-250px'>
+                                                        <td colSpan={2} className=' fw-bold'>Discount</td>
+                                                        <td className='min-w-150px'>
+                                                            <input
+                                                                className='form-control'
+                                                                type="number"
+                                                                min={0}
+                                                                step="0.01"
+                                                                value={cartSummary.discount}
+                                                                onChange={(e) => handleCartDiscountChange(parseFloat(e.target.value))}
+                                                            />
+                                                        </td>
+                                                    </tr>
 
-                                                            <div className='order-tax-box'>
-                                                                <div className="tax-container">
-                                                                    <select
-                                                                        value={orderLevelTaxRateType}
-                                                                        onChange={(e) => setOrderLevelTaxRateType(e.target.value)}
-
-                                                                    >
-                                                                        <option value="">Select</option>
-                                                                        <option value="Percentage">Percentage</option>
-                                                                        <option value="Fixed">Fixed</option>
-
-                                                                    </select>
-                                                                    <input
-                                                                        className='form-control'
-                                                                        type="number"
-                                                                        min={0}
-                                                                        step="any"
-                                                                        value={orderLevelTaxValue || 0}
-
-                                                                        onChange={(e) => setOrderLevelTaxValue(parseInt(e.target.value, 10))}
-                                                                        placeholder="Enter tax value"
-                                                                    />
-                                                                </div>
-
-                                                                <div className='mt-2'>
-                                                                    Total: {calculateTaxValueNewFunc(cartItemTotlal, orderLevelTaxRateType, orderLevelTaxValue)}
-                                                                </div>
-                                                            </div>
-
-
-
-
-
-
-
-
+                                                    <tr className='border-none'>
+                                                        <td colSpan={2} className=' fw-bold'>Tax %</td>
+                                                        <td className='min-w-150px'>
+                                                            <input
+                                                                className='form-control'
+                                                                type="number"
+                                                                min={0}
+                                                                step="0.01"
+                                                                value={cartSummary.tax_percentage}
+                                                                onChange={(e) => handleCartTaxChange(parseFloat(e.target.value))}
+                                                            />
+                                                            ({cartSummary.tax_amount?.toFixed(2)})
                                                         </td>
                                                     </tr>
 
                                                     <tr className='mt-3 border-none'>
+                                                        <td colSpan={2} className='fw-bold'>Total Discount</td>
+                                                        <td id="subTotal">{cartSummary.total_discount?.toFixed(2)}</td>
+                                                    </tr>
+
+                                                    <tr className='mt-3 border-none'>
                                                         <td colSpan={2} className='fw-bold'>Total Tax</td>
-                                                        <td id="subTotal">{grandTaxAmount}</td>
+                                                        <td id="subTotal">{cartSummary.total_tax?.toFixed(2)}</td>
                                                     </tr>
 
                                                     <tr className='border-none'>
-                                                        <td colSpan={2} className=' fw-bold'>Grand Total</td>
-                                                        <td id="subTotal">{orderTotal}</td>
+                                                        <td colSpan={2} className=' fw-bold'>Total</td>
+                                                        <td id="subTotal">{cartSummary.total?.toFixed(2)}</td>
                                                     </tr>
                                                 </tfoot>
                                                 :
@@ -1085,23 +913,18 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
 
                 </div>
 
-                {
-                    isOpenReceiptModal == true
-                        ?
-
-                        <PurchaseOrderReceiptModal
-                            isOpen={isOpenReceiptModal}
-                            closeModal={handleOpenCloseOrderReceiptModal}
-                            orderId={latestOrderId}
-                        />
-                        :
-                        <>
-                        </>
-                }
-
             </Content>
-
-
+            {
+                isOpenReceiptModal == true
+                    ?
+                    <PurchaseOrderReceiptModal
+                        data={undefined}
+                        orderId={latestOrderId}
+                    />
+                    :
+                    <>
+                    </>
+            }
         </>
     )
 }

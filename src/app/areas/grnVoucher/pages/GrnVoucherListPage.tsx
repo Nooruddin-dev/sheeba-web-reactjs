@@ -13,6 +13,7 @@ import { stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers
 import { getDateCommonFormatFromJsonDate } from '../../../../_sitecommon/common/helpers/global/ConversionHelper'
 import { Link } from 'react-router-dom'
 import { getGrnVouchersListApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls'
+import { formatNumber } from '../../common/util'
 
 export default function GrnVoucherListPage() {
   const isLoading = false;
@@ -172,8 +173,7 @@ export default function GrnVoucherListPage() {
                     <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Receiver Name</th>
                     <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Receiver Contact</th>
   
-                    <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Tax Amount Total</th>
-                    <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>GRN Amount Total</th>
+                    <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Total</th>
 
                     <th colSpan={1} role="columnheader" className="text-end min-w-100px pe-3 rounded-end" style={{ cursor: 'pointer' }}>Actions</th>
                   </tr>
@@ -186,7 +186,7 @@ export default function GrnVoucherListPage() {
                       allGrnVouchersList?.map((record: any, index: number) => (
                         <tr role='row' key={index}>
                           
-                          <td>
+                          <td className="ps-3">
                             <div className="d-flex align-items-center">
                               <div className="ms-5">
 
@@ -216,8 +216,7 @@ export default function GrnVoucherListPage() {
 
 
 
-                          <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{record.grn_tax_total}</td>
-                          <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{record.grn_toal_amount}</td>
+                          <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{formatNumber(record.total, 2)}</td>
 
 
 

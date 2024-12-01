@@ -18,7 +18,7 @@ import TableListLoading from '../../common/components/shared/TableListLoading';
 import BusinessPartnerTypesEnum from '../../../../_sitecommon/common/enums/BusinessPartnerTypesEnum';
 import { getAllProductsListApi, getUnitsListApi, insertUpdateProductApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls';
 import ProductAddUpdateForm from '../components/ProductAddUpdateForm';
-import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppenDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
+import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppendDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { Portal } from '../../../../_sitecommon/partials';
 
 
@@ -256,7 +256,7 @@ export default function ProductsListPage() {
                 return false;
             }
 
-            // if (unitSubTypesAll?.filter((x: { unit_type: any; }) => x.unit_type === unit_type)?.filter((x: { unit_sub_type: string; })=>x.unit_sub_type != 'Micon')?.some((x: { unit_id: number; }) => x.unit_id < 1)) {
+            // if (unitSubTypesAll?.filter((x: { unit_type: any; }) => x.unit_type === unit_type)?.filter((x: { unit_sub_type: string; })=>x.unit_sub_type != 'Micron')?.some((x: { unit_id: number; }) => x.unit_id < 1)) {
             //     showErrorMsg('Please select unit');
             //     return false;
             // }
@@ -479,7 +479,7 @@ export default function ProductsListPage() {
 
                                                             <div className="ms-5">
 
-                                                                <a href="#" className="text-gray-800 text-hover-primary fs-5 fw-bold" data-kt-ecommerce-product-filter="product_name">{makeAnyStringShortAppenDots(record.product_name, 110)}</a>
+                                                                <a href="#" className="text-gray-800 text-hover-primary fs-5 fw-bold" data-kt-ecommerce-product-filter="product_name">{makeAnyStringShortAppendDots(record.product_name, 110)}</a>
 
                                                             </div>
                                                         </div>
@@ -489,7 +489,7 @@ export default function ProductsListPage() {
 
 
                                                     <td role="cell">
-                                                        <div className=''>{makeAnyStringShortAppenDots(record.short_description, 110)}</div>
+                                                        <div className=''>{makeAnyStringShortAppendDots(record.short_description, 110)}</div>
                                                     </td>
 
                                                     {/* <td role="cell">
