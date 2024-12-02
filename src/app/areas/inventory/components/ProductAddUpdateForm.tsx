@@ -248,6 +248,7 @@ const ProductAddUpdateForm: React.FC<ProductAddUpdateFormInterface> = ({
                                     <input
                                         type="number"
                                         min={0}
+                                        step={"any"}
                                         className={`form-control form-control-solid ${formSubmitted ? (errors.stockquantity ? 'is-invalid' : 'is-valid') : ''}`}
                                         id="stockquantity" {...register("stockquantity", { required: true })}
                                         readOnly={isEditCase}
