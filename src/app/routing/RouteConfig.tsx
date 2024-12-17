@@ -35,6 +35,8 @@ import ProductionEntriesPage from '../areas/cardManagement/pages/ProductionEntri
 import CardDispatchInfoPage from '../areas/cardManagement/pages/CardDispatchInfoPage';
 import MachineBasedReportPage from '../areas/cardManagement/pages/MachineBasedReportPage';
 import VendorOrderDetailsPage from '../areas/orders/pages/VendorOrderDetailsPage';
+import SaleInvoiceListPage from '../areas/saleInvoice/pages/SaleInvoiceListPage';
+import ManageSaleInvoicePage from '../areas/saleInvoice/pages/ManageSaleInvoicePage';
 
 
 
@@ -139,6 +141,18 @@ export default function RouteConfig() {
 
         <Route path="/job-management/dispatch-info/:job_card_id" element={
           <LoginProtectedRoute> <CardDispatchInfoPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/sale-invoice/list" element={
+          <LoginProtectedRoute> <SaleInvoiceListPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/sale-invoice/create" element={
+          <LoginProtectedRoute> <ManageSaleInvoicePage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/sale-invoice/:id" element={
+          <LoginProtectedRoute> <ManageSaleInvoicePage /> </LoginProtectedRoute>
         } />
 
         <Route path="/reports/dispatch-info" element={

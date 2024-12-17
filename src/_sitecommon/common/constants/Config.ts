@@ -16,8 +16,7 @@ export const controllerUrlExtensions = {
   ORDERS: 'orders',
   VOUCHER: 'voucher',
   JOB_CARD: 'jobcard',
-
-
+  SALE_INVOICE: 'sale-invoices',
 }
 
 export const API_ENDPOINTS = {
@@ -72,7 +71,12 @@ export const API_ENDPOINTS = {
   GET_JOB_DISPATCH_REPORT_DATA_BY_ID: `/${controllerUrlExtensions.JOB_CARD}/get-job-dispatch-report-data-by-id`,
   GET_MACHINE_BASED_REPORT_DATA: `/${controllerUrlExtensions.JOB_CARD}/get-machine-based-report-api`,
   GET_ALL_PRODUCTS_FOR_PRODUCTION: `/${controllerUrlExtensions.JOB_CARD}/get-all-products-for-production-entry`,
+  GET_DISPATCH_AUTO_COMPLETE: `/${controllerUrlExtensions.JOB_CARD}/dispatch-auto-complete`,
 
+    //--Machines APIs urls
+    GET_SALE_INVOICES: `/${controllerUrlExtensions.SALE_INVOICE}`,
+    GET_SALE_INVOICE_BY_ID: `/${controllerUrlExtensions.SALE_INVOICE}/:id`,
+    CREATE_SALE_INVOICE: `/${controllerUrlExtensions.SALE_INVOICE}`,
 
 }
 

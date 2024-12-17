@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import AdminLayout from '../../common/components/layout/AdminLayout'
 import AdminPageHeader from '../../common/components/layout/AdminPageHeader'
 import { Content } from '../../../../_sitecommon/layout/components/content'
-import { KTCard, KTCardBody, KTIcon } from '../../../../_sitecommon/helpers'
+import { KTCard, KTCardBody } from '../../../../_sitecommon/helpers'
 import CommonListSearchHeader from '../../common/components/layout/CommonListSearchHeader'
 import { buildUrlParamsForSearch } from '../../../../_sitecommon/common/helpers/global/GlobalHelper'
 import { HtmlSearchFieldConfig } from '../../../models/common/HtmlSearchFieldConfig'
@@ -11,8 +11,6 @@ import CommonListPagination from '../../common/components/layout/CommonListPagin
 import TableListLoading from '../../common/components/shared/TableListLoading'
 import { showErrorMsg, showSuccessMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper'
 import { getAllJobProductionEntriesApi, getAllMachinesListApi, insertUpdateJobProductionEntryApi, insertUpdateProductApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls'
-import { getDateCommonFormatFromJsonDate } from '../../../../_sitecommon/common/helpers/global/ConversionHelper'
-import { Link } from 'react-router-dom'
 import ProductionEntryAddUpdateForm from '../components/ProductionEntryAddUpdateForm'
 
 export default function ProductionEntriesPage() {
@@ -351,7 +349,7 @@ export default function ProductionEntriesPage() {
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Gross</th>
 
 
-                                        <th colSpan={1} role="columnheader" className="text-end min-w-100px pe-3 rounded-end" style={{ cursor: 'pointer' }}>Actions</th>
+                                        {/* <th colSpan={1} role="columnheader" className="text-end min-w-100px pe-3 rounded-end" style={{ cursor: 'pointer' }}>Actions</th> */}
                                     </tr>
                                 </thead>
                                 <tbody className='text-gray-600 fw-bold'>
@@ -383,13 +381,7 @@ export default function ProductionEntriesPage() {
                                                     <td role="cell">
                                                         <div className=''>{record?.gross_value}</div>
                                                     </td>
-
-
-
-
-                                                    <td className='text-end pe-3'>
-
-
+                                                    {/* <td className='text-end pe-3'>
                                                         <Link
                                                             to='#'
                                                             onClick={(e) => handleProdEntryEditClick(e, record.production_entry_id)}
@@ -399,14 +391,8 @@ export default function ProductionEntriesPage() {
 
                                                             Edit
                                                         </Link>
-
-
-
-                                                    </td>
-
-
+                                                    </td> */}
                                                 </tr>
-
                                             ))
                                             :
                                             <tr>
@@ -418,12 +404,6 @@ export default function ProductionEntriesPage() {
                                             </tr>
 
                                     }
-
-
-
-
-
-
 
                                 </tbody>
                             </table>

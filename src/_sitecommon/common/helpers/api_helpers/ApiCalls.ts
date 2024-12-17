@@ -219,3 +219,28 @@ export const getAllProductsForProductionEntryApi = () => {
         `${API_ENDPOINTS.GET_ALL_PRODUCTS_FOR_PRODUCTION}`
     );
 }
+
+export const getSalesInvoicesByFilter = (query: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_SALE_INVOICES}?${query}`
+    );
+}
+
+export const getSalesInvoicesById = (id: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_SALE_INVOICE_BY_ID}/${id}`
+    );
+}
+
+export const createSalesInvoice = (body: object) => {
+    return apiRequest.post(
+        `${API_ENDPOINTS.GET_SALE_INVOICES}`,
+        body
+    );
+}
+
+export const getDispatchAutoComplete = (value: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_DISPATCH_AUTO_COMPLETE}?dispatchNo=${value}`
+    );
+}

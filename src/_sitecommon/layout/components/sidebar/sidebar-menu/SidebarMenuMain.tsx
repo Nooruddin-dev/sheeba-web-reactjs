@@ -126,6 +126,15 @@ const SidebarMenuMain = () => {
 
       </SidebarMenuItemWithSub>
 
+      <SidebarMenuItem
+        to='/sale-invoice/list'
+        title='Sale Invoice'
+        fontIcon='bi-archive'
+        icon='abstract-43'
+      >
+      </SidebarMenuItem>
+
+
       <SidebarMenuItemWithSub
         to=''
         title='Reports'
