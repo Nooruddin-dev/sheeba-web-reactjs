@@ -75,7 +75,7 @@ export const API_ENDPOINTS = {
 
     //--Machines APIs urls
     GET_SALE_INVOICES: `/${controllerUrlExtensions.SALE_INVOICE}`,
-    GET_SALE_INVOICE_BY_ID: `/${controllerUrlExtensions.SALE_INVOICE}/:id`,
+    GET_SALE_INVOICE_BY_ID: `/${controllerUrlExtensions.SALE_INVOICE}`,
     CREATE_SALE_INVOICE: `/${controllerUrlExtensions.SALE_INVOICE}`,
 
 }
