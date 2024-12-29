@@ -89,6 +89,7 @@ export default function UsersListPage() {
             firstName: recordForEdit?.firstName,
             lastName: recordForEdit?.lastName,
             emailAddress: recordForEdit?.emailAddress,
+            role_type: recordForEdit?.role_type,
             busnPartnerTypeId: recordForEdit?.busnPartnerTypeId,
             isActive: recordForEdit?.isActive == true ? '1' : '0',
             isVerified: recordForEdit?.isVerified == true ? '1' : '0',
@@ -116,9 +117,9 @@ export default function UsersListPage() {
 
     const handleUserFormSubmit = (data: any) => {
         console.log('data user: ', data); // Handle form submission here
-        const { busnPartnerIdEditForm, firstName, lastName, emailAddress, isActive, phoneNo, password, confirmPassword } = data;
+        const { busnPartnerIdEditForm, firstName, lastName, emailAddress, role_type, isActive, phoneNo, password, confirmPassword } = data;
         if (stringIsNullOrWhiteSpace(firstName) || stringIsNullOrWhiteSpace(lastName) || stringIsNullOrWhiteSpace(emailAddress)
-            || stringIsNullOrWhiteSpace(isActive)) {
+            || stringIsNullOrWhiteSpace(isActive) || stringIsNullOrWhiteSpace(role_type)) {
             showErrorMsg('Please fill all required fields');
             return false;
         }
@@ -149,6 +150,7 @@ export default function UsersListPage() {
             firstName: firstName ?? '',
             lastName: lastName ?? '',
             emailAddress: emailAddress ?? '',
+            role_type: role_type,
             busnPartnerTypeId: BusinessPartnerTypesEnum.NormalUser,
             isActive: isActive?.toString() == "1" ? 'true' : 'false',
             isVerified: true,

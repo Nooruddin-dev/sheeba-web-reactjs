@@ -2,32 +2,77 @@
 import { KTIcon } from '../../../../helpers'
 import { SidebarMenuItemWithSub } from './SidebarMenuItemWithSub'
 import { SidebarMenuItem } from './SidebarMenuItem'
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../app/globalStore/rootReducer';
+import { menuConfig } from '../../../../common/constants/menuConfig';
 
 const SidebarMenuMain = () => {
+  let loginUser = useSelector((state: RootState) => state.userData.userData);
+  //loginUser.role_type = 'admin'
+
+
+
+  const filteredMenu = menuConfig
+  .map((item) => {
+    //-- Filter children based on roles
+    const filteredChildren = item.children?.filter((child) =>
+      child.roles ? child.roles.includes(loginUser.role_type) : true
+    );
+
+    //-- Include the item only if it has valid roles or filtered children
+    if (item.roles.includes(loginUser.role_type) || (filteredChildren && filteredChildren.length > 0)) {
+      return { ...item, children: filteredChildren };
+    }
+
+    return null;
+  })
+  .filter(Boolean); //-- Remove null values
+
 
 
   return (
     <>
-      <SidebarMenuItem
+
+        {filteredMenu.map((item, index) => (
+          item?.children ? (
+            <SidebarMenuItemWithSub
+              to=""
+              key={index}
+              title={item?.title}
+              icon={item?.icon}
+              fontIcon={item?.fontIcon}
+            >
+              {item.children.map((child, childIndex) => (
+                <SidebarMenuItem
+                  key={`${index}-${childIndex}`}
+                  to={child.to}
+                  title={child.title}
+                  hasBullet={child.hasBullet}
+                />
+              ))}
+            </SidebarMenuItemWithSub>
+          ) : (
+            <SidebarMenuItem
+              key={index}
+              to={item?.to ?? ""}
+              title={item?.title ?? ""}
+              icon={item?.icon}
+              fontIcon={item?.fontIcon}
+            />
+          )
+        ))}
+ 
+
+
+
+
+      {/* <SidebarMenuItem
         to='/admin/dashboard'
         icon='element-11'
         title={'Dashboard'}
         fontIcon='bi-app-indicator'
       />
 
-
-
-
-      {/* <SidebarMenuItemWithSub
-        to='/admin/users/users-list'
-        icon='user'
-        title='User Management'
-        fontIcon='bi-layers'
-      >
-        <SidebarMenuItem to='/site/users-list' title='Users List' hasBullet={true} />
-        <SidebarMenuItem to='/site/business-partners-types' title='Business Partners Types' hasBullet={true} />
-
-      </SidebarMenuItemWithSub> */}
 
       <SidebarMenuItem
         to='/site/users-list'
@@ -43,18 +88,6 @@ const SidebarMenuMain = () => {
         icon='setting-4'
       />
 
-
-
-      {/* <SidebarMenuItemWithSub
-        to=''
-        title='Machine Management'
-        fontIcon='bi-archive'
-        icon='setting-4'
-      >
-        <SidebarMenuItem to='/site/machines-list' title='Machines List' hasBullet={true} />
-        <SidebarMenuItem to='/site/machine-types' title='Machines Types' hasBullet={true} />
-
-      </SidebarMenuItemWithSub> */}
 
       <SidebarMenuItem
         to='/site/customer-management'
@@ -145,7 +178,7 @@ const SidebarMenuMain = () => {
         <SidebarMenuItem to='/reports/machine-based' title='Machine Based Report' hasBullet={true} />
       
 
-      </SidebarMenuItemWithSub>
+      </SidebarMenuItemWithSub> */}
 
 
 

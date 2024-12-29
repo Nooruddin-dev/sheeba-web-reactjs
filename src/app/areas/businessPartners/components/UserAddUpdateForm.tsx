@@ -55,7 +55,7 @@ const UserAddUpdateForm: React.FC<UserAddUpdateFormInterface> = ({
                 <div className='admin-modal-header'>
                     <h2>
                         {isEditCase ? 'Update User' : 'Create User'}
-                        </h2>
+                    </h2>
 
                     <div className='btn btn-sm btn-icon btn-active-color-primary' onClick={closeModal}>
                         <KTIcon className='fs-1' iconName='cross' />
@@ -157,6 +157,35 @@ const UserAddUpdateForm: React.FC<UserAddUpdateFormInterface> = ({
 
                                     </select>
                                     {errors.isActive && <SiteErrorMessage errorMsg='Status is required' />}
+                                </div>
+                            </div>
+
+
+                            {/* User Role Dropdown */}
+                            <div className="col-lg-6">
+                                <div className="mb-10">
+                                    <label className="form-label required">User Role</label>
+                                    <select
+                                        aria-label="Select user role"
+                                        className={`form-select form-select-solid ${formSubmitted
+                                                ? errors.role_type
+                                                    ? "is-invalid"
+                                                    : "is-valid"
+                                                : ""
+                                            }`}
+                                        id="role_type"
+                                        {...register("role_type", { required: true })}
+                                    >
+                                         <option value="">--Select Role--</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="accounts">Accounts</option>
+                                        <option value="office">Office</option>
+                                        <option value="factory">Factory</option>
+                                   
+                                    </select>
+                                    {errors.role_type && (
+                                        <SiteErrorMessage errorMsg="User role is required" />
+                                    )}
                                 </div>
                             </div>
 
