@@ -48,7 +48,7 @@ export default function LoginPage() {
 
                 if (user != undefined && user != null) {
                    // setAuthToken(token, user?.busnPartnerId);
-                   // setBusnPartnerIdAndTokenInStorage(user?.busnPartnerId, token);
+                    setBusnPartnerIdAndTokenInStorage(user?.busnPartnerId, token);
                    
 
                     setTimeout(() => {

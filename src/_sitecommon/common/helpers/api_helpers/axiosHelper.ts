@@ -16,6 +16,31 @@ export const apiRequest = axios.create({
       
     },
 });
+
+
+// Add a request interceptor to dynamically update headers
+// apiRequest.interceptors.request.use(
+//   (config) => {
+//     const { busnPartnerId, jwtToken } = getBusnPartnerIdAndTokenFromStorage();
+
+//     // Dynamically set headers
+//     if (busnPartnerId) {
+//       config.headers['busnPartnerId'] = busnPartnerId;
+//     }
+//     if (jwtToken) {
+//       config.headers['Authorization'] = `Bearer ${jwtToken}`;
+//     }
+
+//     return config;
+//   },
+//   (error) => {
+//     // Handle request errors before the request is sent
+//     console.error('Request Interceptor Error:', error);
+//     return Promise.reject(error);
+//   }
+// );
+
+// Retain the existing response interceptor
 apiRequest.interceptors.response.use(
   (response: AxiosResponse<any, any>) => {
     
