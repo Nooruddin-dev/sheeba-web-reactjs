@@ -53,12 +53,15 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
         const quantity_local = watch("quantity") || 0;
         const net_weight_local = watch("net_weight") || 0;
         const tare_value_local = watch("tare_value") || 0;
+        const dispatch_unit_id_local = watch("dispatch_unit_id")
         const netTotalValue = convertToTwoDecimalFloat(total_bags_local) * convertToTwoDecimalFloat(quantity_local);
        
         if(selectedOptionBagRoll == 'Roll'){
             setValue("total_value", (convertToTwoDecimalFloat(net_weight_local) - convertToTwoDecimalFloat(tare_value_local)));
-        }else if(selectedOptionBagRoll == 'Bag'){
+        } else if(selectedOptionBagRoll == 'Bag' && dispatch_unit_id_local == 1){
             setValue("total_value", netTotalValue);
+        } else if(selectedOptionBagRoll == 'Bag' && dispatch_unit_id_local == 2){
+            setValue("total_value", (convertToTwoDecimalFloat(net_weight_local) - convertToTwoDecimalFloat(tare_value_local)));
         }
 
        
@@ -146,9 +149,11 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
         let total_value = 0;
         if(selectedOptionBagRoll == 'Roll'){
              total_value = net_weight - tare_value;
-        }else if(selectedOptionBagRoll == 'Bag'){
+        } else if(selectedOptionBagRoll == 'Bag' && dispatch_unit_id == 1){
              total_value = total_bags * quantity;
-        }
+        } else if(selectedOptionBagRoll == 'Bag' && dispatch_unit_id == 2){
+            total_value = net_weight - tare_value;
+       }
 
 
 
