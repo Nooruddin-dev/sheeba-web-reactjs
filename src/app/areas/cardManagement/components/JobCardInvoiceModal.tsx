@@ -42,9 +42,8 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
         { id: 5 },
         { id: 6 },
         { id: 7 },
-        // { id: 8 },
-        // { id: 9 },
-        // { id: 10 },
+        { id: 8 },
+        { id: 9 },
     ]);
 
     const componentRefForReceipt = useRef(null);
@@ -93,7 +92,7 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
 
                             <div className="mw-lg-950px mx-auto w-100">
 
-                                <div className="d-flex justify-content-between flex-column flex-sm-row mt-15">
+                                <div className="d-flex justify-content-between flex-column flex-sm-row">
                                     <h4 className="fw-bolder text-gray-800 fs-2qx pe-5 pb-7">JOB CARD #{jobCardDetailForPrinting?.job_card_no}</h4>
                                     <div className="text-sm-end">
                                         <a href="#" className="d-block mw-150px ms-sm-auto">
@@ -150,32 +149,23 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                 </div>
                                             </div>
 
-                                            <div className='col-lg-4'>
+                                            {/* <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
                                                         <div className="print-form-label">Size:</div>
                                                         <div className="print-form-value">{jobCardDetailForPrinting?.job_size}</div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> */}
 
-                                            <div className='col-lg-4'>
+                                            {/* <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
                                                         <div className="print-form-label">Micron:</div>
                                                         <div className="print-form-value">{jobCardDetailForPrinting?.micron}</div>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            <div className='col-lg-4'>
-                                                <div className="mb-10">
-                                                    <div className='print-form-section'>
-                                                        <div className="print-form-label">Sealing Method:</div>
-                                                        <div className="print-form-value">{jobCardDetailForPrinting?.sealing_method}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            </div> */}
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
@@ -195,7 +185,16 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                 </div>
                                             </div>
 
-                                            <div className='col-lg-4' style={{width: "100%"}}>
+                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section'>
+                                                        <div className="print-form-label">Sealing Method:</div>
+                                                        <div className="print-form-value">{jobCardDetailForPrinting?.sealing_method}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className='col-lg-4' style={{ width: "66.5%" }}>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
                                                         <div className="print-form-label">Special Request:</div>
@@ -204,7 +203,7 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                 </div>
                                             </div>
 
-                                            <div className='col-lg-4' style={{width: "50%"}}>
+                                            <div className='col-lg-4' style={{ width: "50%" }}>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
                                                         <div className="print-form-label">Materials</div>
@@ -217,7 +216,7 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                 </div>
                                             </div>
 
-                                            <div className='col-lg-4' style={{width: "50%"}}>
+                                            <div className='col-lg-4' style={{ width: "50%" }}>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
                                                         <div className="print-form-label">Dispatch</div>
@@ -233,34 +232,31 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                         </div>
 
                                         <div className="row" style={{ direction: 'rtl' }}>
-                                            <div className='col-lg-4'>
+                                            <div className='col-lg-4' style={{ width: "50%" }}>
                                                 <div className="mb-10">
                                                     <div className='print-form-section-urdu'>
                                                         <div className="print-form-label print-urdu-label">سائز:</div>
                                                         <div className="print-form-value "></div>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            <div className='col-lg-4'>
+                                                <div className="mb-10">
+                                                    <div className='print-form-section-urdu'>
+                                                        <div className="print-form-label print-urdu-label" style={{ width: "90px" }}>پیِس کاوزن:</div>
+                                                        <div className="print-form-value "></div>
+                                                    </div>
+                                                </div>
                                                 <div className="mb-10">
                                                     <div className='print-form-section-urdu'>
                                                         <div className="print-form-label print-urdu-label">کرنٹ:</div>
                                                         <div className="print-form-value "></div>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <div className='print-form-section-urdu'>
                                                         <div className="print-form-label print-urdu-label">وزن:</div>
                                                         <div className="print-form-value "></div>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <div className='print-form-section-urdu'>
                                                         <div className="print-form-label print-urdu-label">مائیکرن:</div>
@@ -268,17 +264,7 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div className='col-lg-4'>
-                                                <div className="mb-10">
-                                                    <div className='print-form-section-urdu'>
-                                                        <div className="print-form-label print-urdu-label" style={{ width: "90px" }}>پیِس کاوزن:</div>
-                                                        <div className="print-form-value "></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className='col-lg-4'>
+                                            <div className='col-lg-4' style={{ width: "50%" }}>
                                                 <div className="mb-10">
                                                     <div className='print-form-section-urdu'>
                                                         <div className="print-form-label print-urdu-label">مکسنگ:</div>
@@ -304,10 +290,15 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                                             <td></td>
                                                                             <td></td>
                                                                         </tr>
+                                                                        <tr>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                        </tr>
                                                                     </tbody>
                                                                 </table>
                                                             </div>
-                                                        </div>                                                    </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
