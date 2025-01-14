@@ -115,9 +115,9 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
                                                 (
                                                     <img alt="Logo"
                                                         src={toAbsoluteUrl('media/logos/default_dark_2.png')}
-                                                        className="w-50" 
+                                                        className="w-50"
                                                         height={50}
-                                                        />
+                                                    />
                                                 )
                                             }
 
@@ -127,9 +127,9 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
                                             (dispatchInvoiceDetail?.show_company_detail == true || dispatchInvoiceDetail?.show_company_detail == 'true' || dispatchInvoiceDetail?.show_company_detail == '1') &&
                                             (
 
-                                            <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
-                                                <div>Sheeba Inventory System, Karachi</div>
-                                            </div>
+                                                <div className="text-sm-end fw-semibold fs-4 text-muted mt-7">
+                                                    <div>Sheeba Inventory System, Karachi</div>
+                                                </div>
                                             )
                                         }
 
@@ -226,7 +226,7 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
                                                             <th className='min-w-80px'>Tare</th>
                                                             <th className='min-w-80px'>Total</th>
 
-                                                        
+
 
                                                         </tr>
                                                     </thead>
@@ -260,7 +260,7 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
 
 
 
-                                                                           
+
 
                                                                         </tr>
                                                                     ))}
@@ -293,10 +293,13 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
                                                 </table>
 
                                             </div>
+                                            <div className="global-stamp-sign">
+                                                <div className="line">Stamp & Sign</div>
+                                            </div>
 
                                         </div>
 
-                                       
+
                                     </div>
 
                                 </div>

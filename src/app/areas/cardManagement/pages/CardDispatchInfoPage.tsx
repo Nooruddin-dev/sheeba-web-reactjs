@@ -313,6 +313,7 @@ export default function CardDispatchInfoPage() {
                             >
                                 <thead>
                                     <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
+                                        <th colSpan={1} role="columnheader" className="min-w-150px ps-3 rounded-start" style={{ cursor: 'pointer' }}>Dispatch Date</th>
                                         <th colSpan={1} role="columnheader" className="min-w-150px ps-3 rounded-start" style={{ cursor: 'pointer' }}>Job Date</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Job Card</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Dispatch#</th>
@@ -331,6 +332,10 @@ export default function CardDispatchInfoPage() {
                                             ?
                                             allJobDispatchReportData?.map((record: any, index: number) => (
                                                 <tr role='row' key={index}>
+                                                    <td role="cell" className="ps-3">
+
+                                                        {getDateCommonFormatFromJsonDate(record.created_on)}
+                                                    </td>
                                                     <td role="cell" className="ps-3">
 
                                                         {getDateCommonFormatFromJsonDate(record.job_date)}

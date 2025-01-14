@@ -12,6 +12,7 @@ import TableListLoading from '../../common/components/shared/TableListLoading'
 import { showErrorMsg, showSuccessMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper'
 import { getAllJobProductionEntriesApi, getAllMachinesListApi, insertUpdateJobProductionEntryApi, insertUpdateProductApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls'
 import ProductionEntryAddUpdateForm from '../components/ProductionEntryAddUpdateForm'
+import { getDateCommonFormatFromJsonDate } from '../../../../_sitecommon/common/helpers/global/ConversionHelper'
 
 export default function ProductionEntriesPage() {
     const isLoading = false;
@@ -339,7 +340,7 @@ export default function ProductionEntriesPage() {
                                 <thead>
                                     <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
                                         <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>Job Card No</th>
-                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Prod Entry ID</th>
+                                        <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Date</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Machine</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Material </th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Waste</th>
@@ -362,7 +363,7 @@ export default function ProductionEntriesPage() {
                                                     <td role="cell" className="ps-3">{record.job_card_no}</td>
 
                                                     <td role="cell">
-                                                        <div className=''>{record?.production_entry_id}</div>
+                                                        <div className=''>{getDateCommonFormatFromJsonDate(record?.created_on)}</div>
                                                     </td>
 
                                                     <td role="cell">

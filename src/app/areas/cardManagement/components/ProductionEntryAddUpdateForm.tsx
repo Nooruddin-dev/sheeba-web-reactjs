@@ -67,7 +67,7 @@ const ProductionEntryAddUpdateForm: React.FC<ProductionEntryAddUpdateFormInterfa
 
 
         const netTotalValue = convertToTwoDecimalFloat(gross_value) - convertToTwoDecimalFloat(wasteValue) - convertToTwoDecimalFloat(tare_core);
-        setValue("net_value", netTotalValue);
+        setValue("net_value", convertToTwoDecimalFloat(netTotalValue));
 
     } catch (error) {
         console.error("An error occured in calculating total net value: ", error);

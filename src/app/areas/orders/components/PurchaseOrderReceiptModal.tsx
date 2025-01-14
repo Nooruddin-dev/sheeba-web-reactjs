@@ -224,6 +224,9 @@ const PurchaseOrderReceiptModal: React.FC<{ afterPrint: any, data?: any, orderId
                                     <span className="text-muted">Remarks:</span>
                                     <span className="fs-5">{orderDetails?.remarks}</span>
                                 </div>
+                                <div className="global-stamp-sign">
+                                    <div className="line">Stamp & Sign</div>
+                                </div>
                             </div>
                         </div>
                     </div>

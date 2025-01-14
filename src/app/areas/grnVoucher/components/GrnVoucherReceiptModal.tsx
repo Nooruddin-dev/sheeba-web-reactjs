@@ -172,6 +172,9 @@ const GrnVoucherReceiptModal: React.FC<{ afterPrint: any, voucherId: any }> = ({
                                                     </tfoot>
                                                 </table>
                                             </div>
+                                            <div className="global-stamp-sign">
+                                                <div className="line">Stamp & Sign</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
