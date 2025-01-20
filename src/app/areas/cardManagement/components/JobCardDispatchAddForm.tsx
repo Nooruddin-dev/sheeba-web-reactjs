@@ -276,19 +276,41 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
                                 </div>
                             </div>
 
-
-                            <div className='col-lg-4 mt-5'>
+                            <div className='col-lg-4'>
                                 <div className="mb-10">
+                                    <label className="form-label">PO Number</label>
+                                    <input
+                                        type="text"
+                                        className='form-control form-control-solid'
+                                        id="po_number" {...register("po_number", { required: true })}
+                                        readOnly={true}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className='col-lg-4'>
+                                <div className="mb-10">
+                                    <label className="form-label">TR Number</label>
+                                    <input
+                                        type="text"
+                                        className={`form-control form-control-solid ${formSubmitted ? (errors.tr_number ? 'is-invalid' : 'is-valid') : ''}`}
+                                        id="tr_number" {...register("tr_number", { required: false })}
+                                        placeholder="Enter TR number"
+                                    />
+                                </div>
+                            </div>
+
+
+                            <div className='col-lg-4 mt-12'>
                                     <div className="form-check">
                                         <input className="form-check-input" type="checkbox"
                                             id="show_company_detail" {...register("show_company_detail")}
                                         />
                                         <label className="form-check-label" htmlFor="flexCheckChecked">
-                                            Show Company Detail
+                                            Official
                                         </label>
                                     </div>
                                     {errors.show_company_detail && <SiteErrorMessage errorMsg='Tax status is required' />}
-                                </div>
                             </div>
 
                             <hr className="my-5" />

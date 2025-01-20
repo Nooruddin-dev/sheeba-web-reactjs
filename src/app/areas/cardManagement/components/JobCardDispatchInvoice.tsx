@@ -184,6 +184,34 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
                                                         </td>
                                                     </tr>
 
+                                                    {
+                                                        dispatchInvoiceDetail?.po_number ?
+                                                            <tr>
+                                                                <td className="text-start bg-light p-3">PO Number</td>
+                                                                <td className='text-start p-3'>
+                                                                    <div className="d-flex align-items-center">
+                                                                        <div className="ms-5">  <div className="fw-bold">  {dispatchInvoiceDetail?.po_number}</div>   </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            : null
+                                                    }
+
+
+
+                                                    {
+                                                        dispatchInvoiceDetail?.tr_number ?
+                                                            <tr>
+                                                                <td className="text-start bg-light p-3">TR Number</td>
+                                                                <td className='text-start p-3'>
+                                                                    <div className="d-flex align-items-center">
+                                                                        <div className="ms-5">  <div className="fw-bold">  {dispatchInvoiceDetail?.tr_number}</div>   </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            : null
+                                                    }
+
                                                     <tr>
                                                         <td className="text-start bg-light p-3">Item</td>
                                                         <td className='text-start p-3'>

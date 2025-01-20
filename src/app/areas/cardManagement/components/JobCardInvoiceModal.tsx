@@ -44,6 +44,9 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
         { id: 7 },
         { id: 8 },
         { id: 9 },
+        { id: 10 },
+        { id: 11 },
+        { id: 12 },
     ]);
 
     const componentRefForReceipt = useRef(null);
@@ -149,23 +152,23 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                 </div>
                                             </div>
 
-                                            {/* <div className='col-lg-4'>
+                                            <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
                                                         <div className="print-form-label">Size:</div>
                                                         <div className="print-form-value">{jobCardDetailForPrinting?.job_size}</div>
                                                     </div>
                                                 </div>
-                                            </div> */}
+                                            </div>
 
-                                            {/* <div className='col-lg-4'>
+                                            <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
                                                         <div className="print-form-label">Micron:</div>
                                                         <div className="print-form-value">{jobCardDetailForPrinting?.micron}</div>
                                                     </div>
                                                 </div>
-                                            </div> */}
+                                            </div>
 
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
@@ -179,22 +182,13 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                             <div className='col-lg-4'>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
-                                                        <div className="print-form-label">Rate:</div>
-                                                        <div className="print-form-value">{jobCardDetailForPrinting?.card_rate}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className='col-lg-4'>
-                                                <div className="mb-10">
-                                                    <div className='print-form-section'>
                                                         <div className="print-form-label">Sealing Method:</div>
                                                         <div className="print-form-value">{jobCardDetailForPrinting?.sealing_method}</div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div className='col-lg-4' style={{ width: "66.5%" }}>
+                                            <div className='col-lg-4' style={{ width: "100%" }}>
                                                 <div className="mb-10">
                                                     <div className='print-form-section'>
                                                         <div className="print-form-label">Special Request:</div>
@@ -294,6 +288,10 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                                                             <td></td>
                                                                             <td></td>
                                                                         </tr>
+                                                                        <tr>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                        </tr>
                                                                     </tbody>
                                                                 </table>
                                                             </div>
@@ -306,15 +304,6 @@ const JobCardInvoiceModal: React.FC<JobCardInvoiceModalInterface> = ({
                                         <div className="row">
                                             <div className="col-lg-12">
                                                 <table className="print-job-card-empty-table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th></th>
-                                                            <th></th>
-                                                            <th></th>
-                                                            <th></th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
                                                     <tbody>
                                                         {jobTablePrintData.map((row: any, rowIndex: any) => (
                                                             <tr key={rowIndex}>

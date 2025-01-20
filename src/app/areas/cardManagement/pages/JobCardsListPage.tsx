@@ -100,6 +100,8 @@ export default function JobCardsListPage() {
         const {
             job_card_id,
             company_name,
+            po_number,
+            tr_number,
             item_name,
             show_company_detail,
 
@@ -118,10 +120,9 @@ export default function JobCardsListPage() {
             company_name: company_name,
             item_name: item_name,
             show_company_detail: show_company_detail ?? true,
-            
-            
+            po_number: po_number,
+            tr_number: tr_number,
             deliveryChallanLineItems: deliveryChallanLineItems,
-       
         };
 
 
@@ -164,6 +165,7 @@ export default function JobCardsListPage() {
             job_card_id: record.job_card_id,
             item_name: record.product_name,
             company_name: record.company_name,
+            po_number: record.po_reference,
         }
         setJobCardDispatchEditForm(dispatchInfoValues);
 

@@ -53,17 +53,22 @@ export default function CardDispatchInfoPage() {
 
     const [allJobDispatchReportData, setAllJobDispatchReportData] = useState<any>([]);
 
-    const [fromDate, setFromDate] = useState<string>('');
-    const [toDate, setToDate] = useState<string>('');
+    const datePlusOneDay = new Date()
+    datePlusOneDay.setDate(new Date().getDate() + 1);
+    const dateMinusThreeMonths = new Date();
+    dateMinusThreeMonths.setMonth(new Date().getMonth() - 3);
+
+    const [fromDate, setFromDate] = useState<string>(dateMinusThreeMonths.toISOString().split('T')[0]);
+    const [toDate, setToDate] = useState<string>(datePlusOneDay.toISOString().split('T')[0]);
 
     // ✅-- Ends: necessary varaibles for the page
 
 
     const handleSearchForm = () => {
 
-        if(stringIsNullOrWhiteSpace(fromDate) == true || stringIsNullOrWhiteSpace(toDate) == true){
-           showErrorMsg("Please select from date and to date.");
-           return;
+        if (stringIsNullOrWhiteSpace(fromDate) == true || stringIsNullOrWhiteSpace(toDate) == true) {
+            showErrorMsg("Please select from date and to date.");
+            return;
         }
 
         setTimeout(() => {
@@ -134,12 +139,12 @@ export default function CardDispatchInfoPage() {
 
 
     useEffect(() => {
-        if(stringIsNullOrWhiteSpace(fromDate) == false && stringIsNullOrWhiteSpace(toDate) == false){
+        if (stringIsNullOrWhiteSpace(fromDate) == false && stringIsNullOrWhiteSpace(toDate) == false) {
             getJobDispatchReportDataService();
         }
 
-     
-     
+
+
     }, [listRefreshCounter]);
 
     const getJobDispatchReportDataService = () => {
@@ -178,7 +183,7 @@ export default function CardDispatchInfoPage() {
 
 
 
-    
+
 
 
 
@@ -319,7 +324,7 @@ export default function CardDispatchInfoPage() {
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Dispatch#</th>
                                         <th colSpan={1} role="columnheader" className="min-w-150px" style={{ cursor: 'pointer' }}>Item</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>M/s.</th>
-       
+
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Grand Total</th>
                                         <th colSpan={1} role="columnheader" className="min-w-150px pe-3 rounded-end" style={{ cursor: 'pointer' }}>Invoice</th>
 
@@ -377,13 +382,13 @@ export default function CardDispatchInfoPage() {
                                                     <td role="cell" className=''>
                                                         <div className=''>{record?.grand_total}</div>
                                                     </td>
-                                                   
+
 
                                                     <td role="cell" className='pe-3'>
 
 
                                                         <div className='d-flex jobcard-td'>
-                                                            <Link to='' onClick={()=>handleDispatchInvoiceOpen(record.card_dispatch_info_id)}>
+                                                            <Link to='' onClick={() => handleDispatchInvoiceOpen(record.card_dispatch_info_id)}>
                                                                 <FontAwesomeIcon icon={faEye} className='me-1' />
                                                                 Invoice
                                                             </Link>
