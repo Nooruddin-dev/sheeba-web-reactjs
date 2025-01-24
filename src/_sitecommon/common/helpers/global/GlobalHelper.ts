@@ -2,6 +2,7 @@
 /* eslint-disable */
 
 
+import { useCallback } from "react";
 import { APP_BASIC_CONSTANTS } from "../../constants/Config";
 import { orderStatusesConst } from "../../enums/GlobalEnums";
 
@@ -145,6 +146,23 @@ export const getCurrentDate = () => {
   return formattedDate;
 }
 
+
+export const debounceClick = (callback: (...args: any[]) => void, delay = 1000) => {
+  const debounce = useCallback(() => {
+    let timer: NodeJS.Timeout | null = null;
+
+    return (...args: any[]) => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        callback(...args);
+      }, delay);
+    };
+  }, [callback, delay]);
+
+  return debounce();
+}
 
 
 

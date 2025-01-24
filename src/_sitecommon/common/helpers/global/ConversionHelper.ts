@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { format, differenceInCalendarDays } from 'date-fns';
 import { stringIsNullOrWhiteSpace } from './ValidationHelper';
+import { ProductSourceEnum, ProductTypeEnum } from '../../enums/GlobalEnums';
 
 export const makeAnyStringShortAppendDots = (inputString: string, length: number) => {
 
@@ -17,7 +18,7 @@ export const makeAnyStringShortAppendDots = (inputString: string, length: number
 
 export const calculatePriceDiscountPercentage = (originalPrice: any, discountedPrice: any) => {
 
-  
+
   const discount = (originalPrice ?? 0) - (discountedPrice ?? 0);
   const discountPercentage = (discount / originalPrice) * 100;
   return discountPercentage.toFixed(2) + "%";
@@ -111,7 +112,7 @@ export const valueRoundToDecimalPlaces = (num: number, decimalPlaces: number = 2
     return num;
   }
 
-  
+
   num = num ?? 0;
   decimalPlaces = decimalPlaces ?? 2;
   return parseFloat(num.toFixed(decimalPlaces));
@@ -182,3 +183,52 @@ export const getDaysDiffFromAnyDate = (dateTimeString: string) => {
   // Return the combined formatted relative time and time slot
   return `${relativeTime}`;
 };
+
+
+export const GetFormattedDate = (isoDate: Date | string) => {
+  const date = isoDate instanceof Date ? isoDate : new Date(isoDate);
+  const formattedDate = new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  }).format(date);
+  return formattedDate
+}
+
+export const GetFormattedTime = (isoDate: Date | string) => {
+  const date = isoDate instanceof Date ? isoDate : new Date(isoDate);
+  const formattedDate = new Intl.DateTimeFormat('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  }).format(date);
+  return formattedDate
+}
+
+export const GetProductTypeName = (id: number) => {
+  switch (id.toString()) {
+    case ProductTypeEnum.Solvent:
+      return 'Solvent';
+    case ProductTypeEnum.Granule:
+      return 'Granule';
+    case ProductTypeEnum.Roll:
+      return 'Roll';
+    default:
+      return 'Unknown';
+  }
+}
+
+export const GetStatus = (isActive: 1 | 0) => {
+  if (isActive)
+    return 'Active';
+  return 'Inactive';
+}
+
+export const GetUnitShortName = (units: any[], id: number) => {
+  const unit = units.find((unit) => unit.id === id);
+  if (unit) {
+    return unit.shortName;
+  }
+
+  return 'Unknown';
+}

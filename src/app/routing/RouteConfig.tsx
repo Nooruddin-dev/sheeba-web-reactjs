@@ -37,6 +37,7 @@ import MachineBasedReportPage from '../areas/cardManagement/pages/MachineBasedRe
 import VendorOrderDetailsPage from '../areas/orders/pages/VendorOrderDetailsPage';
 import SaleInvoiceListPage from '../areas/saleInvoice/pages/SaleInvoiceListPage';
 import ManageSaleInvoicePage from '../areas/saleInvoice/pages/ManageSaleInvoicePage';
+import ManageProductPage from '../areas/inventory/pages/ManageProductPage';
 
 
 
@@ -81,6 +82,14 @@ export default function RouteConfig() {
           <LoginProtectedRoute> <ProductsListPage /> </LoginProtectedRoute>
         } />
 
+        <Route path="/site/products/create" element={
+          <LoginProtectedRoute> <ManageProductPage /> </LoginProtectedRoute>
+        } />
+        
+        <Route path="/site/products/:id" element={
+          <LoginProtectedRoute> <ManageProductPage /> </LoginProtectedRoute>
+        } />
+
         <Route path="/site/machine-types" element={
           <LoginProtectedRoute> <MachineTypesPage /> </LoginProtectedRoute>
         } />
@@ -96,8 +105,6 @@ export default function RouteConfig() {
         <Route path="/site/create-order-clone/:purchase_order_id" element={
           <LoginProtectedRoute> <CreateOrdeClonePage /> </LoginProtectedRoute>
         } />
-
-
 
         <Route path="/site/purchase-orders-list" element={
           <LoginProtectedRoute> <PurchaseOrdersListPage /> </LoginProtectedRoute>

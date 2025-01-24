@@ -1,4 +1,4 @@
-import { PurchaseOrderStatusTypesEnum, UnitTypesEnum } from "../../enums/GlobalEnums";
+import { PurchaseOrderStatusTypesEnum, ProductTypeEnum } from "../../enums/GlobalEnums";
 import { convertToTwoDecimalFloat } from "./GlobalHelper";
 import { stringIsNullOrWhiteSpace } from "./ValidationHelper";
 
@@ -7,16 +7,16 @@ import { stringIsNullOrWhiteSpace } from "./ValidationHelper";
 export const createOrderUnitLabel = (productUnit: any) => {
 
     let unitTypeName = "";
-    if (productUnit?.unit_type == UnitTypesEnum.Roll) {
+    if (productUnit?.unit_type == ProductTypeEnum.Roll) {
         unitTypeName = "Roll";
-    } else if (productUnit?.unit_type == UnitTypesEnum.Liquid_Solvent) {
+    } else if (productUnit?.unit_type == ProductTypeEnum.Solvent) {
         unitTypeName = "Liquid/Solvent";
-    } else if (productUnit?.unit_type == UnitTypesEnum.Granules) {
+    } else if (productUnit?.unit_type == ProductTypeEnum.Granule) {
         unitTypeName = "Granules";
     }
 
     let labelFinal = "";
-    if (productUnit?.unit_type == UnitTypesEnum.Roll) {
+    if (productUnit?.unit_type == ProductTypeEnum.Roll) {
         labelFinal = unitTypeName + ' (' + productUnit.unit_sub_type + '-' + (stringIsNullOrWhiteSpace(productUnit.unit_short_name) ? 'Default' : productUnit.unit_short_name) + ')';
     } else {
         labelFinal = unitTypeName + ' (' + (stringIsNullOrWhiteSpace(productUnit.unit_short_name) ? 'Default' : productUnit.unit_short_name) + ')';

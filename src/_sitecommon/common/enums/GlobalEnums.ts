@@ -62,7 +62,6 @@ export const inventoryUnits = {
   SHIPPING: 7
 };
 
-
 export enum InventoryUnits {
   KG = '1',
   LB = '2',
@@ -72,19 +71,21 @@ export enum InventoryUnits {
   METRE = '6',
 }
 
-
-export enum UnitTypesEnum {
-  Liquid_Solvent = '1',
-  Granules = '2',
+export enum ProductTypeEnum {
+  Solvent = '1',
+  Granule = '2',
   Roll = '3',
+}
+
+export enum ProductSourceEnum {
+  External = 'External',
+  Internal = 'Internal',
 }
 
 export enum OrderTaxStatusEnum {
   Taxable = '1',
   NonTaxable = '2',
 }
-
-
 
 export enum PurchaseOrderStatusTypesEnum {
   Pending = 1,
@@ -93,8 +94,6 @@ export enum PurchaseOrderStatusTypesEnum {
   Approve = 4,
 
 }
-
-
 export enum MachineTypesEnum {
   Extruder = 1,
   Cutting = 2,

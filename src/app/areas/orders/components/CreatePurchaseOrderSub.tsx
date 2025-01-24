@@ -12,7 +12,7 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import ReactSelect from 'react-select';
 import { showErrorMsg, showSuccessMsg, stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 import { makeAnyStringShortAppendDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
-import { UnitTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
+import { ProductTypeEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
 import { calculatePurchaseOrderLineItem, calculatePurchaseOrderCartSummary } from '../../../../_sitecommon/common/helpers/global/OrderHelper';
 import PurchaseOrderReceiptModal from '../components/PurchaseOrderReceiptModal';
 import { generateUniqueIdWithDate } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
@@ -705,7 +705,7 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                                                                             <div className='d-flex flex-column' style={{ maxHeight: "100px", overflow: "auto" }}>
                                                                                 {
                                                                                     productItem.product_units_info
-                                                                                        ?.filter((x: { unit_type: any; }) => x.unit_type == UnitTypesEnum.Roll)
+                                                                                        ?.filter((x: { unit_type: any; }) => x.unit_type == ProductTypeEnum.Roll)
                                                                                         ?.map((productUnit: any, unitIndex: number) => (
                                                                                             <div key={unitIndex} className="d-flex justify-content-between align-items-center">
                                                                                                 <i>{productUnit.unit_sub_type}: {productUnit.unit_value} {productUnit.unit_short_name ?? ''}</i>
