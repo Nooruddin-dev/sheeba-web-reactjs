@@ -1,5 +1,6 @@
 import { AxiosResponse } from "axios";
 import ApiHelper from "./api";
+import { ProductSourceEnum } from "../enums/GlobalEnums";
 
 export class InventoryApi {
     public static async getUnits(): Promise<AxiosResponse<any, any>> {
@@ -22,8 +23,11 @@ export class InventoryApi {
         return ApiHelper.get(`/inventory/${id}`);
     }
 
-
     public static async get(filter?: any): Promise<AxiosResponse<any, any>> {
         return ApiHelper.get(`/inventory`, { ...filter });
+    }
+
+    public static async autoComplete(filter: { value: string, source: ProductSourceEnum }): Promise<AxiosResponse<any, any>> {
+        return ApiHelper.get(`/inventory/auto-complete`, { ...filter });
     }
 }

@@ -38,6 +38,7 @@ import VendorOrderDetailsPage from '../areas/orders/pages/VendorOrderDetailsPage
 import SaleInvoiceListPage from '../areas/saleInvoice/pages/SaleInvoiceListPage';
 import ManageSaleInvoicePage from '../areas/saleInvoice/pages/ManageSaleInvoicePage';
 import ManageProductPage from '../areas/inventory/pages/ManageProductPage';
+import ManageProductionEntry from '../areas/cardManagement/pages/ManageProductionEntry';
 
 
 
@@ -144,6 +145,10 @@ export default function RouteConfig() {
 
         <Route path="/job-management/production-entries" element={
           <LoginProtectedRoute> <ProductionEntriesPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/job-management/production-entries/create" element={
+          <LoginProtectedRoute> <ManageProductionEntry /> </LoginProtectedRoute>
         } />
 
         <Route path="/job-management/dispatch-info/:job_card_id" element={

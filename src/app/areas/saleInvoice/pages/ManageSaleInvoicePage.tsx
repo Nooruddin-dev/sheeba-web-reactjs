@@ -197,7 +197,7 @@ export default function ManageSaleInvoicePage() {
                     <KTCard>
                         <KTCardBody className='py-4'>
                             <form>
-                                <div className='modal-body py-lg-10 px-lg-10 admin-modal-height'>
+                                <div className='modal-body py-lg-10 px-lg-10'>
                                     <div className='row'>
                                         <div className='col-lg-4'>
                                             <div className="mb-10">

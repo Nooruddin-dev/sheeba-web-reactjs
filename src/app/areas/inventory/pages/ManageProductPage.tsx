@@ -8,13 +8,14 @@ import AdminPageHeader from '../../common/components/layout/AdminPageHeader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { ProductSourceEnum, ProductTypeEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { InventoryApi } from '../../../../_sitecommon/common/api/inventory.api';
 import { debounceClick } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
-import { toast } from 'react-toastify';
+import { showErrorMsg, showSuccessMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 
 export default function ManageProductPage() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { register, getValues, setValue, trigger, formState: { errors } } = useForm();
     const [isUpdate] = useState<boolean>(id ? true : false);
     const [units, setUnits] = useState<any>([]);
@@ -39,36 +40,52 @@ export default function ManageProductPage() {
         const isValid = await trigger();
         if (isValid) {
             const formValue = getValues();
-            const payload = {
-                name: formValue.productName,
-                shortDescription: formValue.shortDescription,
-                sku: formValue.sku,
-                quantity: formValue.quantity,
-                weight: formValue.weight,
-                weightUnitId: formValue.weightUnitId,
-                type: formValue.type,
-                source: formValue.source,
-                ...(isProductTypeRollSelected && {
-                    width: formValue.width,
-                    widthUnitId: formValue.widthUnitId,
-                    length: formValue.length,
-                    lengthUnitId: formValue.lengthUnitId,
-                    micron: formValue.micron,
-                })
-            };
-            InventoryApi.create(payload)
-                .then((response) => { toast.success(response.data.message) })
-                .catch((response) => { toast.error(response.data.message) })
+            if (isUpdate && id) {
+                const payload = {
+                    name: formValue.productName,
+                    shortDescription: formValue.shortDescription,
+                };
+                InventoryApi.update(parseInt(id, 10), payload)
+                    .then((response) => {
+                        showSuccessMsg(response.data.message);
+                        navigate('/site/products-list');
+                    })
+                    .catch((error) => { showErrorMsg(error.response.data.message) })
+            } else {
+                const formValue = getValues();
+                const payload = {
+                    name: formValue.productName,
+                    shortDescription: formValue.shortDescription,
+                    sku: formValue.sku,
+                    quantity: formValue.quantity,
+                    weight: formValue.weight,
+                    weightUnitId: formValue.weightUnitId,
+                    type: formValue.type,
+                    source: formValue.source,
+                    ...(isProductTypeRollSelected && {
+                        width: formValue.width,
+                        widthUnitId: formValue.widthUnitId,
+                        length: formValue.length,
+                        lengthUnitId: formValue.lengthUnitId,
+                        micron: formValue.micron,
+                    })
+                };
+                InventoryApi.create(payload)
+                    .then((response) => {
+                        showSuccessMsg(response.data.message);
+                        navigate('/site/products-list');
+                    })
+                    .catch((error) => { showErrorMsg(error.response.data.message) });
+            }
         }
     }
 
     function getUnits(): void {
         InventoryApi.getUnits()
             .then((response) => {
-                console.log(response.data.data);
                 setUnits(response.data.data);
             })
-            .catch((response) => { toast.error(response.data.message) })
+            .catch((error) => { showErrorMsg(error.response.data.message) })
     }
 
     function trySetUpdateFormData(): void {
@@ -93,7 +110,7 @@ export default function ManageProductPage() {
                         setValue('micron', parseFloat(data.micron));
                     }
                 })
-                .catch((response) => { toast.error(response.data.message) })
+                .catch((error) => { showErrorMsg(error.response.data.message) })
         }
     }
 
