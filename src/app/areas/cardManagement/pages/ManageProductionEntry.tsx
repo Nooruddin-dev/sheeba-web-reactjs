@@ -28,7 +28,7 @@ export default function ManageProductionEntry() {
     const [isConsumerMachineSelected, setConsumerMachineSelected] = useState<boolean>(false);
     const [jobCards, setJobCards] = useState<any[]>([]);
     const [machines, setMachines] = useState<any[]>([]);
-    const [internalMaterials, setInternalMaterials] = useState<any[]>([]);
+    const [allMaterials, setAllMaterials] = useState<any[]>([]);
     const [externalMaterials, setExternalMaterials] = useState<any[]>([]);
 
     const todayDate = new Date();
@@ -96,7 +96,7 @@ export default function ManageProductionEntry() {
         }
     }
 
-    const onExternalMaterialSelected = (index: number, data: any) => {
+    const onAllMaterialSelected = (index: number, data: any) => {
         if (data) {
             consumedMaterials[index].id = data.value.id
         } else {
@@ -125,8 +125,8 @@ export default function ManageProductionEntry() {
             .catch(() => { })
     }
 
-    const onExternalMaterialChange = (value: string) => {
-        InventoryApi.autoComplete({ value, source: ProductSourceEnum.External })
+    const onAllMaterialChange = (value: string) => {
+        InventoryApi.autoComplete({ value })
             .then((response) => {
                 const materials = response.data.map((data: any) => ({
                     label: data.name, value: data
@@ -142,7 +142,7 @@ export default function ManageProductionEntry() {
                 const materials = response.data.map((data: any) => ({
                     label: data.name, value: data
                 }));
-                setInternalMaterials(materials);
+                setAllMaterials(materials);
             })
             .catch(() => { })
     }
@@ -435,8 +435,8 @@ export default function ManageProductionEntry() {
                                                                                 placeholder="Search and select material"
                                                                                 className="flex-grow-1"
                                                                                 options={externalMaterials}
-                                                                                onChange={(value) => onExternalMaterialSelected(index, value)}
-                                                                                onInputChange={onExternalMaterialChange} />
+                                                                                onChange={(value) => onAllMaterialSelected(index, value)}
+                                                                                onInputChange={onAllMaterialChange} />
                                                                         </td>
                                                                         <td className='px-5'>
                                                                             <input
@@ -532,7 +532,7 @@ export default function ManageProductionEntry() {
                                                                             isClearable={true}
                                                                             placeholder="Search and select material"
                                                                             className="flex-grow-1"
-                                                                            options={internalMaterials}
+                                                                            options={allMaterials}
                                                                             onChange={onInternalMaterialSelected}
                                                                             onInputChange={onInternalMaterialChange} />
                                                                     </td>

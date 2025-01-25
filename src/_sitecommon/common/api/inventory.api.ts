@@ -27,7 +27,7 @@ export class InventoryApi {
         return ApiHelper.get(`/inventory`, { ...filter });
     }
 
-    public static async autoComplete(filter: { value: string, source: ProductSourceEnum }): Promise<AxiosResponse<any, any>> {
+    public static async autoComplete(filter: { value: string, source?: ProductSourceEnum }): Promise<AxiosResponse<any, any>> {
         return ApiHelper.get(`/inventory/auto-complete`, { ...filter });
     }
 }
