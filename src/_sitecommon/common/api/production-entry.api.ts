@@ -9,4 +9,8 @@ export class ProductionEntryApi {
     public static async get(filter?: any): Promise<AxiosResponse<any, any>> {
         return ApiHelper.get('/production-entries', { ...filter });
     }
+
+    public static async getLastConsumedProducts(jobCardId: any): Promise<AxiosResponse<any, any>> {
+        return ApiHelper.get('/production-entries/latest-consumed-products', { jobCardId });
+    }
 }
