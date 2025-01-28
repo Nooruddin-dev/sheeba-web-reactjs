@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil, faPlus, faSave, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { JobCardApi } from '../../../../_sitecommon/common/api/job-card.api';
 import { MachineApi } from '../../../../_sitecommon/common/api/machine.api';
-import { MachineTypesEnum, ProductSourceEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
+import { MachineTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
 import SiteErrorMessage from '../../common/components/shared/SiteErrorMessage';
 import { useForm } from 'react-hook-form';
 import { showErrorMsg, showSuccessMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
@@ -60,7 +60,7 @@ export default function ManageProductionEntry() {
                             tareWeight: parseFloat(material.tareWeight || 0),
                         });
                     });
-                    setConsumedMaterials(calculateConsumedMaterial(consumedMaterials));
+                    setConsumedMaterials(calculateConsumedMaterial(consumedMaterials.length ? consumedMaterials : [{ percentage: 0 }]));
                 })
                 .catch((error) => showErrorMsg(error.response.data.message))
         }
@@ -190,9 +190,9 @@ export default function ManageProductionEntry() {
                     id: material.id,
                     quantity: material.quantity,
                     grossWeight: material.grossWeight,
-                    wasteWeight: material.wasteWeight,
-                    tareWeight: material.tareWeight,
-                    netWeight: material.netWeight,
+                    wasteWeight: material.wasteWeight || 0,
+                    tareWeight: material.tareWeight || 0,
+                    netWeight: material.netWeight || 0,
                     percentage: material.percentage
                 })),
                 producedMaterials: [{
