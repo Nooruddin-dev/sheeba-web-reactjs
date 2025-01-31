@@ -37,6 +37,7 @@ import MachineBasedReportPage from '../areas/cardManagement/pages/MachineBasedRe
 import VendorOrderDetailsPage from '../areas/orders/pages/VendorOrderDetailsPage';
 import SaleInvoiceListPage from '../areas/saleInvoice/pages/SaleInvoiceListPage';
 import ManageSaleInvoicePage from '../areas/saleInvoice/pages/ManageSaleInvoicePage';
+import SiteLoader from '../areas/common/components/shared/SiteLoader';
 
 
 
@@ -190,6 +191,8 @@ export default function RouteConfig() {
         closeOnClick={true}
         theme="colored"
       />
+
+      <SiteLoader/>
 
 
 

@@ -158,7 +158,7 @@ const JobCardDispatchInvoice: React.FC<JobCardDispatchInvoiceInterface> = ({
                                                         <td className="text-start bg-light p-3"> Date</td>
                                                         <td className='text-start p-3'>
                                                             <div className="d-flex align-items-center">
-                                                                <div className="ms-5">  <div className="fw-bold">   {getDateCommonFormatFromJsonDate(dispatchInvoiceDetail?.job_date)}</div>   </div>
+                                                                <div className="ms-5">  <div className="fw-bold">   {getDateCommonFormatFromJsonDate(dispatchInvoiceDetail?.created_on)}</div>   </div>
                                                             </div>
                                                         </td>
 
