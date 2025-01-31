@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router';
 import { InventoryApi } from '../../../../_sitecommon/common/api/inventory.api';
 import ReactSelect from 'react-select';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil, faPlus, faSave, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSave, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { JobCardApi } from '../../../../_sitecommon/common/api/job-card.api';
 import { MachineApi } from '../../../../_sitecommon/common/api/machine.api';
 import { MachineTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
@@ -22,14 +22,13 @@ export default function ManageProductionEntry() {
     const { register, getValues, setValue, trigger, formState: { errors } } = useForm({});
     const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
     const [isUpdate] = useState<boolean>(id ? true : false);
-    const [consumedMaterials, setConsumedMaterials] = useState<any[]>([]);
-    const [producedMaterial, setProducedMaterial] = useState<any>({});
-    const [isProducerMachineSelected, setProducerMachineSelected] = useState<boolean>(false);
-    const [isConsumerMachineSelected, setConsumerMachineSelected] = useState<boolean>(false);
+    const [extruderBatchItems, setExtruderBatchItems] = useState<any[]>([]);
+    const [material, setMaterial] = useState<any>({});
+    const [shouldTakeMaterial, setShouldTakeMaterial] = useState<boolean>(false);
     const [isExtruderMachine, setIsExtruderMachine] = useState<boolean>(false);
     const [jobCards, setJobCards] = useState<any[]>([]);
     const [machines, setMachines] = useState<any[]>([]);
-    const [materials, setMaterials] = useState<any[]>([]);
+    const [materialOptions, setMaterialOptions] = useState<any[]>([]);
 
     const todayDate = new Date();
     const todayFormattedDate = todayDate
@@ -44,26 +43,7 @@ export default function ManageProductionEntry() {
     })
 
     useEffect(() => {
-        const jobCardId = getValues('jobCard')?.id;
-        if (isExtruderMachine && jobCardId) {
-            ProductionEntryApi.getLastConsumedProducts(jobCardId)
-                .then((response) => {
-                    const consumedMaterials: any[] = [];
-                    response.data.forEach((material: any) => {
-                        consumedMaterials.push({
-                            productLabel: `${material.productName} - ${material.productSku}`,
-                            id: material.productId,
-                            quantity: parseFloat(material.quantity || 0),
-                            grossWeight: parseFloat(material.grossWeight || 0),
-                            netWeight: parseFloat(material.netWeight || 0),
-                            wasteWeight: parseFloat(material.wasteWeight || 0),
-                            tareWeight: parseFloat(material.tareWeight || 0),
-                        });
-                    });
-                    setConsumedMaterials(calculateConsumedMaterial(consumedMaterials.length ? consumedMaterials : [{ percentage: 0 }]));
-                })
-                .catch((error) => showErrorMsg(error.response.data.message))
-        }
+        setExtruderBatchItems([{ key: `batch-item-${Math.random()}` }]);
     }, [isExtruderMachine])
 
     const onJobCardSelected = (data: any) => {
@@ -89,34 +69,22 @@ export default function ManageProductionEntry() {
         if (data) {
             setValue('machine', data.value);
             setIsExtruderMachine(MachineTypesEnum.Extruder.toString() === data.value.typeId.toString());
-            setProducerMachineSelected([MachineTypesEnum.Extruder, MachineTypesEnum.Cutting].includes(parseInt(data.value.typeId, 10)));
-            setConsumerMachineSelected([MachineTypesEnum.Extruder, MachineTypesEnum.Cutting, MachineTypesEnum.Lamination, MachineTypesEnum.Printing].includes(parseInt(data.value.typeId, 10)));
+            setShouldTakeMaterial([MachineTypesEnum.Lamination, MachineTypesEnum.Printing].includes(parseInt(data.value.typeId, 10)));
         } else {
             setValue('machine', undefined);
             setIsExtruderMachine(false);
-            setProducerMachineSelected(false);
-            setConsumerMachineSelected(false);
+            setShouldTakeMaterial(false);
         }
-        setConsumedMaterials([{}]);
-        setProducedMaterial({});
+        setMaterial({});
     }
 
-    const onConsumedMaterialSelected = (index: number, data: any) => {
+    const onMaterialSelected = (data: any) => {
         if (data) {
-            consumedMaterials[index].id = data.value.id
+            material.id = data.value.id;
         } else {
-            consumedMaterials[index].id = undefined;
+            material.id = undefined;
         }
-        setConsumedMaterials([...consumedMaterials]);
-    }
-
-    const onProducedMaterialSelected = (data: any) => {
-        if (data) {
-            producedMaterial.id = data.value.id;
-        } else {
-            producedMaterial.id = undefined;
-        }
-        setProducedMaterial({ ...producedMaterial });
+        setMaterial({ ...material });
     }
 
     const onMachineChange = (value: string) => {
@@ -134,76 +102,93 @@ export default function ManageProductionEntry() {
         InventoryApi.autoComplete({ value })
             .then((response) => {
                 const materials = response.data.map((data: any) => ({
-                    label: data.name, value: data
+                    label: `${data.sku} -- ${data.name}`, value: data
                 }));
-                setMaterials(materials);
+                setMaterialOptions(materials);
             })
             .catch(() => { })
     }
 
-    const onAddConsumedMaterial = () => {
-        setConsumedMaterials(calculateConsumedMaterial([
-            ...consumedMaterials,
-            {
-                percentage: 0
-            }
+    const onWeightChange = (value: string, field: string) => {
+        const grossWeight = parseFloat((field === 'grossWeight' ? value : getValues('grossWeight')) || 0);
+        const waste = parseFloat(field === 'waste' ? value : getValues('waste') || 0);
+        const tare = parseFloat(field === 'tare' ? value : getValues('tare') || 0);
+        setValue('netWeight', grossWeight - waste - tare);
+    }
+
+    const onAddExtruderBatchItem = () => {
+        setExtruderBatchItems(calculateBatchPercentage([
+            ...extruderBatchItems,
+            { key: `batch-item-${Math.random()}` }
         ]));
     }
 
-    const onRemoveConsumedMaterial = (index: number) => {
-        consumedMaterials.splice(index, 1);
-        setConsumedMaterials(calculateConsumedMaterial([
-            ...consumedMaterials
+    const onRemoveExtruderBatchItem = (index: number) => {
+        extruderBatchItems.splice(index, 1);
+        setExtruderBatchItems(calculateBatchPercentage([
+            ...extruderBatchItems
         ]));
     }
 
-    const onConsumedMaterialChange = (index: number, value: string, fieldName: string) => {
-        consumedMaterials[index][fieldName] = parseFloat(value);
-        setConsumedMaterials(calculateConsumedMaterial(consumedMaterials));
+    const onExtruderBatchMaterialSelected = (index: number, value: any) => {
+        extruderBatchItems[index].id = value ? value.value.id : undefined;
+        setExtruderBatchItems(calculateBatchPercentage(extruderBatchItems));
     }
 
-    const onProducedMaterialChange = (value: string, fieldName: string) => {
-        producedMaterial[fieldName] = parseFloat(value);
-        setProducedMaterial(calculateProducedMaterialWeight(producedMaterial));
-    }
-
-    const onEditMaterial = (index: number) => {
-        delete consumedMaterials[index].productLabel;
-        delete consumedMaterials[index].id;
-        setConsumedMaterials([...consumedMaterials]);
+    const onExtruderBatchFieldChange = (index: number, value: string, fieldName: string) => {
+        extruderBatchItems[index][fieldName] = parseFloat(value);
+        setExtruderBatchItems(calculateBatchPercentage(extruderBatchItems));
     }
 
     const onSubmit = async () => {
         setFormSubmitted(true);
+        if (!material && shouldTakeMaterial) {
+            showErrorMsg('Please select the material');
+        }
         const isValid = await trigger();
-        const consumedMaterialsValid = validateMaterials(consumedMaterials, 'consumed');
-        const producedMaterialsValid = producedMaterial ? validateMaterials([producedMaterial], 'produced') : true;
-        if (isValid && consumedMaterialsValid && producedMaterialsValid) {
+        const batchItemValid = isExtruderMachine ? validateBatchItems(extruderBatchItems) : true;
+        if (isValid && batchItemValid) {
             const formValue = getValues();
+            let consumedMaterials: any[] = []
+            let producedMaterials: any[] = []
+            if (isExtruderMachine) {
+                consumedMaterials = extruderBatchItems.map((batch) => {
+                    const grossWeight = formValue.grossWeight * (batch.percentage / 100);
+                    return {
+                        id: batch.id,
+                        quantity: 0,
+                        grossWeight: grossWeight,
+                        wasteWeight: 0,
+                        tareWeight: 0,
+                        netWeight: grossWeight,
+                    }
+                });
+                producedMaterials = [{
+                    id: formValue.jobCard.extruderProductId,
+                    quantity: formValue.quantity,
+                    grossWeight: formValue.grossWeight,
+                    wasteWeight: formValue.waste,
+                    tareWeight: formValue.tare,
+                    netWeight: formValue.netWeight,
+                }]
+            } else {
+                consumedMaterials = [{
+                    id: material.id,
+                    quantity: formValue.quantity,
+                    grossWeight: formValue.grossWeight,
+                    wasteWeight: formValue.waste,
+                    tareWeight: formValue.tare,
+                    netWeight: formValue.netWeight,
+                }]
+            }
             const payload = {
                 jobCardId: formValue.jobCard.id,
                 machineId: formValue.machine.id,
                 date: todayDate,
                 startTime: formValue.startTime,
                 endTime: formValue.endTime,
-                consumedMaterials: consumedMaterials.map((material) => ({
-                    id: material.id,
-                    quantity: material.quantity,
-                    grossWeight: material.grossWeight,
-                    wasteWeight: material.wasteWeight || 0,
-                    tareWeight: material.tareWeight || 0,
-                    netWeight: material.netWeight || 0,
-                    percentage: material.percentage
-                })),
-                producedMaterials: [{
-                    id: producedMaterial.id,
-                    quantity: producedMaterial.quantity,
-                    grossWeight: producedMaterial.grossWeight,
-                    wasteWeight: producedMaterial.wasteWeight,
-                    tareWeight: producedMaterial.tareWeight,
-                    netWeight: producedMaterial.netWeight,
-                    percentage: 100
-                }]
+                consumedMaterials,
+                producedMaterials
             }
             ProductionEntryApi.create(payload)
                 .then((response) => {
@@ -217,61 +202,30 @@ export default function ManageProductionEntry() {
         }
     }
 
-    function calculateConsumedMaterial(materials: any[]): any[] {
+    function calculateBatchPercentage(materials: any[]): any[] {
         const sumOfGrossWeight = materials.reduce((sum, item) => {
-            return sum + parseFloat(item.grossWeight || 0)
+            return sum + parseFloat(item.weight || 0)
         }, 0);
         return materials.map((material) => {
-            const grossWeight = parseFloat(material.grossWeight) || 0;
-            const wasteWeight = parseFloat(material.wasteWeight) || 0;
-            const tareWeight = parseFloat(material.tareWeight) || 0;
-            const netWeight = parseFloat((grossWeight - wasteWeight - tareWeight).toFixed(2));
+            const weight = parseFloat(material.weight);
             return {
                 ...material,
-                netWeight,
-                percentage: parseFloat(((grossWeight / sumOfGrossWeight * 100) || 0).toFixed(2))
+                percentage: parseFloat(((weight / sumOfGrossWeight * 100) || 0).toFixed(2))
             }
         });
     }
 
-    function calculateProducedMaterialWeight(material: any): any {
-        const grossWeight = parseFloat(material.grossWeight) || 0;
-        const wasteWeight = parseFloat(material.wasteWeight) || 0;
-        const tareWeight = parseFloat(material.tareWeight) || 0;
-        const netWeight = parseFloat((grossWeight - wasteWeight - tareWeight).toFixed(2));
-        return {
-            ...material,
-            netWeight,
-        }
-    }
-
-    function validateMaterials(materials: any[], type: 'consumed' | 'produced'): boolean {
+    function validateBatchItems(materials: any[]): boolean {
         for (let index = 0; index < materials.length; index++) {
             const item = materials[index];
-            const materialType = type === 'consumed' ? 'consumed' : 'produced';
 
             if (!item.id) {
-                showErrorMsg(`Please select ${materialType} materials #${index + 1}`);
+                showErrorMsg(`Please select materials on batch line #${index + 1}`);
                 return false;
             }
 
-            if (item.quantity === undefined) {
-                showErrorMsg(`Please enter quantity on ${materialType} material #${index + 1}`);
-                return false;
-            }
-
-            if (item.grossWeight === undefined) {
-                showErrorMsg(`Please enter gross weight on ${materialType} materials #${index + 1}`);
-                return false;
-            }
-
-            if (item.wasteWeight === undefined && (type === 'produced' || !isExtruderMachine)) {
-                showErrorMsg(`Please enter waste on ${materialType} materials #${index + 1}`);
-                return false;
-            }
-
-            if (item.tareWeight === undefined && (type === 'produced' || !isExtruderMachine)) {
-                showErrorMsg(`Please enter tare/core on ${materialType} materials #${index + 1}`);
+            if (item.weight === undefined) {
+                showErrorMsg(`Please enter quantity on materials on batch line #${index + 1}`);
                 return false;
             }
         }
@@ -388,7 +342,87 @@ export default function ManageProductionEntry() {
                                                             type="time"
                                                             className={`form-control form-control-solid ${formSubmitted ? (errors.endTime ? 'is-invalid' : 'is-valid') : ''}`}
                                                             {...register("endTime", { required: true })} />
-                                                        {errors.startTime && <SiteErrorMessage errorMsg='Start time is required' />}
+                                                        {errors.endTime && <SiteErrorMessage errorMsg='End time is required' />}
+                                                    </div>
+                                                </div>
+                                                {
+                                                    shouldTakeMaterial ?
+                                                        <div className='col-lg-4'>
+                                                            <div className="mb-10">
+                                                                <label className="form-label ">Material</label>
+                                                                <ReactSelect
+                                                                    isMulti={false}
+                                                                    isClearable={true}
+                                                                    placeholder="Search and select material"
+                                                                    className="flex-grow-1"
+                                                                    options={materialOptions}
+                                                                    onChange={onMaterialSelected}
+                                                                    onInputChange={onMaterialChange} />
+                                                            </div>
+                                                        </div>
+                                                        : null
+
+                                                }
+                                                <div className='col-lg-4'>
+                                                    <div className="mb-10">
+                                                        <label className="form-label ">Quantity</label>
+                                                        <input
+                                                            id="quantity"
+                                                            type="number"
+                                                            step="0.1"
+                                                            className={`form-control form-control-solid ${formSubmitted ? (errors.quantity ? 'is-invalid' : 'is-valid') : ''}`}
+                                                            {...register("quantity", { required: true })} />
+                                                        {errors.quantity && <SiteErrorMessage errorMsg='Quantity is required' />}
+                                                    </div>
+                                                </div>
+                                                <div className='col-lg-4'>
+                                                    <div className="mb-10">
+                                                        <label className="form-label ">Gross Weight</label>
+                                                        <input
+                                                            id="gross-weight"
+                                                            type="number"
+                                                            step="0.1"
+                                                            className={`form-control form-control-solid ${formSubmitted ? (errors.grossWeight ? 'is-invalid' : 'is-valid') : ''}`}
+                                                            {...register("grossWeight", { required: true })}
+                                                            onChange={(e) => onWeightChange(e.target.value, 'grossWeight')} />
+                                                        {errors.grossWeight && <SiteErrorMessage errorMsg='Gross Weight is required' />}
+                                                    </div>
+                                                </div>
+                                                <div className='col-lg-4'>
+                                                    <div className="mb-10">
+                                                        <label className="form-label ">Waste</label>
+                                                        <input
+                                                            id="end-time"
+                                                            type="number"
+                                                            step="0.1"
+                                                            className={`form-control form-control-solid ${formSubmitted ? (errors.waste ? 'is-invalid' : 'is-valid') : ''}`}
+                                                            {...register("waste", { required: true })}
+                                                            onChange={(e) => onWeightChange(e.target.value, 'waste')} />
+                                                        {errors.waste && <SiteErrorMessage errorMsg='Waste is required' />}
+                                                    </div>
+                                                </div>
+                                                <div className='col-lg-4'>
+                                                    <div className="mb-10">
+                                                        <label className="form-label ">Tare/Core</label>
+                                                        <input
+                                                            id="end-time"
+                                                            type="number"
+                                                            step="0.1"
+                                                            className={`form-control form-control-solid ${formSubmitted ? (errors.tare ? 'is-invalid' : 'is-valid') : ''}`}
+                                                            {...register("tare", { required: true })}
+                                                            onChange={(e) => onWeightChange(e.target.value, 'tare')} />
+                                                        {errors.tare && <SiteErrorMessage errorMsg='Tare/Core is required' />}
+                                                    </div>
+                                                </div>
+                                                <div className='col-lg-4'>
+                                                    <div className="mb-10">
+                                                        <label className="form-label ">Net Weight</label>
+                                                        <input
+                                                            id="end-time"
+                                                            type="number"
+                                                            readOnly={true}
+                                                            className='form-control form-control-solid'
+                                                            {...register("netWeight", { required: true })} />
                                                     </div>
                                                 </div>
                                             </>
@@ -397,116 +431,51 @@ export default function ManageProductionEntry() {
                                 </div>
 
                                 {
-                                    isConsumerMachineSelected ?
+                                    isExtruderMachine ?
                                         <>
                                             <hr />
 
                                             <div className='row'>
                                                 <div className='col-lg-6'>
-                                                    <h3>Material Consumed</h3>
+                                                    <h3>Batch</h3>
                                                 </div>
                                                 <div className='col-lg-12'>
-                                                    <table style={{ width: '100%' }}>
-                                                        <thead>
-                                                            <tr>
-                                                                <th className='min-w-250px'>Material</th>
-                                                                <th className='min-w-50px'>Quantity</th>
-                                                                <th className='min-w-50px'>Gross Weight</th>
-                                                                {
-                                                                    !isExtruderMachine ?
-                                                                        <>
-                                                                            <th className='min-w-50px'>Waste Weight</th>
-                                                                            <th className='min-w-50px'>Tare/Core</th>
-                                                                            <th className='min-w-150px'>Net Weight</th>
-                                                                        </>
-                                                                        : null
-                                                                }
-                                                                <th className='min-w-150px'>Percentage</th>
-                                                                <th className='min-w-50px'></th>
-                                                            </tr>
-                                                        </thead>
+                                                    <table style={{ width: '70%' }}>
                                                         <tbody>
                                                             {
-                                                                consumedMaterials.map((material, index) => (
-                                                                    <tr key={'consumedMaterials-' + index}>
+                                                                extruderBatchItems.map((item, index) => (
+                                                                    <tr key={item.key}>
                                                                         <td className='px-3'>
-                                                                            {
-                                                                                material.productLabel ?
-                                                                                    <div>
-                                                                                        {material.productLabel}
-                                                                                        <button className='btn btn-sm' onClick={() => onEditMaterial(index)}>
-                                                                                            <FontAwesomeIcon icon={faPencil} />
-                                                                                        </button>
-                                                                                    </div>
-                                                                                    :
-                                                                                    <ReactSelect
-                                                                                        isMulti={false}
-                                                                                        isClearable={true}
-                                                                                        placeholder="Search and select material"
-                                                                                        className="flex-grow-1"
-                                                                                        options={materials}
-                                                                                        onChange={(value) => onConsumedMaterialSelected(index, value)}
-                                                                                        onInputChange={onMaterialChange} />
-                                                                            }
-
-
+                                                                            <ReactSelect
+                                                                                isMulti={false}
+                                                                                isClearable={true}
+                                                                                placeholder="Search and select material"
+                                                                                className="flex-grow-1"
+                                                                                options={materialOptions}
+                                                                                onChange={(value) => onExtruderBatchMaterialSelected(index, value)}
+                                                                                onInputChange={onMaterialChange} />
                                                                         </td>
                                                                         <td className='px-5'>
                                                                             <input
-                                                                                id={"consumed-material-quantity-" + index}
+                                                                                id={"weight=" + index}
                                                                                 type="number"
                                                                                 step={0.1}
-                                                                                value={material.quantity}
+                                                                                value={item.weight}
+                                                                                placeholder="Enter weight"
                                                                                 className='form-control form-control-solid'
-                                                                                onChange={(e) => onConsumedMaterialChange(index, e.target.value, 'quantity')} />
+                                                                                onChange={(e) => onExtruderBatchFieldChange(index, e.target.value, 'weight')} />
                                                                         </td>
-                                                                        <td className='px-5'>
-                                                                            <input
-                                                                                id={"gross-weight=" + index}
-                                                                                type="number"
-                                                                                step={0.1}
-                                                                                value={material.grossWeight}
-                                                                                className='form-control form-control-solid'
-                                                                                onChange={(e) => onConsumedMaterialChange(index, e.target.value, 'grossWeight')} />
-                                                                        </td>
-                                                                        {
-                                                                            !isExtruderMachine ?
-                                                                                <>
-                                                                                    <td className='px-5'>
-                                                                                        <input
-                                                                                            id={"waste-weight-" + index}
-                                                                                            type="number"
-                                                                                            step={0.1}
-                                                                                            value={material.wasteWeight}
-                                                                                            className='form-control form-control-solid'
-                                                                                            onChange={(e) => onConsumedMaterialChange(index, e.target.value, 'wasteWeight')} />
-                                                                                    </td>
-                                                                                    <td className='px-5'>
-                                                                                        <input
-                                                                                            id={"tare-weight-" + index}
-                                                                                            type="number"
-                                                                                            step={0.1}
-                                                                                            value={material.tareWeight}
-                                                                                            className='form-control form-control-solid'
-                                                                                            onChange={(e) => onConsumedMaterialChange(index, e.target.value, 'tareWeight')} />
-                                                                                    </td>
-                                                                                    <td className='px-5'>
-                                                                                        {material.netWeight}
-                                                                                    </td>
-                                                                                </>
-                                                                                : null
-                                                                        }
-                                                                        <td className='px-5'>
-                                                                            {material.percentage}%
+                                                                        <td className='px-5 min-w-50px'>
+                                                                            {item.percentage}%
                                                                         </td>
                                                                         <td>
                                                                             {
-                                                                                index === consumedMaterials.length - 1 ?
-                                                                                    <button type='button' className="btn btn-light-secondary fs-3" onClick={onAddConsumedMaterial}>
+                                                                                index === extruderBatchItems.length - 1 ?
+                                                                                    <button type='button' className="btn btn-light-secondary fs-3" onClick={onAddExtruderBatchItem}>
                                                                                         <FontAwesomeIcon icon={faPlus} />
                                                                                     </button>
                                                                                     :
-                                                                                    <button type='button' className="btn btn-light-secondary fs-3" onClick={() => onRemoveConsumedMaterial(index)}>
+                                                                                    <button type='button' className="btn btn-light-secondary fs-3" onClick={() => onRemoveExtruderBatchItem(index)}>
                                                                                         <FontAwesomeIcon icon={faTrashCan} />
                                                                                     </button>
                                                                             }
@@ -518,92 +487,10 @@ export default function ManageProductionEntry() {
                                                     </table>
                                                 </div>
                                             </div>
-                                            <hr />
                                         </>
                                         : null
                                 }
 
-                                {
-                                    isProducerMachineSelected ?
-                                        <>
-                                            <div className='row'>
-                                                <div className='col-lg-6'>
-                                                    <h3>Material Produced</h3>
-                                                </div>
-                                                <div className='col-lg-12'>
-                                                    <table style={{ width: '100%' }}>
-                                                        <thead>
-                                                            <tr>
-                                                                <th className='min-w-250px'>Material</th>
-                                                                <th className='min-w-50px'>Quantity</th>
-                                                                <th className='min-w-50px'>Gross Weight</th>
-                                                                <th className='min-w-50px'>Waste Weight</th>
-                                                                <th className='min-w-50px'>Tare/Core</th>
-                                                                <th className='min-w-150px'>Net Weight</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {
-                                                                <tr>
-                                                                    <td className='px-3'>
-                                                                        <ReactSelect
-                                                                            isMulti={false}
-                                                                            isClearable={true}
-                                                                            placeholder="Search and select material"
-                                                                            className="flex-grow-1"
-                                                                            options={materials}
-                                                                            onChange={onProducedMaterialSelected}
-                                                                            onInputChange={onMaterialChange} />
-                                                                    </td>
-                                                                    <td className='px-5'>
-                                                                        <input
-                                                                            id="produced-material-quantity"
-                                                                            type="number"
-                                                                            step={0.1}
-                                                                            value={producedMaterial?.quantity}
-                                                                            className='form-control form-control-solid'
-                                                                            onChange={(e) => onProducedMaterialChange(e.target.value, 'quantity')} />
-                                                                    </td>
-                                                                    <td className='px-5'>
-                                                                        <input
-                                                                            id="gross-weight"
-                                                                            type="number"
-                                                                            step={0.1}
-                                                                            value={producedMaterial?.grossWeight}
-                                                                            className='form-control form-control-solid'
-                                                                            onChange={(e) => onProducedMaterialChange(e.target.value, 'grossWeight')} />
-                                                                    </td>
-                                                                    <td className='px-5'>
-                                                                        <input
-                                                                            id="waste-weight"
-                                                                            type="number"
-                                                                            step={0.1}
-                                                                            value={producedMaterial?.wasteWeight}
-                                                                            className='form-control form-control-solid'
-                                                                            onChange={(e) => onProducedMaterialChange(e.target.value, 'wasteWeight')} />
-                                                                    </td>
-                                                                    <td className='px-5'>
-                                                                        <input
-                                                                            id="tare-weight"
-                                                                            type="number"
-                                                                            step={0.1}
-                                                                            value={producedMaterial?.tareWeight}
-                                                                            className='form-control form-control-solid'
-                                                                            onChange={(e) => onProducedMaterialChange(e.target.value, 'tareWeight')} />
-                                                                    </td>
-                                                                    <td className='px-5'>
-                                                                        {producedMaterial?.netWeight}
-                                                                    </td>
-                                                                </tr>
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            <hr />
-                                        </>
-                                        : null
-                                }
                             </div>
                             {
                                 getValues('jobCard') ?

@@ -13,8 +13,9 @@ import { InventoryApi } from '../../../../_sitecommon/common/api/inventory.api';
 import { debounceClick } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
 import { showErrorMsg, showSuccessMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 
-export default function ManageProductPage() {
+export default function ManageProductComponent(props: any) {
     const { id } = useParams();
+    const { source } = props;
     const navigate = useNavigate();
     const { register, getValues, setValue, trigger, formState: { errors } } = useForm();
     const [isUpdate] = useState<boolean>(id ? true : false);
@@ -48,7 +49,7 @@ export default function ManageProductPage() {
                 InventoryApi.update(parseInt(id, 10), payload)
                     .then((response) => {
                         showSuccessMsg(response.data.message);
-                        navigate('/site/products-list');
+                        navigateToInventoryList();
                     })
                     .catch((error) => { showErrorMsg(error.response.data.message) })
             } else {
@@ -61,7 +62,7 @@ export default function ManageProductPage() {
                     weight: formValue.weight,
                     weightUnitId: formValue.weightUnitId,
                     type: formValue.type,
-                    source: formValue.source,
+                    source: source,
                     ...(isProductTypeRollSelected && {
                         width: formValue.width,
                         widthUnitId: formValue.widthUnitId,
@@ -73,11 +74,19 @@ export default function ManageProductPage() {
                 InventoryApi.create(payload)
                     .then((response) => {
                         showSuccessMsg(response.data.message);
-                        navigate('/site/products-list');
+                        navigateToInventoryList();
                     })
                     .catch((error) => { showErrorMsg(error.response.data.message) });
             }
         }
+    }
+
+    function getForTitle(): string {
+        if (source === ProductSourceEnum.PurchaseOrder)
+            return 'Purchase Order';
+        if (source === ProductSourceEnum.Recycle)
+            return 'Recycle';
+        return '';
     }
 
     function getUnits(): void {
@@ -100,7 +109,6 @@ export default function ManageProductPage() {
                     setValue('weight', parseFloat(data.weight));
                     setValue('weightUnitId', parseInt(data.weightUnitId));
                     setValue('type', data.type);
-                    setValue('source', data.source);
                     if (data.type.toString() === ProductTypeEnum.Roll) {
                         setIsProductTypeRollSelected(true);
                         setValue('width', parseFloat(data.width));
@@ -114,10 +122,27 @@ export default function ManageProductPage() {
         }
     }
 
+    function navigateToInventoryList(): void {
+        switch (source) {
+            case ProductSourceEnum.PurchaseOrder:
+                navigate('/inventory/purchase-order');
+                break;
+            case ProductSourceEnum.JobCard:
+                navigate('/inventory/job-card');
+                break;
+            case ProductSourceEnum.Recycle:
+                navigate('/inventory/recycle');
+                break;
+            default:
+                navigate('/inventory/purchase-order');
+                break;
+        }
+    }
+
     return (
         <AdminLayout>
             <AdminPageHeader
-                title={isUpdate ? 'Update Product' : 'Add Product'}
+                title={isUpdate ? `Update ${getForTitle()} Product` : `Add ${getForTitle()} Product`}
                 pageDescription={isUpdate ? 'Update product details' : 'Add new product'}
                 addNewClickType={'link'}
                 newLink='site/products/create'
@@ -130,21 +155,6 @@ export default function ManageProductPage() {
                             onSubmit={(e) => { }}>
                             <div className='py-lg-10 px-lg-10'>
                                 <div className='row'>
-                                    <div className='col-lg-6'>
-                                        <div className="mb-10">
-                                            <label className="form-label required">Source</label>
-                                            <select
-                                                id="source"
-                                                className={`form-control form-control-solid ${formSubmitted ? (errors.source ? 'is-invalid' : 'is-valid') : ''}`}
-                                                disabled={isUpdate}
-                                                {...register("source", { required: true })}>
-                                                <option value="" disabled selected>Select source</option>
-                                                <option value={ProductSourceEnum.Internal}>Internal</option>
-                                                <option value={ProductSourceEnum.External}>External </option>
-                                            </select>
-                                            {errors.source && <SiteErrorMessage errorMsg='Source is required' />}
-                                        </div>
-                                    </div>
                                     <div className='col-lg-6'>
                                         <div className="mb-10">
                                             <label className="form-label required">Type</label>

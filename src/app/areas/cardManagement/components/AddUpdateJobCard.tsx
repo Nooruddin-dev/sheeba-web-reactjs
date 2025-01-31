@@ -83,6 +83,12 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
     const [unique_key, setUnique_key] = useState<any>('');
     const [jobDistributionFields, setJobDistributionFields] = useState<any>([]);
 
+    //--producr product
+    const [produce_product_micron, set_produce_product_micron] = useState<any>('');
+    const [produce_product_size, set_produce_product_size] = useState<any>('');
+
+    
+
     //--add new case
     const handleAddDispatch = () => {
 
@@ -188,13 +194,14 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
         if (stringIsNullOrWhiteSpace(order_date) || stringIsNullOrWhiteSpace(dispatch_date)
             || stringIsNullOrWhiteSpace(company_name) || stringIsNullOrWhiteSpace(product_name) || stringIsNullOrWhiteSpace(weight_qty)
-            || stringIsNullOrWhiteSpace(job_size) || stringIsNullOrWhiteSpace(sealing_method) || stringIsNullOrWhiteSpace(card_rate)) {
+            || stringIsNullOrWhiteSpace(job_size) || stringIsNullOrWhiteSpace(sealing_method) || stringIsNullOrWhiteSpace(card_rate)
+            || stringIsNullOrWhiteSpace(produce_product_size) || stringIsNullOrWhiteSpace(produce_product_micron)) {
             showErrorMsg('Please fill all required fields');
             return false;
         }
 
         if (jobCardAllProducts == undefined || jobCardAllProducts == null || jobCardAllProducts.length < 1) {
-            showErrorMsg('Please add produt');
+            showErrorMsg('Please add product');
             return false;
         }
 
@@ -252,10 +259,9 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
             card_total_amount: card_total_amount,
 
-            jobCardAllProducts: jobCardAllProductsLocal
-
-
-
+            jobCardAllProducts: jobCardAllProductsLocal,
+            produce_product_size: produce_product_size,
+            produce_product_micron: produce_product_micron,
         };
 
         createJobCardApi(formData)
@@ -964,6 +970,49 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
                 </KTCardBody>
             </KTCard>
+
+            <div className="card card-xl-stretch mb-5 mb-xl-8 mt-5">
+                <div className='card-header border-0'>
+                    <h3 className='card-title fw-bold text-gray-900'>Produce Product</h3>
+                    <div className='card-toolbar'>
+                        <button
+                            type='button'
+                            className='btn btn-sm btn-icon btn-color-primary btn-active-light-primary'
+                            data-kt-menu-trigger='click'
+                            data-kt-menu-placement='bottom-end'
+                            data-kt-menu-flip='top-end'
+                        >
+                            <KTIcon iconName='category' className='fs-2' />
+                        </button>
+                    </div>
+                </div>
+
+                <div className='card-body pt-0'>
+                    <div className="d-flex mb-3">
+                        <div className="me-3">
+                            <label htmlFor="fieldName" className="form-label">Size</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="fieldName"
+                                value={produce_product_size}
+                                onChange={(e) => set_produce_product_size(e.target.value)}
+                            />
+                        </div>
+                        <div className="me-3">
+                            <label htmlFor="fieldValue" className="form-label">Micron</label>
+                            <input
+                                type="number"
+                                step="any"
+                                className="form-control"
+                                id="fieldValue"
+                                value={produce_product_micron}
+                                onChange={(e) => set_produce_product_micron(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
             <div className="card card-xl-stretch mb-5 mb-xl-8 mt-5">

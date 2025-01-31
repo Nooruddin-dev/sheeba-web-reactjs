@@ -18,7 +18,7 @@ import BusinessPartnersTypesPage from '../areas/businessPartners/pages/BusinessP
 import CustomersListPage from '../areas/businessPartners/pages/CustomersListPage';
 import VendorsListPage from '../areas/businessPartners/pages/VendorsListPage';
 import SalesRepresentativePage from '../areas/businessPartners/pages/SalesRepresentativePage';
-import ProductsListPage from '../areas/inventory/pages/ProductsListPage';
+import PurchaseOrderProductsListPage from '../areas/inventory/pages/PurchaseOrderProductsListPage';
 import MachineTypesPage from '../areas/machines/pages/MachineTypesPage';
 import MachinesListPage from '../areas/machines/pages/MachinesListPage';
 import CreateOrderPage from '../areas/orders/pages/CreateOrderPage';
@@ -37,8 +37,11 @@ import MachineBasedReportPage from '../areas/cardManagement/pages/MachineBasedRe
 import VendorOrderDetailsPage from '../areas/orders/pages/VendorOrderDetailsPage';
 import SaleInvoiceListPage from '../areas/saleInvoice/pages/SaleInvoiceListPage';
 import ManageSaleInvoicePage from '../areas/saleInvoice/pages/ManageSaleInvoicePage';
-import ManageProductPage from '../areas/inventory/pages/ManageProductPage';
 import ManageProductionEntry from '../areas/cardManagement/pages/ManageProductionEntry';
+import JobCardProductsListPage from '../areas/inventory/pages/JobCardProductListPage';
+import RecycleProductsListPage from '../areas/inventory/pages/RecycleProductListPage';
+import ManageProductComponent from '../areas/inventory/components/ManageProductComponent';
+import { ProductSourceEnum } from '../../_sitecommon/common/enums/GlobalEnums';
 
 
 
@@ -48,9 +51,6 @@ export default function RouteConfig() {
   return (
     <>
       <Routes>
-
-
-
         <Route path="/" element={
           <LoginProtectedRoute> <HomePage /> </LoginProtectedRoute>
         } />
@@ -79,16 +79,33 @@ export default function RouteConfig() {
           <LoginProtectedRoute> <SalesRepresentativePage /> </LoginProtectedRoute>
         } />
 
-        <Route path="/site/products-list" element={
-          <LoginProtectedRoute> <ProductsListPage /> </LoginProtectedRoute>
+        {/* Inventory Management Routes */}
+        <Route path="/inventory/purchase-order" element={
+          <LoginProtectedRoute> <PurchaseOrderProductsListPage /> </LoginProtectedRoute>
         } />
 
-        <Route path="/site/products/create" element={
-          <LoginProtectedRoute> <ManageProductPage /> </LoginProtectedRoute>
+        <Route path="/inventory/purchase-order/create" element={
+          <LoginProtectedRoute> <ManageProductComponent source={ProductSourceEnum.PurchaseOrder} /> </LoginProtectedRoute>
         } />
-        
-        <Route path="/site/products/:id" element={
-          <LoginProtectedRoute> <ManageProductPage /> </LoginProtectedRoute>
+
+        <Route path="/inventory/purchase-order/:id" element={
+          <LoginProtectedRoute> <ManageProductComponent source={ProductSourceEnum.PurchaseOrder} /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/inventory/job-card" element={
+          <LoginProtectedRoute> <JobCardProductsListPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/inventory/recycle" element={
+          <LoginProtectedRoute> <RecycleProductsListPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/inventory/recycle/create" element={
+          <LoginProtectedRoute> <ManageProductComponent source={ProductSourceEnum.Recycle} /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/inventory/recycle/:id" element={
+          <LoginProtectedRoute> <ManageProductComponent source={ProductSourceEnum.Recycle} /> </LoginProtectedRoute>
         } />
 
         <Route path="/site/machine-types" element={
@@ -175,20 +192,11 @@ export default function RouteConfig() {
           <LoginProtectedRoute> <MachineBasedReportPage /> </LoginProtectedRoute>
         } />
 
-
-
-
-
-
-
         {/* Common routes area starts here */}
         <Route path="/auth/login" element={<LoginPage />} />
         <Route path="/app/error/404" element={<Error404Page />} />
         {/* Common routes area starts here */}
-
       </Routes>
-
-
 
       <ToastContainer
         position="top-right"
@@ -202,10 +210,6 @@ export default function RouteConfig() {
         closeOnClick={true}
         theme="colored"
       />
-
-
-
-
     </>
   )
 }

@@ -7,15 +7,12 @@ import { KTCard, KTCardBody } from '../../../../_sitecommon/helpers';
 import CommonListSearchHeader from '../../common/components/layout/CommonListSearchHeader';
 import CommonListPagination from '../../common/components/layout/CommonListPagination';
 import TableListLoading from '../../common/components/shared/TableListLoading';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
 import { InventoryApi } from '../../../../_sitecommon/common/api/inventory.api';
 import { toast } from 'react-toastify';
-import { GetFormattedDate, GetFormattedTime, GetProductTypeName, GetStatus, GetUnitShortName } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
+import { ProductSourceEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
 
 
-export default function ProductsListPage() {
+export default function JobCardProductsListPage() {
     const searchFields: HtmlSearchFieldConfig[] = [
         { inputId: 'sku', inputName: 'sku', labelName: 'SKU', placeHolder: 'SKU', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
         { inputId: 'name', inputName: 'name', labelName: 'Name', placeHolder: 'Name', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
@@ -53,6 +50,7 @@ export default function ProductsListPage() {
     function getProducts(): void {
         setIsLoading(true);
         let filter = {
+            source: ProductSourceEnum.JobCard,
             page: (page - 1) * pageSize,
             pageSize,
         }
@@ -83,11 +81,11 @@ export default function ProductsListPage() {
     return (
         <AdminLayout>
             <AdminPageHeader
-                title='Product List'
-                pageDescription='List of internal and external products'
+                title='Job Card Product List'
+                pageDescription='List of products produced by extruder'
                 addNewClickType={'link'}
-                newLink='/site/products/create'
-                additionalInfo={{ showAddNewButton: true }}
+                newLink=''
+                additionalInfo={{ showAddNewButton: false }}
             />
             <Content>
                 <KTCard>
@@ -107,14 +105,9 @@ export default function ProductsListPage() {
                                         <thead>
                                             <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
                                                 <th className="min-w-125px ps-3 rounded-start">SKU</th>
-                                                <th className="min-w-175px">Name</th>
-                                                <th className="min-w-125px">Source</th>
-                                                <th className="min-w-125px">Type</th>
-                                                <th className="min-w-125px">Quantity</th>
-                                                <th className="min-w-125px">Weight</th>
-                                                <th className="min-w-125px">Created On</th>
-                                                <th className="min-w-125px">Status</th>
-                                                <th className="min-w-125px ps-3 rounded-end">Action</th>
+                                                <th className="min-w-125px">Name</th>
+                                                <th className="min-w-125px">Size</th>
+                                                <th className="min-w-125px ps-3 rounded-start">Micron</th>
                                             </tr>
                                         </thead>
                                         <tbody className='text-gray-600 fw-bold'>
@@ -125,29 +118,8 @@ export default function ProductsListPage() {
                                                             <tr id={product?.id} key={'product-' + index}>
                                                                 <td className="ps-3">{product.sku}</td>
                                                                 <td>{product.name}</td>
-                                                                <td>{product.source}</td>
-                                                                <td>{GetProductTypeName(product.type)}</td>
-                                                                <td>{product.quantity}</td>
-                                                                <td>{product.weight} {GetUnitShortName(units, product.weightUnitId)}</td>
-                                                                <td>
-                                                                    <div>{GetFormattedDate(product.createdOn)}</div>
-                                                                    <div>{GetFormattedTime(product.createdOn)}</div>
-                                                                </td>
-                                                                <td>
-                                                                    <div className={product.status ? 'badge fw-bolder badge-light-success' : 'badge fw-bolder badge-light-danger'}>
-                                                                        {GetStatus(product.status)}
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <button type='button' className='btn btn-sm'>
-                                                                        <Link to={"/site/products/" + product.id}>
-                                                                            <FontAwesomeIcon icon={faEdit} className='fa-solid' />
-                                                                        </Link>
-                                                                    </button>
-                                                                    <button type='button' className='btn btn-sm'>
-                                                                        <FontAwesomeIcon icon={faTrashAlt} className='fa-solid' />
-                                                                    </button>
-                                                                </td>
+                                                                <td>{product.width}</td>
+                                                                <td>{product.micron}</td>
                                                             </tr>
                                                         )
                                                     }) :

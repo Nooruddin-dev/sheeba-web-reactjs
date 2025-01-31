@@ -1,4 +1,4 @@
-  enum userRoles {
+enum userRoles {
   Admin = 'admin',
   Accounts = 'accounts',
   Office = 'office',
@@ -50,11 +50,15 @@ export const menuConfig = [
     roles: [userRoles.Admin],
   },
   {
-    to: '/site/products-list',
     title: 'Inventory Management',
     icon: 'grid-frame',
     fontIcon: 'bi-archive',
-    roles: [userRoles.Admin, userRoles.Office],
+    roles: [userRoles.Admin, userRoles.Office, userRoles.Factory],
+    children: [
+      { to: '/inventory/purchase-order', title: 'Purchase Order Products', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
+      { to: '/inventory/job-card', title: 'Job Card Products', hasBullet: true, roles: [userRoles.Admin, userRoles.Factory] },
+      { to: '/inventory/recycle', title: 'Recycle Products', hasBullet: true, roles: [userRoles.Admin, userRoles.Factory] },
+    ]
   },
   {
     title: 'Orders Management',
@@ -104,4 +108,3 @@ export const menuConfig = [
     ],
   },
 ];
-  

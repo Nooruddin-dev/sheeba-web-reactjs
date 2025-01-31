@@ -99,9 +99,9 @@ export default function ProductionEntriesPage() {
                                                 <th className="min-w-125px">Entry Date</th>
                                                 <th className="min-w-125px">Machine</th>
                                                 <th className="min-w-200px">Material</th>
-                                                <th className="min-w-125px">Quantity</th>
                                                 <th className="min-w-125px">Gross</th>
                                                 <th className="min-w-125px">Waste</th>
+                                                <th className="min-w-125px">Tare</th>
                                                 <th className="min-w-125px ps-3 rounded-end">Net</th>
                                             </tr>
                                         </thead>
@@ -117,13 +117,10 @@ export default function ProductionEntriesPage() {
                                                                     <div>{GetFormattedTime(entry.date)}</div>
                                                                 </td>
                                                                 <td>{entry.machineName}</td>
-                                                                <td>
-                                                                    <div>{entry.productName}</div>
-                                                                    <div>{entry.productSku}</div>
-                                                                </td>
-                                                                <td>{entry.quantity}</td>
+                                                                <td>{entry.productSku} -- {entry.productName}</td>
                                                                 <td>{entry.grossWeight}</td>
                                                                 <td>{entry.wasteWeight}</td>
+                                                                <td>{entry.tareWeight}</td>
                                                                 <td>{entry.netWeight}</td>
                                                             </tr>
                                                         )
