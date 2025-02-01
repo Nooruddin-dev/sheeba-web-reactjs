@@ -19,7 +19,7 @@ import { ProductionEntryApi } from '../../../../_sitecommon/common/api/productio
 export default function ManageProductionEntry() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { register, getValues, setValue, trigger, formState: { errors } } = useForm({});
+    const { watch, register, getValues, setValue, trigger, formState: { errors } } = useForm({});
     const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
     const [isUpdate] = useState<boolean>(id ? true : false);
     const [extruderBatchItems, setExtruderBatchItems] = useState<any[]>([]);
@@ -30,6 +30,9 @@ export default function ManageProductionEntry() {
     const [machines, setMachines] = useState<any[]>([]);
     const [materialOptions, setMaterialOptions] = useState<any[]>([]);
 
+    const grossWeightWatch = watch('grossWeight');
+    const wasteWatch = watch('waste');
+    const tareWatch = watch('tare')
     const todayDate = new Date();
     const todayFormattedDate = todayDate
         .toLocaleDateString("en-CA")
@@ -45,6 +48,10 @@ export default function ManageProductionEntry() {
     useEffect(() => {
         setExtruderBatchItems([{ key: `batch-item-${Math.random()}` }]);
     }, [isExtruderMachine])
+
+    useEffect(() => {
+        setValue('netWeight', getNetWeight());
+    }, [grossWeightWatch, wasteWatch, tareWatch])
 
     const onJobCardSelected = (data: any) => {
         if (data) {
@@ -109,13 +116,6 @@ export default function ManageProductionEntry() {
             .catch(() => { })
     }
 
-    const onWeightChange = (value: string, field: string) => {
-        const grossWeight = parseFloat((field === 'grossWeight' ? value : getValues('grossWeight')) || 0);
-        const waste = parseFloat(field === 'waste' ? value : getValues('waste') || 0);
-        const tare = parseFloat(field === 'tare' ? value : getValues('tare') || 0);
-        setValue('netWeight', grossWeight - waste - tare);
-    }
-
     const onAddExtruderBatchItem = () => {
         setExtruderBatchItems(calculateBatchPercentage([
             ...extruderBatchItems,
@@ -151,16 +151,18 @@ export default function ManageProductionEntry() {
             const formValue = getValues();
             let consumedMaterials: any[] = []
             let producedMaterials: any[] = []
+            const weightWithoutTare = (parseFloat(formValue.grossWeight) - parseFloat(formValue.tare));
             if (isExtruderMachine) {
                 consumedMaterials = extruderBatchItems.map((batch) => {
-                    const grossWeight = formValue.grossWeight * (batch.percentage / 100);
+                    const estimatedWeight = weightWithoutTare * (batch.percentage / 100);
                     return {
                         id: batch.id,
                         quantity: 0,
-                        grossWeight: grossWeight,
+                        grossWeight: estimatedWeight,
                         wasteWeight: 0,
                         tareWeight: 0,
-                        netWeight: grossWeight,
+                        weightWithoutTare: estimatedWeight,
+                        netWeight: estimatedWeight,
                     }
                 });
                 producedMaterials = [{
@@ -169,6 +171,7 @@ export default function ManageProductionEntry() {
                     grossWeight: formValue.grossWeight,
                     wasteWeight: formValue.waste,
                     tareWeight: formValue.tare,
+                    weightWithoutTare: weightWithoutTare,
                     netWeight: formValue.netWeight,
                 }]
             } else {
@@ -178,6 +181,7 @@ export default function ManageProductionEntry() {
                     grossWeight: formValue.grossWeight,
                     wasteWeight: formValue.waste,
                     tareWeight: formValue.tare,
+                    weightWithoutTare: weightWithoutTare,
                     netWeight: formValue.netWeight,
                 }]
             }
@@ -213,6 +217,13 @@ export default function ManageProductionEntry() {
                 percentage: parseFloat(((weight / sumOfGrossWeight * 100) || 0).toFixed(2))
             }
         });
+    }
+
+    function getNetWeight(): number {
+        const grossWeight = parseFloat(getValues('grossWeight') || 0);
+        const waste = parseFloat(getValues('waste') || 0);
+        const tare = parseFloat(getValues('tare') || 0);
+        return grossWeight - waste - tare;
     }
 
     function validateBatchItems(materials: any[]): boolean {
@@ -383,8 +394,7 @@ export default function ManageProductionEntry() {
                                                             type="number"
                                                             step="0.1"
                                                             className={`form-control form-control-solid ${formSubmitted ? (errors.grossWeight ? 'is-invalid' : 'is-valid') : ''}`}
-                                                            {...register("grossWeight", { required: true })}
-                                                            onChange={(e) => onWeightChange(e.target.value, 'grossWeight')} />
+                                                            {...register("grossWeight", { required: true })} />
                                                         {errors.grossWeight && <SiteErrorMessage errorMsg='Gross Weight is required' />}
                                                     </div>
                                                 </div>
@@ -396,8 +406,7 @@ export default function ManageProductionEntry() {
                                                             type="number"
                                                             step="0.1"
                                                             className={`form-control form-control-solid ${formSubmitted ? (errors.waste ? 'is-invalid' : 'is-valid') : ''}`}
-                                                            {...register("waste", { required: true })}
-                                                            onChange={(e) => onWeightChange(e.target.value, 'waste')} />
+                                                            {...register("waste", { required: true })} />
                                                         {errors.waste && <SiteErrorMessage errorMsg='Waste is required' />}
                                                     </div>
                                                 </div>
@@ -409,8 +418,7 @@ export default function ManageProductionEntry() {
                                                             type="number"
                                                             step="0.1"
                                                             className={`form-control form-control-solid ${formSubmitted ? (errors.tare ? 'is-invalid' : 'is-valid') : ''}`}
-                                                            {...register("tare", { required: true })}
-                                                            onChange={(e) => onWeightChange(e.target.value, 'tare')} />
+                                                            {...register("tare", { required: true })} />
                                                         {errors.tare && <SiteErrorMessage errorMsg='Tare/Core is required' />}
                                                     </div>
                                                 </div>
