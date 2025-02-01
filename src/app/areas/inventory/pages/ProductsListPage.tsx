@@ -20,10 +20,15 @@ import { getAllProductsListApi, getUnitsListApi, insertUpdateProductApi } from '
 import ProductAddUpdateForm from '../components/ProductAddUpdateForm';
 import { getDateCommonFormatFromJsonDate, makeAnyStringShortAppendDots } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { Portal } from '../../../../_sitecommon/partials';
+import { useDispatch } from 'react-redux';
+import { hideLoader, showLoader } from '../../../globalStore/features/loader/loaderSlice';
 
 
 export default function ProductsListPage() {
     const isLoading = false;
+
+    const dispatch = useDispatch();
+
 
     const [allUnitsList, setAllUnitsList] = useState<any>([]);
 
@@ -138,6 +143,8 @@ export default function ProductsListPage() {
         }
     }
 
+
+
     const handleUserFormSubmit = (data: any) => {
 
 
@@ -179,11 +186,11 @@ export default function ProductsListPage() {
             return false;
         }
 
-        
+
 
         let unitSubTypesAllFinal: any = [];
         if (unitSubTypesAll && unitSubTypesAll.length > 0) {
-            unitSubTypesAll?.filter((x: { unit_type: any; })=>x.unit_type == unit_type)?.forEach((unit: any) => {
+            unitSubTypesAll?.filter((x: { unit_type: any; }) => x.unit_type == unit_type)?.forEach((unit: any) => {
                 unit.unit_type = unit_type;
                 unit.unit_type_name = getUnitTypeName(unit_type);
 
@@ -191,13 +198,13 @@ export default function ProductsListPage() {
                     unit
                 )
             });
-          
+
 
         }
 
 
 
-    
+
         // if (unit_type == UnitTypesEnum.Roll) {
         //     if (unitSubTypesAll && unitSubTypesAll.length > 0) {
         //         unitSubTypesAll.forEach((unit: any) => {
@@ -260,7 +267,7 @@ export default function ProductsListPage() {
             //     showErrorMsg('Please select unit');
             //     return false;
             // }
-            
+
 
             productFormData.productid = productidLocal;
             productFormData.product_name = product_name ?? '';
@@ -271,7 +278,7 @@ export default function ProductsListPage() {
             productFormData.price = price ?? 0;
             productFormData.weight_unit_id = weight_unit_id;
             productFormData.weight_value = weight_value;
-          
+
             // productFormData.unit_id = unit_id;
             productFormData.unit_type = unit_type;
             productFormData.unitSubTypesAll = unitSubTypesAllFinal;
@@ -296,10 +303,13 @@ export default function ProductsListPage() {
         };
 
 
+        dispatch(showLoader()); // Show loader before API call
 
 
         insertUpdateProductApi(formData)
             .then((res: any) => {
+
+                dispatch(hideLoader());
 
                 if (res?.data?.response?.success == true && (res?.data?.response?.responseMessage == "Saved Successfully!" || res?.data?.response?.responseMessage == 'Updated Successfully!')) {
                     showSuccessMsg("Saved Successfully!");
@@ -320,6 +330,7 @@ export default function ProductsListPage() {
 
             })
             .catch((err: any) => {
+                dispatch(hideLoader());
                 console.error(err, "err");
                 showErrorMsg("An error occured. Please try again!");
             });
@@ -344,6 +355,10 @@ export default function ProductsListPage() {
 
     const getAllProductsListService = () => {
 
+
+        dispatch(showLoader()); // Show loader before API call
+
+
         let pageBasicInfoParams = new URLSearchParams(pageBasicInfo).toString();
         if (!stringIsNullOrWhiteSpace(searchFormQueryParams)) {
             pageBasicInfoParams = `${pageBasicInfoParams}&${searchFormQueryParams}`;
@@ -354,6 +369,7 @@ export default function ProductsListPage() {
 
         getAllProductsListApi(pageBasicInfoParams)
             .then((res: any) => {
+                dispatch(hideLoader());
 
                 const { data } = res;
                 if (data && data.length > 0) {
@@ -374,7 +390,13 @@ export default function ProductsListPage() {
 
 
             })
-            .catch((err: any) => console.log(err, "err"));
+            .catch((err: any) => {
+
+                dispatch(hideLoader());
+
+                console.log(err, "err")
+            })
+
     };
 
 
@@ -443,7 +465,7 @@ export default function ProductsListPage() {
                                 <thead>
                                     <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
                                         <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>Product Name</th>
-                                     
+
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Description</th>
                                         {/* <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Cost</th> */}
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>SKU</th>
@@ -462,7 +484,7 @@ export default function ProductsListPage() {
                                             ?
                                             allProductsList?.map((record: any, index: number) => (
                                                 <tr role='row' key={index}>
-                                             
+
 
 
 

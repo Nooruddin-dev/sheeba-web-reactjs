@@ -17,6 +17,8 @@ import { calculatePurchaseOrderLineItem, calculatePurchaseOrderCartSummary } fro
 import PurchaseOrderReceiptModal from '../components/PurchaseOrderReceiptModal';
 import { generateUniqueIdWithDate } from '../../../../_sitecommon/common/helpers/global/GlobalHelper';
 import { formatNumber } from '../../common/util';
+import { useDispatch } from 'react-redux';
+import { hideLoader, showLoader } from '../../../globalStore/features/loader/loaderSlice';
 
 
 const customStyles = {
@@ -29,6 +31,7 @@ const customStyles = {
 
 export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone: any, isEditCloneCase: boolean }) {
     const { orderDetailForEditClone, isEditCloneCase } = props;
+    const dispatch = useDispatch();
     const defaultValues: any = {};
     const formRefOrder = useRef<HTMLFormElement>(null);
     const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({ defaultValues });
@@ -117,8 +120,13 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
             order_total: cartSummary.total,
         }
 
+        dispatch(showLoader()); 
+
         createPurchaseOrderApi(formData)
             .then((res: any) => {
+                dispatch(hideLoader()); 
+
+
                 if (res?.data?.response?.success == true && (res?.data?.response?.responseMessage == "Saved Successfully!" || res?.data?.response?.responseMessage == 'Updated Successfully!')) {
                     showSuccessMsg("Saved Successfully!");
                     setCartProducts([]);
@@ -134,6 +142,9 @@ export default function CreatePurchaseOrderSub(props: { orderDetailForEditClone:
                 }
             })
             .catch((err: any) => {
+                dispatch(hideLoader()); 
+
+
                 console.error(err, "err");
                 showErrorMsg("An error occured. Please try again!");
             });
