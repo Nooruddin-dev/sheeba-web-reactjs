@@ -10,6 +10,9 @@ import TableListLoading from '../../common/components/shared/TableListLoading';
 import { InventoryApi } from '../../../../_sitecommon/common/api/inventory.api';
 import { toast } from 'react-toastify';
 import { ProductSourceEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
 
 
 export default function JobCardProductsListPage() {
@@ -107,8 +110,9 @@ export default function JobCardProductsListPage() {
                                                 <th className="min-w-125px ps-3 rounded-start">SKU</th>
                                                 <th className="min-w-125px">Name</th>
                                                 <th className="min-w-125px">Weight</th>
-                                                <th className="min-w-125px">Size</th>
-                                                <th className="min-w-125px ps-3 rounded-start">Micron</th>
+                                                <th className="min-w-125px">Width</th>
+                                                <th className="min-w-125px">Micron</th>
+                                                <th className="min-w-125px ps-3 rounded-start">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody className='text-gray-600 fw-bold'>
@@ -122,6 +126,13 @@ export default function JobCardProductsListPage() {
                                                                 <td>{product.weight}</td>
                                                                 <td>{product.width}</td>
                                                                 <td>{product.micron}</td>
+                                                                <td>
+                                                                    <button type='button' className='btn btn-sm'>
+                                                                        <Link to={"/inventory/job-card/" + product.id}>
+                                                                            <FontAwesomeIcon icon={faEdit} className='fa-solid' />
+                                                                        </Link>
+                                                                    </button>
+                                                                </td>
                                                             </tr>
                                                         )
                                                     }) :

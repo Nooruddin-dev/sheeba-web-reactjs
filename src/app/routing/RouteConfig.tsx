@@ -42,6 +42,7 @@ import JobCardProductsListPage from '../areas/inventory/pages/JobCardProductList
 import RecycleProductsListPage from '../areas/inventory/pages/RecycleProductListPage';
 import ManageProductComponent from '../areas/inventory/components/ManageProductComponent';
 import { ProductSourceEnum } from '../../_sitecommon/common/enums/GlobalEnums';
+import ManageJobCardProductPage from '../areas/inventory/pages/ManageJobCardProductPage';
 
 
 
@@ -94,6 +95,10 @@ export default function RouteConfig() {
 
         <Route path="/inventory/job-card" element={
           <LoginProtectedRoute> <JobCardProductsListPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/inventory/job-card/:id" element={
+          <LoginProtectedRoute> <ManageJobCardProductPage /> </LoginProtectedRoute>
         } />
 
         <Route path="/inventory/recycle" element={
