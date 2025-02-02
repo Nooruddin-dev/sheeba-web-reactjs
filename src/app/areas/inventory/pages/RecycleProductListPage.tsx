@@ -8,12 +8,13 @@ import CommonListSearchHeader from '../../common/components/layout/CommonListSea
 import CommonListPagination from '../../common/components/layout/CommonListPagination';
 import TableListLoading from '../../common/components/shared/TableListLoading';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt, faTruck } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { InventoryApi } from '../../../../_sitecommon/common/api/inventory.api';
 import { toast } from 'react-toastify';
 import { GetFormattedDate, GetFormattedTime, GetProductTypeName, GetStatus, GetUnitShortName } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { ProductSourceEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
+import ReceiveRecycleProductModal from '../modals/ReceiveRecycleProductModal';
 
 
 export default function RecycleProductsListPage() {
@@ -29,6 +30,8 @@ export default function RecycleProductsListPage() {
     const [page, setPage] = useState<number>(1);
     const [pageSize] = useState<number>(25);
     const [totalRecords, setTotalRecords] = useState<number>(0);
+    const [receiveModalData, setReceiveModalData] = useState<any>();
+    const [isReceiveModalOpen, setIsReceiveModalOpen] = useState<boolean>(false);
 
 
     useEffect(() => {
@@ -51,10 +54,21 @@ export default function RecycleProductsListPage() {
         setPage(page);
     }
 
+    const onOpenReceiveModal = (data: any) => {
+        setReceiveModalData(data);
+        setIsReceiveModalOpen(true);
+    }
+
+    const onCloseReceiveModal = () => {
+        setIsReceiveModalOpen(false);
+        setReceiveModalData(undefined);
+        getProducts();
+    }
+
     function getProducts(): void {
         setIsLoading(true);
         let filter = {
-            source: ProductSourceEnum.Recycle, 
+            source: ProductSourceEnum.Recycle,
             page: (page - 1) * pageSize,
             pageSize,
         }
@@ -147,6 +161,9 @@ export default function RecycleProductsListPage() {
                                                                     <button type='button' className='btn btn-sm'>
                                                                         <FontAwesomeIcon icon={faTrashAlt} className='fa-solid' />
                                                                     </button>
+                                                                    <button type='button' className='btn btn-sm' onClick={() => onOpenReceiveModal(product)}>
+                                                                        <FontAwesomeIcon icon={faTruck} className='fa-solid' />
+                                                                    </button>
                                                                 </td>
                                                             </tr>
                                                         )
@@ -176,6 +193,7 @@ export default function RecycleProductsListPage() {
                         }
                     </KTCardBody>
                 </KTCard>
+                {isReceiveModalOpen && <ReceiveRecycleProductModal onClose={onCloseReceiveModal} data={receiveModalData} />}
             </Content>
         </AdminLayout>
     );

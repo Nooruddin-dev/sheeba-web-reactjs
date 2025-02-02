@@ -15,6 +15,10 @@ export class InventoryApi {
         return ApiHelper.patch(`/inventory/${id}`, payload);
     }
 
+    public static async addStock(id: number, payload: any): Promise<AxiosResponse<any, any>> {
+        return ApiHelper.put(`/inventory/${id}/stock`, payload);
+    }
+
     public static async delete(id: number): Promise<AxiosResponse<any, any>> {
         return ApiHelper.delete(`/inventory/${id}`);
     }

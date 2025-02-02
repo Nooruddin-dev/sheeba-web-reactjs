@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSave, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { JobCardApi } from '../../../../_sitecommon/common/api/job-card.api';
 import { MachineApi } from '../../../../_sitecommon/common/api/machine.api';
-import { MachineTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
+import { MachineTypesEnum, ProductSourceEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
 import SiteErrorMessage from '../../common/components/shared/SiteErrorMessage';
 import { useForm } from 'react-hook-form';
 import { showErrorMsg, showSuccessMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
@@ -87,11 +87,10 @@ export default function ManageProductionEntry() {
 
     const onMaterialSelected = (data: any) => {
         if (data) {
-            material.id = data.value.id;
+            setMaterial({ ...data.value });
         } else {
-            material.id = undefined;
+            setMaterial(undefined);
         }
-        setMaterial({ ...material });
     }
 
     const onMachineChange = (value: string) => {
@@ -142,17 +141,30 @@ export default function ManageProductionEntry() {
 
     const onSubmit = async () => {
         setFormSubmitted(true);
-        if (!material && shouldTakeMaterial) {
+
+        if (!material?.id && shouldTakeMaterial) {
             showErrorMsg('Please select the material');
+            return;
         }
+
         const isValid = await trigger();
-        const batchItemValid = isExtruderMachine ? validateBatchItems(extruderBatchItems) : true;
-        if (isValid && batchItemValid) {
+        if (isValid) {
             const formValue = getValues();
+debugger;
+            if (material.source === ProductSourceEnum.JobCard && formValue.jobCard.extruderProductId.toString() !== material.id.toString()) {
+                showErrorMsg('Selected material does not belongs to selected job card');
+                return;
+            }
+
             let consumedMaterials: any[] = []
             let producedMaterials: any[] = []
             const weightWithoutTare = (parseFloat(formValue.grossWeight) - parseFloat(formValue.tare));
+
             if (isExtruderMachine) {
+                if (!validateBatchItems(extruderBatchItems)) {
+                    return;
+                }
+
                 consumedMaterials = extruderBatchItems.map((batch) => {
                     const estimatedWeight = weightWithoutTare * (batch.percentage / 100);
                     return {
@@ -185,6 +197,7 @@ export default function ManageProductionEntry() {
                     netWeight: formValue.netWeight,
                 }]
             }
+
             const payload = {
                 jobCardId: formValue.jobCard.id,
                 machineId: formValue.machine.id,
@@ -194,6 +207,7 @@ export default function ManageProductionEntry() {
                 consumedMaterials,
                 producedMaterials
             }
+
             ProductionEntryApi.create(payload)
                 .then((response) => {
                     showSuccessMsg(response.data.message);
