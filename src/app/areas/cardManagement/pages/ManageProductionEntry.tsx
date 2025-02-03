@@ -150,7 +150,6 @@ export default function ManageProductionEntry() {
         const isValid = await trigger();
         if (isValid) {
             const formValue = getValues();
-debugger;
             if (material.source === ProductSourceEnum.JobCard && formValue.jobCard.extruderProductId.toString() !== material.id.toString()) {
                 showErrorMsg('Selected material does not belongs to selected job card');
                 return;
@@ -166,7 +165,7 @@ debugger;
                 }
 
                 consumedMaterials = extruderBatchItems.map((batch) => {
-                    const estimatedWeight = weightWithoutTare * (batch.percentage / 100);
+                    const estimatedWeight = (weightWithoutTare + parseFloat(formValue.waste)) * (batch.percentage / 100);
                     return {
                         id: batch.id,
                         quantity: 0,
