@@ -26,6 +26,7 @@ export default function ManageProductionEntry() {
     const [material, setMaterial] = useState<any>({});
     const [shouldTakeMaterial, setShouldTakeMaterial] = useState<boolean>(false);
     const [isExtruderMachine, setIsExtruderMachine] = useState<boolean>(false);
+    const [isCuttingMachine, setIsCuttingMachine] = useState<boolean>(false);
     const [jobCards, setJobCards] = useState<any[]>([]);
     const [machines, setMachines] = useState<any[]>([]);
     const [materialOptions, setMaterialOptions] = useState<any[]>([]);
@@ -39,6 +40,10 @@ export default function ManageProductionEntry() {
         .split("/")
         .reverse()
         .join("-");
+
+    useEffect(() => {
+        setValue('date', todayFormattedDate);
+    }, [])
 
     useEffect(() => {
         register('jobCard', { required: true });
@@ -76,10 +81,12 @@ export default function ManageProductionEntry() {
         if (data) {
             setValue('machine', data.value);
             setIsExtruderMachine(MachineTypesEnum.Extruder.toString() === data.value.typeId.toString());
+            setIsCuttingMachine(MachineTypesEnum.Cutting.toString() === data.value.typeId.toString());
             setShouldTakeMaterial([MachineTypesEnum.Lamination, MachineTypesEnum.Printing].includes(parseInt(data.value.typeId, 10)));
         } else {
             setValue('machine', undefined);
             setIsExtruderMachine(false);
+            setIsCuttingMachine(false);
             setShouldTakeMaterial(false);
         }
         setMaterial({});
@@ -184,6 +191,9 @@ export default function ManageProductionEntry() {
                     tareWeight: formValue.tare,
                     weightWithoutTare: weightWithoutTare,
                     netWeight: formValue.netWeight,
+                    trimming: formValue.trimming || 0,
+                    rejection: formValue.rejection || 0,
+                    handleCutting: formValue.handleCutting || 0,
                 }]
             } else {
                 consumedMaterials = [{
@@ -194,6 +204,9 @@ export default function ManageProductionEntry() {
                     tareWeight: formValue.tare,
                     weightWithoutTare: weightWithoutTare,
                     netWeight: formValue.netWeight,
+                    trimming: formValue.trimming || 0,
+                    rejection: formValue.rejection || 0,
+                    handleCutting: formValue.handleCutting || 0,
                 }]
             }
 
@@ -342,9 +355,9 @@ export default function ManageProductionEntry() {
                                                         <input
                                                             id="date"
                                                             type="date"
-                                                            value={todayFormattedDate}
-                                                            readOnly={true}
-                                                            className='form-control form-control-solid' />
+                                                            className={`form-control form-control-solid ${formSubmitted ? (errors.date ? 'is-invalid' : 'is-valid') : ''}`}
+                                                            {...register("date", { required: true })} />
+                                                        {errors.date && <SiteErrorMessage errorMsg='Date is required' />}
                                                     </div>
                                                 </div>
                                                 <div className='col-lg-4'>
@@ -435,6 +448,45 @@ export default function ManageProductionEntry() {
                                                         {errors.tare && <SiteErrorMessage errorMsg='Tare/Core is required' />}
                                                     </div>
                                                 </div>
+                                                {
+                                                    isCuttingMachine ?
+                                                        <>
+                                                            <div className='col-lg-4'>
+                                                                <div className="mb-10">
+                                                                    <label className="form-label ">Handle Cutting</label>
+                                                                    <input
+                                                                        id="handle-cutting"
+                                                                        type="number"
+                                                                        step={0.1}
+                                                                        className='form-control form-control-solid'
+                                                                        {...register("handleCutting", { required: false })} />
+                                                                </div>
+                                                            </div>
+                                                            <div className='col-lg-4'>
+                                                                <div className="mb-10">
+                                                                    <label className="form-label ">Rejection</label>
+                                                                    <input
+                                                                        id="rejection"
+                                                                        type="number"
+                                                                        step={0.1}
+                                                                        className='form-control form-control-solid'
+                                                                        {...register("rejection", { required: false })} />
+                                                                </div>
+                                                            </div>
+                                                            <div className='col-lg-4'>
+                                                                <div className="mb-10">
+                                                                    <label className="form-label ">Trimming</label>
+                                                                    <input
+                                                                        id="trimming"
+                                                                        type="number"
+                                                                        step={0.1}
+                                                                        className='form-control form-control-solid'
+                                                                        {...register("trimming", { required: false })} />
+                                                                </div>
+                                                            </div>
+                                                        </>
+                                                        : null
+                                                }
                                                 <div className='col-lg-4'>
                                                     <div className="mb-10">
                                                         <label className="form-label ">Net Weight</label>
