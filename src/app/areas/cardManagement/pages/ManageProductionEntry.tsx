@@ -189,7 +189,7 @@ export default function ManageProductionEntry() {
                     grossWeight: formValue.grossWeight,
                     wasteWeight: formValue.waste,
                     tareWeight: formValue.tare,
-                    weightWithoutTare: weightWithoutTare,
+                    weightWithoutTare: (weightWithoutTare - parseFloat(formValue.waste)),
                     netWeight: formValue.netWeight,
                     trimming: formValue.trimming || 0,
                     rejection: formValue.rejection || 0,
