@@ -15,7 +15,7 @@ import SaleInvoiceReceipt from "../components/SalesInvoiceReceipt";
 
 export default function ManageSaleInvoicePage() {
 
-    const { register, reset, getValues, trigger, formState: { errors } } = useForm({});
+    const { watch, register, reset, getValues, trigger, formState: { errors } } = useForm({});
     const navigate = useNavigate();
     const [dispatches, setDispatches] = useState<any[]>([])
     const [lineItems, setLineItems] = useState<any[]>([]);
@@ -23,6 +23,7 @@ export default function ManageSaleInvoicePage() {
     const [selectedDispatch, setSelectedDispatch] = useState<any>(undefined);
     const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
     const [invoiceIdForPrint, setInvoiceIdForPrint] = useState<number>();
+    const official = watch('official');
 
     useEffect(() => {
         if (selectedDispatch) {
@@ -52,7 +53,7 @@ export default function ManageSaleInvoicePage() {
         // Calculate taxes
         item.salesTax = (item.discountedSubtotal / 100) * (item.salesTaxPercentage || 0);
         item.furtherTax = (item.discountedSubtotal / 100) * (item.furtherTaxPercentage || 0);
-        item.advanceTax = (item.salesTax / 100) * (item.advanceTaxPercentage || 0);
+        item.advanceTax = (item.discountedSubtotal / 100) * (item.advanceTaxPercentage || 0);
         item.totalTax = item.salesTax + item.furtherTax + item.advanceTax;
 
         // Calculate total
@@ -90,6 +91,7 @@ export default function ManageSaleInvoicePage() {
                 jobCardId: selectedDispatch.jobCardId,
                 dispatchId: selectedDispatch.dispatchId,
                 official: formValue.official,
+                invoiceNumber: formValue.invoiceNumber,
                 date: formValue.date,
                 notes: formValue.notes,
                 customerName: formValue.customerName,
@@ -324,6 +326,25 @@ export default function ManageSaleInvoicePage() {
                                                 </label>
                                             </div>
                                         </div>
+
+                                        {
+                                            official ?
+                                                <div className='col-lg-4'>
+                                                    <div className="mb-10">
+                                                        <label className="form-label required ">Invoice Number</label>
+                                                        <input
+                                                            id="invoice-number"
+                                                            type="text"
+                                                            className={`form-control form-control-solid ${formSubmitted ? (errors.invoiceNumber ? 'is-invalid' : 'is-valid') : ''}`}
+                                                            placeholder="Enter sales tax invoice number"
+                                                            {...register("invoiceNumber", { required: true })} />
+                                                        {errors.customerStnNo && <SiteErrorMessage errorMsg='Invoice number is required' />}
+                                                    </div>
+                                                </div>
+                                                : null
+                                        }
+
+                                        <div></div>
                                     </div>
                                 </div>
                             </form>

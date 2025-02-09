@@ -81,7 +81,7 @@ export const calculatePurchaseOrderLineItem = (productItem: any) => {
     // Calculate taxes
     productItem.tax_1_amount = (productItem.discounted_subtotal/100) * (productItem.tax_1_percentage || 0);
     productItem.tax_2_amount = (productItem.discounted_subtotal/100) * (productItem.tax_2_percentage || 0);
-    productItem.tax_3_amount = (productItem.tax_1_amount/100) * (productItem.tax_3_percentage || 0);
+    productItem.tax_3_amount = (productItem.discounted_subtotal/100) * (productItem.tax_3_percentage || 0);
     productItem.total_tax = productItem.tax_1_amount + productItem.tax_2_amount + productItem.tax_3_amount;
 
     // Calculate total

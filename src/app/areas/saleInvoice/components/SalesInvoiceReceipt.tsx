@@ -41,7 +41,8 @@ const SaleInvoiceReceipt: React.FC<{ afterPrint: any, invoiceId?: number }> = ({
             <div ref={componentRefForReceipt} className="invoice-container" >
                 <div className="header">
                     <div className="title">
-                        {invoice?.official ? 'Sale Tax Invoice' : 'Sale Invoice'}
+                        <div>{invoice?.official ? 'Sale Tax Invoice' : 'Sale Invoice'}</div>
+                        <div className="sub-title">#{invoice?.saleInvoiceNo}</div>
                     </div>
                     {
                         invoice?.official ?
