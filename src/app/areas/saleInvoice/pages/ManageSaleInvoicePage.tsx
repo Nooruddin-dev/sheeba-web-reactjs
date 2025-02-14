@@ -386,8 +386,8 @@ export default function ManageSaleInvoicePage() {
                                                                         </td>
                                                                         <td>{item?.rate}</td>
                                                                         <td>{item?.quantity}</td>
-                                                                        {/* <td>{item?.subtotal}</td>
-                                                                        <td>
+                                                                        <td>{item?.subtotal}</td>
+                                                                        {/* <td>
                                                                             <input
                                                                                 className='form-control'
                                                                                 type="number"
