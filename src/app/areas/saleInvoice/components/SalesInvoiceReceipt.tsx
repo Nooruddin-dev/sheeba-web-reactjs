@@ -36,6 +36,14 @@ const SaleInvoiceReceipt: React.FC<{ afterPrint: any, invoiceId?: number }> = ({
         onAfterPrint: () => { afterPrint(undefined) }
     });
 
+    const getValueIncGST = (item: any): string => {
+        const subtotal = parseFloat(item?.subtotal || 0);
+        const discount = parseFloat(item?.discount || 0);
+        const salesTax = parseFloat(item?.salesTax || 0);
+        const furtherTax = parseFloat(item?.furtherTax || 0);
+        return (subtotal - discount + salesTax + furtherTax).toString();
+    }
+
     return (
         <div style={{ display: 'none' }}>
             <div ref={componentRefForReceipt} className="invoice-container" >
@@ -95,9 +103,10 @@ const SaleInvoiceReceipt: React.FC<{ afterPrint: any, invoiceId?: number }> = ({
                                 <th>Rate</th>
                                 <th>Quantity</th>
                                 <th>Subtotal</th>
-                                <th>Discount</th>
+                                {/* <th>Discount</th> */}
                                 <th>Sales Tax</th>
                                 <th>Further Tax</th>
+                                <th>Value (Inc GST)</th>
                                 <th>Advance Tax</th>
                                 <th>Total Tax</th>
                                 <th>Total</th>
@@ -112,9 +121,10 @@ const SaleInvoiceReceipt: React.FC<{ afterPrint: any, invoiceId?: number }> = ({
                                             <td>{formatNumber(item?.rate, 2)}</td>
                                             <td>{formatNumber(item?.quantity, 2)}</td>
                                             <td>{formatNumber(item?.subtotal, 2)}</td>
-                                            <td>{formatNumber(item?.discount, 2)}</td>
+                                            {/* <td>{formatNumber(item?.discount, 2)}</td> */}
                                             <td>{formatNumber(item?.salesTax, 2)} ({formatNumber(item?.salesTaxPercentage, 2)})</td>
                                             <td>{formatNumber(item?.furtherTax, 2)} ({formatNumber(item?.furtherTaxPercentage, 2)})</td>
+                                            <td>{formatNumber(getValueIncGST(item), 2)}</td>
                                             <td>{formatNumber(item?.advanceTax, 2)} ({formatNumber(item?.advanceTaxPercentage, 2)})</td>
                                             <td>{formatNumber(item?.totalTax, 2)}</td>
                                             <td>{formatNumber(item?.total, 2)}</td>
@@ -128,9 +138,9 @@ const SaleInvoiceReceipt: React.FC<{ afterPrint: any, invoiceId?: number }> = ({
 
                 <div className="totals">
                     <p><strong>Subtotal:</strong>{formatNumber(invoice?.subtotal, 2)}</p>
-                    <p><strong>Discount:</strong>{formatNumber(invoice?.discount, 2)}</p>
+                    {/* <p><strong>Discount:</strong>{formatNumber(invoice?.discount, 2)}</p> */}
                     <p><strong>Tax:</strong>{formatNumber(invoice?.tax, 2)} ({formatNumber(invoice?.taxPercentage, 2)})</p>
-                    <p><strong>Total Discount:</strong>{formatNumber(invoice?.totalDiscount, 2)}</p>
+                    {/* <p><strong>Total Discount:</strong>{formatNumber(invoice?.totalDiscount, 2)}</p> */}
                     <p><strong>Total Tax:</strong>{formatNumber(invoice?.totalTax, 2)}</p>
                     <p className="grand-total"><strong>Grand Total:</strong>{formatNumber(invoice?.total, 2)}</p>
                 </div>

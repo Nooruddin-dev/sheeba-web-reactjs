@@ -53,7 +53,7 @@ export default function ManageSaleInvoicePage() {
         // Calculate taxes
         item.salesTax = (item.discountedSubtotal / 100) * (item.salesTaxPercentage || 0);
         item.furtherTax = (item.discountedSubtotal / 100) * (item.furtherTaxPercentage || 0);
-        item.advanceTax = (item.discountedSubtotal / 100) * (item.advanceTaxPercentage || 0);
+        item.advanceTax = (((item.discountedSubtotal || 0) + (item.salesTax || 0) + (item.furtherTax || 0)) / 100) * (item.advanceTaxPercentage || 0);
         item.totalTax = item.salesTax + item.furtherTax + item.advanceTax;
 
         // Calculate total
@@ -122,7 +122,6 @@ export default function ManageSaleInvoicePage() {
                 totalTax: invoiceSummary.totalTax,
                 total: invoiceSummary.total,
             };
-            console.log(body);
             createSalesInvoice(body)
                 .then((resp: any) => {
                     if (resp?.data?.success === true) {
@@ -369,7 +368,7 @@ export default function ManageSaleInvoicePage() {
                                                             <th className='min-w-80px'>Rate</th>
                                                             <th className='min-w-100px'>Quantity</th>
                                                             <th className='min-w-100px'>Subtotal</th>
-                                                            <th className='min-w-100px'>Discount</th>
+                                                            {/* <th className='min-w-100px'>Discount</th> */}
                                                             <th className='min-w-100px'>Sales Tax %</th>
                                                             <th className='min-w-100px'>Further Tax %</th>
                                                             <th className='min-w-100px'>Advance Tax %</th>
@@ -387,7 +386,7 @@ export default function ManageSaleInvoicePage() {
                                                                         </td>
                                                                         <td>{item?.rate}</td>
                                                                         <td>{item?.quantity}</td>
-                                                                        <td>{item?.subtotal}</td>
+                                                                        {/* <td>{item?.subtotal}</td>
                                                                         <td>
                                                                             <input
                                                                                 className='form-control'
@@ -395,7 +394,7 @@ export default function ManageSaleInvoicePage() {
                                                                                 step="0.01"
                                                                                 value={item?.discount}
                                                                                 onChange={(e) => onLineItemChange(index, 'discount', parseFloat(e.target.value))} />
-                                                                        </td>
+                                                                        </td> */}
                                                                         <td>
                                                                             <input
                                                                                 className='form-control'
@@ -438,7 +437,7 @@ export default function ManageSaleInvoicePage() {
                                                             <td>Subtotal</td>
                                                             <td>{invoiceSummary?.subtotal?.toFixed(2)}</td>
                                                         </tr>
-                                                        <tr>
+                                                        {/* <tr>
                                                             <td>Discount</td>
                                                             <td>
                                                                 <input
@@ -448,7 +447,7 @@ export default function ManageSaleInvoicePage() {
                                                                     value={invoiceSummary?.discount}
                                                                     onChange={(e) => onInvoiceDiscountChange(parseFloat(e.target.value))} />
                                                             </td>
-                                                        </tr>
+                                                        </tr> */}
                                                         <tr>
                                                             <td>Tax %</td>
                                                             <td>
@@ -462,10 +461,10 @@ export default function ManageSaleInvoicePage() {
                                                                 <span>({invoiceSummary?.taxAmount?.toFixed(2)})</span>
                                                             </td>
                                                         </tr>
-                                                        <tr>
+                                                        {/* <tr>
                                                             <td>Total Discount</td>
                                                             <td>{invoiceSummary?.totalDiscount?.toFixed(2)}</td>
-                                                        </tr>
+                                                        </tr> */}
                                                         <tr>
                                                             <td>Total Tax</td>
                                                             <td>{invoiceSummary?.totalTax?.toFixed(2)}</td>
