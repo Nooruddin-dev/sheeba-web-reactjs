@@ -114,7 +114,7 @@ export default function ManageSaleInvoicePage() {
                     furtherTax: item.furtherTax,
                     advanceTax: item.advanceTax,
                     totalTax: item.totalTax,
-                    total: item.subtotal,
+                    total: item.total,
                 })),
                 subtotal: invoiceSummary.subtotal,
                 discount: invoiceSummary.discount,

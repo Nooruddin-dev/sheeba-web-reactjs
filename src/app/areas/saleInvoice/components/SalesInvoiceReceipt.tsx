@@ -49,8 +49,7 @@ const SaleInvoiceReceipt: React.FC<{ afterPrint: any, invoiceId?: number }> = ({
             <div ref={componentRefForReceipt} className="invoice-container" >
                 <div className="header">
                     <div className="title">
-                        <div>{invoice?.official ? 'Sale Tax Invoice' : 'Sale Invoice'}</div>
-                        <div className="sub-title">#{invoice?.saleInvoiceNo}</div>
+                        {invoice?.official ? 'Sale Tax Invoice' : 'Sale Invoice'}
                     </div>
                     {
                         invoice?.official ?
@@ -74,24 +73,26 @@ const SaleInvoiceReceipt: React.FC<{ afterPrint: any, invoiceId?: number }> = ({
                     <tr>
                         <th>Dispatch No:</th>
                         <td>{invoice?.dispatchNo}</td>
-                        <th>Date:</th>
-                        <td>{getDateCommonFormatFromJsonDate(invoice?.date)}</td>
+                        <th>Invoice No:</th>
+                        <td>{invoice?.saleInvoiceNo}</td>
                     </tr>
                     <tr>
                         <th>Customer Name:</th>
                         <td>{invoice?.customerName}</td>
-                        <th>Customer NTN:</th>
-                        <td>{invoice?.customerNTN}</td>
+                        <th>Date:</th>
+                        <td>{getDateCommonFormatFromJsonDate(invoice?.date)}</td>
                     </tr>
                     <tr>
                         <th>Customer STN:</th>
                         <td>{invoice?.customerSTN}</td>
-                        <th>Product Name:</th>
-                        <td>{invoice?.itemName}</td>
+                        <th>Customer NTN:</th>
+                        <td>{invoice?.customerNTN}</td>
                     </tr>
                     <tr>
                         <th>Customer Address:</th>
                         <td>{invoice?.customerAddress}</td>
+                        <th>Product Name:</th>
+                        <td>{invoice?.itemName}</td>
                     </tr>
                 </table>
 
@@ -122,10 +123,10 @@ const SaleInvoiceReceipt: React.FC<{ afterPrint: any, invoiceId?: number }> = ({
                                             <td>{formatNumber(item?.quantity, 2)} ({GetDeliveryChallanUnitName(item?.unitId)})</td>
                                             <td>{formatNumber(item?.subtotal, 2)}</td>
                                             {/* <td>{formatNumber(item?.discount, 2)}</td> */}
-                                            <td>{formatNumber(item?.salesTax, 2)} ({formatNumber(item?.salesTaxPercentage, 2)})</td>
-                                            <td>{formatNumber(item?.furtherTax, 2)} ({formatNumber(item?.furtherTaxPercentage, 2)})</td>
+                                            <td>{formatNumber(item?.salesTax, 2)} ({formatNumber(item?.salesTaxPercentage, 2)}%)</td>
+                                            <td>{formatNumber(item?.furtherTax, 2)} ({formatNumber(item?.furtherTaxPercentage, 2)}%)</td>
                                             <td>{formatNumber(getValueIncGST(item), 2)}</td>
-                                            <td>{formatNumber(item?.advanceTax, 2)} ({formatNumber(item?.advanceTaxPercentage, 2)})</td>
+                                            <td>{formatNumber(item?.advanceTax, 2)} ({formatNumber(item?.advanceTaxPercentage, 2)}%)</td>
                                             <td>{formatNumber(item?.totalTax, 2)}</td>
                                             <td>{formatNumber(item?.total, 2)}</td>
                                         </tr>
@@ -139,7 +140,7 @@ const SaleInvoiceReceipt: React.FC<{ afterPrint: any, invoiceId?: number }> = ({
                 <div className="totals">
                     <p><strong>Subtotal:</strong>{formatNumber(invoice?.subtotal, 2)}</p>
                     {/* <p><strong>Discount:</strong>{formatNumber(invoice?.discount, 2)}</p> */}
-                    <p><strong>Tax:</strong>{formatNumber(invoice?.tax, 2)} ({formatNumber(invoice?.taxPercentage, 2)})</p>
+                    <p><strong>Tax:</strong>{formatNumber(invoice?.tax, 2)} ({formatNumber(invoice?.taxPercentage, 2)}%)</p>
                     {/* <p><strong>Total Discount:</strong>{formatNumber(invoice?.totalDiscount, 2)}</p> */}
                     <p><strong>Total Tax:</strong>{formatNumber(invoice?.totalTax, 2)}</p>
                     <p className="grand-total"><strong>Grand Total:</strong>{formatNumber(invoice?.total, 2)}</p>
