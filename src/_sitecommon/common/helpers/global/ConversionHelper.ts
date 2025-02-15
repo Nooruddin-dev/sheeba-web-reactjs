@@ -2,6 +2,7 @@
 import { format, differenceInCalendarDays } from 'date-fns';
 import { stringIsNullOrWhiteSpace } from './ValidationHelper';
 import { ProductSourceEnum, ProductTypeEnum } from '../../enums/GlobalEnums';
+import { DeliveryChallanUnits } from '../../constants/DeliveryChallanUnits';
 
 export const makeAnyStringShortAppendDots = (inputString: string, length: number) => {
 
@@ -228,6 +229,15 @@ export const GetUnitShortName = (units: any[], id: number) => {
   const unit = units.find((unit) => unit.id === id);
   if (unit) {
     return unit.shortName;
+  }
+
+  return 'Unknown';
+}
+
+export const GetDeliveryChallanUnitName = (id: number) => {
+  const unit = DeliveryChallanUnits.find((unit: any) => unit.dispatch_unit_id === id);
+  if (unit) {
+    return unit.delivery_unit_name;
   }
 
   return 'Unknown';

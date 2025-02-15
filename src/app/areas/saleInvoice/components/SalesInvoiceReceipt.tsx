@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import '../../../../../src/_sitecommon/assets/sass/components/invoice-print.scss';
 import { toAbsoluteUrl } from "../../../../_sitecommon/helpers";
-import { getDateCommonFormatFromJsonDate } from "../../../../_sitecommon/common/helpers/global/ConversionHelper";
+import { getDateCommonFormatFromJsonDate, GetDeliveryChallanUnitName } from "../../../../_sitecommon/common/helpers/global/ConversionHelper";
 import { formatNumber } from "../../common/util";
 import { getSalesInvoicesById } from "../../../../_sitecommon/common/helpers/api_helpers/ApiCalls";
 
@@ -119,7 +119,7 @@ const SaleInvoiceReceipt: React.FC<{ afterPrint: any, invoiceId?: number }> = ({
                                         <tr>
                                             <td>{item?.itemName}</td>
                                             <td>{formatNumber(item?.rate, 2)}</td>
-                                            <td>{formatNumber(item?.quantity, 2)}</td>
+                                            <td>{formatNumber(item?.quantity, 2)} ({GetDeliveryChallanUnitName(item?.unitId)})</td>
                                             <td>{formatNumber(item?.subtotal, 2)}</td>
                                             {/* <td>{formatNumber(item?.discount, 2)}</td> */}
                                             <td>{formatNumber(item?.salesTax, 2)} ({formatNumber(item?.salesTaxPercentage, 2)})</td>

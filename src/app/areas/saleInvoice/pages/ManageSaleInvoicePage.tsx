@@ -12,6 +12,7 @@ import { createSalesInvoice, getDispatchAutoComplete } from "../../../../_siteco
 import { showErrorMsg, showSuccessMsg, stringIsNullOrWhiteSpace } from "../../../../_sitecommon/common/helpers/global/ValidationHelper";
 import { useNavigate } from "react-router";
 import SaleInvoiceReceipt from "../components/SalesInvoiceReceipt";
+import { GetDeliveryChallanUnitName } from "../../../../_sitecommon/common/helpers/global/ConversionHelper";
 
 export default function ManageSaleInvoicePage() {
 
@@ -32,6 +33,7 @@ export default function ManageSaleInvoicePage() {
                 itemName: selectedDispatch.itemName,
                 rate: selectedDispatch.rate,
                 quantity: selectedDispatch.quantity,
+                unitId: selectedDispatch.unitId,
             };
             setLineItems([calculateLineItem(lineItem)])
         } else {
@@ -385,7 +387,7 @@ export default function ManageSaleInvoicePage() {
                                                                             <b>{item?.itemName}</b>
                                                                         </td>
                                                                         <td>{item?.rate}</td>
-                                                                        <td>{item?.quantity}</td>
+                                                                        <td>{item?.quantity} ({GetDeliveryChallanUnitName(item?.unitId)})</td>
                                                                         <td>{item?.subtotal}</td>
                                                                         {/* <td>
                                                                             <input
