@@ -220,10 +220,10 @@ export default function JobSummaryReportPage() {
                                         <tfoot className='text-gray-600 fw-bold'>
                                             <tr className='text-start text-muted fw-bolder fs-7 gs-0'>
                                                 <td className='ps-3'></td>
-                                                <td>{total['dispatch'].quantity}</td>
-                                                <td>{total['dispatch'].gross}</td>
-                                                <td>{total['dispatch'].core}</td>
-                                                <td>{total['dispatch'].net}</td>
+                                                <td>{formatNumber(total['dispatch'].quantity, 2)}</td>
+                                                <td>{formatNumber(total['dispatch'].gross, 2)}</td>
+                                                <td>{formatNumber(total['dispatch'].core, 2)}</td>
+                                                <td>{formatNumber(total['dispatch'].net, 2)}</td>
                                             </tr>
                                         </tfoot>
                                     </table>

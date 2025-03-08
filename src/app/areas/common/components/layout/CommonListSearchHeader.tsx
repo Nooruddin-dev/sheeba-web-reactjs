@@ -164,7 +164,8 @@ const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSea
                 <div className='row'>
                     {searchFields.map((field, index) => (
 
-                        <div className={field.type == 'hidden' ? 'd-none' : (searchFields.length > 2 ? 'col-lg-4' : 'col-lg-6')} key={index}>
+                        <div className={field.type == 'hidden' ? 'd-none' : (searchFields.length > 2 ? 'col-lg-4' : 'col-lg-6')} key={index} 
+                            style={searchFields.length === 1 ? {width: '100%'} : {}}>
                             {renderInputField(field)}
                         </div>
                     ))}
