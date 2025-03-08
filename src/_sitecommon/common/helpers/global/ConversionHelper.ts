@@ -185,6 +185,16 @@ export const getDaysDiffFromAnyDate = (dateTimeString: string) => {
   return `${relativeTime}`;
 };
 
+export const GetFormattedDateFromSqlDate = (sqlDate: string) => {
+  const [year, month, day] = sqlDate.split('-').map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  }).format(date);
+};
+
 
 export const GetFormattedDate = (isoDate: Date | string) => {
   const date = isoDate instanceof Date ? isoDate : new Date(isoDate);

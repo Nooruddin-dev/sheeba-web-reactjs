@@ -5,16 +5,13 @@ import AdminPageHeader from '../../common/components/layout/AdminPageHeader';
 import { Content } from '../../../../_sitecommon/layout/components/content';
 import { KTCard, KTCardBody } from '../../../../_sitecommon/helpers';
 import CommonListSearchHeader from '../../common/components/layout/CommonListSearchHeader';
-import CommonListPagination from '../../common/components/layout/CommonListPagination';
 import TableListLoading from '../../common/components/shared/TableListLoading';
 import { InventoryApi } from '../../../../_sitecommon/common/api/inventory.api';
 import { toast } from 'react-toastify';
 import { ProductSourceEnum, ProductTypeEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
 import { ReportApi } from '../../../../_sitecommon/common/api/report.api';
 import { GetProductTypeName, GetUnitShortName } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
+import StockReportPrintView from '../components/StockReportPrintView';
 
 
 export default function StockReportPage() {
@@ -29,7 +26,8 @@ export default function StockReportPage() {
         }
     ];
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [print, setPrint] = useState<boolean>(false);
     const [filterValues, setFilterValues] = useState<any[]>([]);
     const [report, setReport] = useState<any[]>([]);
     const [units, setUnits] = useState<any[]>([]);
@@ -42,19 +40,32 @@ export default function StockReportPage() {
         getReport();
     }, [filterValues])
 
-    const onSearch = () => {
-        // do nothing, filter change will trigger useEffect
+    const onSearch = (param: any) => {
+        if (!param?.length) {
+            toast.error('Please select at-least one filter!');
+            return;
+        }
+        setFilterValues(param);
     }
 
     const onPrint = () => {
-        alert('Print');
+        setPrint(true);
+    }
+
+    const onAfterPrint = () => {
+        setPrint(false);
     }
 
     const onSearchReset = () => {
         setFilterValues([]);
+        setReport([]);
     }
 
     function getReport(): void {
+        if (!Object.keys(filterValues).length) {
+            return;
+        }
+
         setIsLoading(true);
         let filter = {}
         filterValues.forEach(field => {
@@ -81,77 +92,88 @@ export default function StockReportPage() {
     }
 
     return (
-        <AdminLayout>
-            <AdminPageHeader
-                title='Stock Report'
-                pageDescription='Stock report about quantity and weight'
-                addNewClickType={'link'}
-                newLink=''
-                additionalInfo={{ showAddNewButton: false }}
-            />
-            <Content>
-                <KTCard>
-                    <CommonListSearchHeader
-                        searchFields={searchFields}
-                        onSearch={onSearch}
-                        onSearchReset={onSearchReset}
-                        onPrint={onPrint}
-                    />
-                    <KTCardBody>
-                        {
-                            isLoading ?
-                                <TableListLoading /> :
-                                <div className='table-responsive'>
-                                    <table
-                                        id='sales-invoices-table'
-                                        className='table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer'>
-                                        <thead>
-                                            <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
-                                                <th className="min-w-125px ps-3 rounded-start">SKU</th>
-                                                <th className="min-w-125px">Name</th>
-                                                <th className="min-w-125px">Type</th>
-                                                <th className="min-w-125px">Quantity</th>
-                                                <th className="min-w-125px ps-3 rounded-end">Weight</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className='text-gray-600 fw-bold'>
-                                            {
-                                                report && report.length ?
-                                                    report.map((product: any, index: number) => {
-                                                        return (
-                                                            <tr id={product?.id} key={'product-' + index}>
-                                                                <td className="ps-3">{product.sku}</td>
-                                                                <td>
-                                                                    <div>
-                                                                        {product.name}
-                                                                        {
-                                                                            product.type.toString() === ProductTypeEnum.Roll &&
-                                                                            <span>W: {product.width}, L: {product.width}, M: {product.micron}</span>
-                                                                        }
-                                                                    </div>
+        <>
+            <AdminLayout>
+                <AdminPageHeader
+                    title='Stock Report'
+                    pageDescription='Stock report about quantity and weight'
+                    addNewClickType={'link'}
+                    newLink=''
+                    additionalInfo={{ showAddNewButton: false }}
+                />
+                <Content>
+                    <KTCard>
+                        <CommonListSearchHeader
+                            searchFields={searchFields}
+                            onSearch={onSearch}
+                            onSearchReset={onSearchReset}
+                            onPrint={onPrint}
+                        />
+                        <KTCardBody>
+                            {
+                                isLoading ?
+                                    <TableListLoading /> :
+                                    <div className='table-responsive'>
+                                        <table
+                                            id='sales-invoices-table'
+                                            className='table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer'>
+                                            <thead>
+                                                <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
+                                                    <th className="min-w-125px ps-3 rounded-start">SKU</th>
+                                                    <th className="min-w-125px">Name</th>
+                                                    <th className="min-w-125px">Type</th>
+                                                    <th className="min-w-125px">Quantity</th>
+                                                    <th className="min-w-125px ps-3 rounded-end">Weight</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className='text-gray-600 fw-bold'>
+                                                {
+                                                    report && report.length ?
+                                                        report.map((product: any, index: number) => {
+                                                            return (
+                                                                <tr id={product?.id} key={'product-' + index}>
+                                                                    <td className="ps-3">{product.sku}</td>
+                                                                    <td>
+                                                                        <div>
+                                                                            {product.name}
+                                                                            {
+                                                                                product.type.toString() === ProductTypeEnum.Roll &&
+                                                                                <span> (W: {product.width}, L: {product.width}, M: {product.micron})</span>
+                                                                            }
+                                                                        </div>
 
-                                                                </td>
-                                                                <td>{GetProductTypeName(product.type)}</td>
-                                                                <td>{product.quantity}</td>
-                                                                <td>{product.weight} {GetUnitShortName(units, product.weightUnitId)}</td>
-                                                            </tr>
-                                                        )
-                                                    }) :
-                                                    <tr>
-                                                        <td colSpan={9}>
-                                                            <div className='d-flex text-center w-100 align-content-center justify-content-center'>
-                                                                No records found
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                        }
-                    </KTCardBody>
-                </KTCard>
-            </Content>
-        </AdminLayout>
+                                                                    </td>
+                                                                    <td>{GetProductTypeName(product.type)}</td>
+                                                                    <td>{product.quantity}</td>
+                                                                    <td>{product.weight} {GetUnitShortName(units, product.weightUnitId)}</td>
+                                                                </tr>
+                                                            )
+                                                        }) :
+                                                        <tr>
+                                                            <td colSpan={9}>
+                                                                <div className='d-flex text-center w-100 align-content-center justify-content-center'>
+                                                                    No records found
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                            }
+                        </KTCardBody>
+                    </KTCard>
+                </Content>
+            </AdminLayout>
+            {
+                print &&
+                <StockReportPrintView
+                    afterPrint={onAfterPrint}
+                    report={report}
+                    units={units}
+                    source={filterValues?.find((value) => value.inputName === 'source')?.defaultValue}
+                    type={filterValues?.find((value) => value.inputName === 'type')?.defaultValue} />
+            }
+        </>
     );
 }

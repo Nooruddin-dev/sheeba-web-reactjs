@@ -9,6 +9,7 @@ export type HtmlSearchFieldConfig = {
     type: 'text' | 'number' | 'search' | 'dropdown' | 'date' | 'checkbox' | 'hidden';
     options?: { text: string; value: string }[];
     defaultValue?: string;
+    additionalClasses?: string;
     iconClass?: string;
     icon?: ReactElement; // New field to represent a React icon component
   };

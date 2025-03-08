@@ -133,16 +133,15 @@ const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSea
             case 'date':
                 return (
                     <div className='d-flex align-items-center position-relative my-1'>
-                        <KTIcon iconName='calendar-search' className='fs-1 position-absolute ms-6' />
+                        {!searchFieldValues[field.inputName] && <label htmlFor={field.inputId} className="placeholder-date-search">{field.placeHolder}</label>}
                         <input
                             type='date'
                             id={field.inputId}
                             name={field.inputName}
                             data-kt-user-table-filter='date'
-                            className='form-control form-control-solid  ps-14'
+                            className='form-control form-control-solid'
                             value={searchFieldValues[field.inputName] || ''}
                             onChange={handleSearchInputChange} />
-                        {!searchFieldValues[field.inputName] && <label htmlFor={field.inputId} className="placeholder-date-search">{field.placeHolder}</label>}
                     </div>
                 );
             case 'checkbox':
@@ -165,7 +164,7 @@ const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSea
                 <div className='row'>
                     {searchFields.map((field, index) => (
 
-                        <div className={field.type == 'hidden' ? 'd-none' : (searchFields.length > 2 ? 'col-lg-4' : 'col-lg-6')} key={index} >
+                        <div className={field.type == 'hidden' ? 'd-none' : (searchFields.length > 2 ? 'col-lg-4' : 'col-lg-6')} key={index}>
                             {renderInputField(field)}
                         </div>
                     ))}

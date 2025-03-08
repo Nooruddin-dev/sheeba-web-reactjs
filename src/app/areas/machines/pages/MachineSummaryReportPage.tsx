@@ -6,18 +6,21 @@ import { Content } from '../../../../_sitecommon/layout/components/content';
 import { KTCard, KTCardBody } from '../../../../_sitecommon/helpers';
 import CommonListSearchHeader from '../../common/components/layout/CommonListSearchHeader';
 import { ReportApi } from '../../../../_sitecommon/common/api/report.api';
+import MachineSummaryReportPrintView from '../components/MachineSummaryReportPrintView';
+import { formatNumber } from '../../common/util';
+import { toast } from 'react-toastify';
 
 
 export default function MachineSummaryReport() {
     const searchFields: HtmlSearchFieldConfig[] = [
-        { inputId: 'start-date', inputName: 'startDate', labelName: 'Start Date', placeHolder: 'Start Date', type: 'date', defaultValue: '', iconClass: 'fa fa-search' },
-        { inputId: 'end-date', inputName: 'endDate', labelName: 'End Date', placeHolder: 'End Date', type: 'date', defaultValue: '', iconClass: 'fa fa-search' },
+        { inputId: 'start-date', inputName: 'startDate', type: 'date', defaultValue: '', iconClass: 'fa fa-search' },
+        { inputId: 'end-date', inputName: 'endDate', type: 'date', defaultValue: '', iconClass: 'fa fa-search' },
     ];
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [print, setPrint] = useState<boolean>(false);
     const [filterValues, setFilterValues] = useState<any[]>([]);
     const [report, setReport] = useState<any>([]);
-    const [units, setUnits] = useState<any[]>([]);
     const [total, setTotal] = useState<any>({});
 
     useEffect(() => {
@@ -27,15 +30,25 @@ export default function MachineSummaryReport() {
     }, [filterValues])
 
     const onSearch = (param: any) => {
+        if (!param.length) {
+            toast.error('Please select date range!');
+            return;
+        }
         setFilterValues(param);
     }
 
     const onSearchReset = () => {
         setFilterValues([]);
+        setTotal({});
+        setReport([]);
     }
 
     const onPrint = () => {
-        alert('Print');
+        setPrint(true);
+    }
+
+    const onAfterPrint = () => {
+        setPrint(false);
     }
 
     function getReport(): void {
@@ -76,61 +89,74 @@ export default function MachineSummaryReport() {
     }
 
     return (
-        <AdminLayout>
-            <AdminPageHeader
-                title='Machine Summary Report'
-                pageDescription='Summary report for a machines by type'
-                addNewClickType={'link'}
-                newLink=''
-                additionalInfo={{ showAddNewButton: false }}
-            />
-            <Content>
-                <KTCard>
-                    <CommonListSearchHeader
-                        searchFields={searchFields}
-                        onSearch={onSearch}
-                        onSearchReset={onSearchReset}
-                        onPrint={onPrint}
-                    />
-                    <KTCardBody>
-                        {
-                            report.map((item: any, index1: number) => (
-                                <div>
-                                    <h3>{item.machineTypeName}</h3>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Machine</th>
-                                                <th>Waste</th>
-                                                <th>Gross</th>
-                                                <th>Net</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                item.machines.map((machine: any, index2: number) => (
-                                                    <tr key={`${index1}-${index2}`}>
-                                                        <td>{machine.machineName}</td>
-                                                        <td>{machine.waste}</td>
-                                                        <td>{machine.gross}</td>
-                                                        <td>{machine.net}</td>
-                                                    </tr>
-                                                ))
-                                            }
-                                            <tr>
-                                                <td>Total</td>
-                                                <td>{total[item.machineTypeId].waste}</td>
-                                                <td>{total[item.machineTypeId].gross}</td>
-                                                <td>{total[item.machineTypeId].net}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            ))
-                        }
-                    </KTCardBody>
-                </KTCard>
-            </Content>
-        </AdminLayout>
+        <>
+            <AdminLayout>
+                <AdminPageHeader
+                    title='Machine Summary Report'
+                    pageDescription='Summary report for a machines by type'
+                    addNewClickType={'link'}
+                    newLink=''
+                    additionalInfo={{ showAddNewButton: false }}
+                />
+                <Content>
+                    <KTCard>
+                        <CommonListSearchHeader
+                            searchFields={searchFields}
+                            onSearch={onSearch}
+                            onSearchReset={onSearchReset}
+                            onPrint={onPrint}
+                        />
+                        <KTCardBody>
+                            {
+                                report.map((item: any, index1: number) => (
+                                    <div className='table-responsive mb-10'>
+                                        <h3 className='text-mid mb-5'>{item.machineTypeName}</h3>
+                                        <table className='table align-middle table-row-dashed fs-6 gy-5 dataTable'>
+                                            <thead>
+                                                <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
+                                                    <th className="ps-3 rounded-start">Machine</th>
+                                                    <th>Waste</th>
+                                                    <th>Gross</th>
+                                                    <th className="rounded-end">Net</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className='text-gray-600 fw-bold'>
+                                                {
+                                                    item.machines.map((machine: any, index2: number) => (
+                                                        <tr key={`${index1}-${index2}`}>
+                                                            <td className='ps-3'>{machine.machineName}</td>
+                                                            <td>{machine.waste}</td>
+                                                            <td>{machine.gross}</td>
+                                                            <td>{machine.net}</td>
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                            <tfoot className='text-gray-600 fw-bold'>
+                                                <tr className='text-start text-muted fw-bolder fs-7 gs-0'>
+                                                    <td className='ps-3'></td>
+                                                    <td>{formatNumber(total[item.machineTypeId]?.waste, 2)}</td>
+                                                    <td>{formatNumber(total[item.machineTypeId]?.gross, 2)}</td>
+                                                    <td>{formatNumber(total[item.machineTypeId]?.net, 2)}</td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                ))
+                            }
+                        </KTCardBody>
+                    </KTCard>
+                </Content>
+            </AdminLayout>
+            {
+                print &&
+                <MachineSummaryReportPrintView
+                    afterPrint={onAfterPrint}
+                    report={report}
+                    total={total}
+                    startDate={filterValues?.find((value) => value.inputName === 'startDate')?.defaultValue}
+                    endDate={filterValues?.find((value) => value.inputName === 'endDate')?.defaultValue} />
+            }
+        </>
     );
 }
