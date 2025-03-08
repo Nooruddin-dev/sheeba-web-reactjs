@@ -43,6 +43,9 @@ import RecycleProductsListPage from '../areas/inventory/pages/RecycleProductList
 import ManageProductComponent from '../areas/inventory/components/ManageProductComponent';
 import { ProductSourceEnum } from '../../_sitecommon/common/enums/GlobalEnums';
 import ManageJobCardProductPage from '../areas/inventory/pages/ManageJobCardProductPage';
+import StockReportPage from '../areas/inventory/pages/StockReportPage';
+import JobSummaryReportPage from '../areas/cardManagement/pages/JobSummaryReportPage';
+import MachineSummaryReport from '../areas/machines/pages/MachineSummaryReportPage';
 
 
 
@@ -195,6 +198,18 @@ export default function RouteConfig() {
 
         <Route path="/reports/machine-based" element={
           <LoginProtectedRoute> <MachineBasedReportPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/reports/stock" element={
+          <LoginProtectedRoute> <StockReportPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/reports/job-summary" element={
+          <LoginProtectedRoute> <JobSummaryReportPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/reports/machine-summary" element={
+          <LoginProtectedRoute> <MachineSummaryReport /> </LoginProtectedRoute>
         } />
 
         {/* Common routes area starts here */}

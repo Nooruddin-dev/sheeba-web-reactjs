@@ -104,7 +104,10 @@ export const menuConfig = [
     roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory],
     children: [
       { to: '/reports/dispatch-info', title: 'Job Dispatch Info', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
-      { to: '/reports/machine-based', title: 'Machine Based Report', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
+      { to: '/reports/machine-based', title: 'Machine Based', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
+      { to: '/reports/stock', title: 'Stock', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
+      { to: '/reports/job-summary', title: 'Job Summary', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
+      { to: '/reports/machine-summary', title: 'Machine Summary', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
     ],
   },
 ];

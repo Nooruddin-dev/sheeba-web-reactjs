@@ -1,9 +1,6 @@
 /* eslint-disable */
 
 import React, { useEffect, useState } from 'react'
-
-import { faPrint } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HtmlSearchFieldConfig } from '../../../../models/common/HtmlSearchFieldConfig';
 import { stringIsNullOrWhiteSpace } from '../../../../../_sitecommon/common/helpers/global/ValidationHelper';
 import { MenuComponent } from '../../../../../_sitecommon/assets/ts/components';
@@ -14,39 +11,16 @@ type Props = {
     searchFields: HtmlSearchFieldConfig[];
     onSearch: any,
     onSearchReset: any
+    onPrint?: any
 }
 
-const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSearchReset }) => {
+const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSearchReset, onPrint }) => {
     const [searchFieldValues, setSearchFieldValues] = useState<{ [key: string]: string }>({});
-
-    const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-
-        setSearchFieldValues(prevState => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
-
-    const handleSearchSubmit = (e: any) => {
-
-        e.preventDefault();
-
-        const updatedSearchFields = searchFields.map(field => ({
-            ...field,
-            defaultValue: searchFieldValues[field.inputName] || '',
-        })).filter(field => !stringIsNullOrWhiteSpace(field.defaultValue));
-
-        onSearch(updatedSearchFields);
-    };
-
-
 
     useEffect(() => {
         MenuComponent.reinitialization()
     }, [])
 
-    // Initialize searchValues with default values from searchFields
     useEffect(() => {
         const initialSearchValues: { [key: string]: string } = {};
         searchFields.forEach(field => {
@@ -55,37 +29,47 @@ const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSea
         setSearchFieldValues(initialSearchValues);
     }, [searchFields]);
 
+    const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setSearchFieldValues(prevState => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handleSearchSubmit = (e: any) => {
+        e.preventDefault();
+        const updatedSearchFields = searchFields.map(field => ({
+            ...field,
+            defaultValue: searchFieldValues[field.inputName] || '',
+        })).filter(field => !stringIsNullOrWhiteSpace(field.defaultValue));
+        onSearch(updatedSearchFields);
+    };
 
     const renderInputField = (field: HtmlSearchFieldConfig) => {
         switch (field.type) {
             case 'dropdown':
                 return (
-                    <>
-                        <div className='d-flex align-items-center position-relative my-1'>
-                            {/* <KTIcon iconName='magnifier' className='fs-1 position-absolute ms-6' /> */}
-                            {
+                    <div className='d-flex align-items-center position-relative my-1'>
+                        {
+                            field.icon
+                                ?
                                 field.icon
-                                    ?
-                                    field.icon
-                                    :
-                                    <KTIcon iconName='magnifier' className='fs-1 position-absolute ms-6' />
-                            }
-
-                            <select
-                                className='form-select form-select-solid ps-14'
-                                id={field.inputId} name={field.inputName}
-                                onChange={handleSearchInputChange}
-                                value={searchFieldValues[field.inputName] || ''}
-                            >
-                                {field.options?.map((option, optionIndex: any) => (
-                                    <option key={optionIndex} value={option.value}>
-                                        {option.text}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </>
-
+                                :
+                                <KTIcon iconName='magnifier' className='fs-1 position-absolute ms-6' />
+                        }
+                        <select
+                            className='form-select form-select-solid ps-14'
+                            id={field.inputId} name={field.inputName}
+                            onChange={handleSearchInputChange}
+                            value={searchFieldValues[field.inputName] || ''} >
+                            {field.options?.map((option, optionIndex: any) => (
+                                <option key={optionIndex} value={option.value} >
+                                    {option.text}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 );
             case 'text':
                 return (
@@ -96,11 +80,10 @@ const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSea
                             id={field.inputId}
                             name={field.inputName}
                             data-kt-user-table-filter='search'
-                            className='form-control form-control-solid  ps-14'
+                            className='form-control form-control-solid ps-14'
                             placeholder={field.placeHolder}
                             value={searchFieldValues[field.inputName] || ''}
-                            onChange={handleSearchInputChange}
-                        />
+                            onChange={handleSearchInputChange} />
                     </div>
                 );
             case 'search':
@@ -112,14 +95,12 @@ const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSea
                             id={field.inputId}
                             name={field.inputName}
                             data-kt-user-table-filter='search'
-                            className='form-control form-control-solid  ps-14'
+                            className='form-control form-control-solid ps-14'
                             placeholder={field.placeHolder}
                             value={searchFieldValues[field.inputName] || ''}
-                            onChange={handleSearchInputChange}
-                        />
+                            onChange={handleSearchInputChange} />
                     </div>
                 );
-
             case 'number':
                 return (
                     <div className='d-flex align-items-center position-relative my-1'>
@@ -133,11 +114,9 @@ const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSea
                             className='form-control form-control-solid  ps-14'
                             placeholder={field.placeHolder}
                             value={searchFieldValues[field.inputName] || ''}
-                            onChange={handleSearchInputChange}
-                        />
+                            onChange={handleSearchInputChange} />
                     </div>
                 );
-
             case 'hidden':
                 return (
                     <input
@@ -149,10 +128,8 @@ const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSea
                         className='form-control form-control-solid  ps-14'
                         placeholder={field.placeHolder}
                         value={searchFieldValues[field.inputName] || ''}
-                        onChange={handleSearchInputChange}
-                    />
+                        onChange={handleSearchInputChange} />
                 );
-
             case 'date':
                 return (
                     <div className='d-flex align-items-center position-relative my-1'>
@@ -163,10 +140,8 @@ const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSea
                             name={field.inputName}
                             data-kt-user-table-filter='date'
                             className='form-control form-control-solid  ps-14'
-             
                             value={searchFieldValues[field.inputName] || ''}
-                            onChange={handleSearchInputChange}
-                        />
+                            onChange={handleSearchInputChange} />
                         {!searchFieldValues[field.inputName] && <label htmlFor={field.inputId} className="placeholder-date-search">{field.placeHolder}</label>}
                     </div>
                 );
@@ -176,8 +151,7 @@ const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSea
                         id={field.inputId}
                         name={field.inputName}
                         type="checkbox"
-                        defaultChecked={field.defaultValue === 'true'} // Assuming defaultValue is a string 'true' or 'false'
-                    />
+                        defaultChecked={field.defaultValue === 'true'} />
                 );
             default:
                 return null;
@@ -185,57 +159,43 @@ const CommonListSearchHeader: React.FC<Props> = ({ searchFields, onSearch, onSea
     };
 
 
-
     return (
+        <div className='card-header border-0 pt-6'>
+            <div className='card-title'>
+                <div className='row'>
+                    {searchFields.map((field, index) => (
 
-        <>
-            <div className='card-header border-0 pt-6'>
-
-
-
-
-                <div className='card-title'>
-
-
-                    <div className='row'>
-                        {searchFields.map((field, index) => (
-
-                            <div className={field.type == 'hidden' ? 'd-none' : (searchFields.length > 2 ? 'col-lg-4' : 'col-lg-6')} key={index} >
-                                {renderInputField(field)}
-                            </div>
-                        ))}
-
-                    </div>
-
-
-
+                        <div className={field.type == 'hidden' ? 'd-none' : (searchFields.length > 2 ? 'col-lg-4' : 'col-lg-6')} key={index} >
+                            {renderInputField(field)}
+                        </div>
+                    ))}
                 </div>
-                {/* begin::Card toolbar */}
-                <div className='card-toolbar'>
-                    <div className='d-flex justify-content-end' data-kt-user-table-toolbar='base'>
-
-
-
-                        {/* begin::Export */}
-                        <button type='button' className='btn btn-light-primary me-3'
-                            onClick={(e) => onSearchReset(e)}
-                        >
-                            <KTIcon iconName='exit-up' className='fs-2' />
-                            Reset
-                        </button>
-                        {/* end::Export */}
-
-                        {/* begin::Add user */}
-                        <button type='button' className='btn btn-primary' onClick={(e) => handleSearchSubmit(e)}>
-                            <KTIcon iconName='magnifier' className='fs-2' />
-                            Search
-                        </button>
-                        {/* end::Add user */}
-                    </div>
-                </div>
-                {/* end::Card toolbar */}
             </div>
-        </>
+
+            <div className='card-toolbar'>
+                <div className='d-flex justify-content-end' data-kt-user-table-toolbar='base'>
+                    {
+                        onSearchReset &&
+                        <button type='button' className='btn btn-light-primary me-3'
+                            onClick={(e) => onSearchReset(e)} >
+                            Reset <KTIcon iconName='exit-up' className='fs-2' />
+                        </button>
+                    }
+                    {
+                        onSearch &&
+                        <button type='button' className='btn btn-primary me-3' onClick={(e) => handleSearchSubmit(e)}>
+                            Search <KTIcon iconName='magnifier' className='fs-2' />
+                        </button>
+                    }
+                    {
+                        onPrint &&
+                        <button type='button' className='btn btn-light-primary' onClick={(e) => onPrint(e)}>
+                            Print <KTIcon iconName='printer' className='fs-2' />
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
     )
 }
 

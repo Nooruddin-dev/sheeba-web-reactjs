@@ -27,6 +27,7 @@ export default function ManageProductionEntry() {
     const [shouldTakeMaterial, setShouldTakeMaterial] = useState<boolean>(false);
     const [isExtruderMachine, setIsExtruderMachine] = useState<boolean>(false);
     const [isCuttingMachine, setIsCuttingMachine] = useState<boolean>(false);
+    const [isSlittingMachine, setIsSlittingMachine] = useState<boolean>(false);
     const [jobCards, setJobCards] = useState<any[]>([]);
     const [machines, setMachines] = useState<any[]>([]);
     const [materialOptions, setMaterialOptions] = useState<any[]>([]);
@@ -82,11 +83,13 @@ export default function ManageProductionEntry() {
             setValue('machine', data.value);
             setIsExtruderMachine(MachineTypesEnum.Extruder.toString() === data.value.typeId.toString());
             setIsCuttingMachine(MachineTypesEnum.Cutting.toString() === data.value.typeId.toString());
+            setIsSlittingMachine(MachineTypesEnum.Slitting.toString() === data.value.typeId.toString());
             setShouldTakeMaterial([MachineTypesEnum.Lamination, MachineTypesEnum.Printing].includes(parseInt(data.value.typeId, 10)));
         } else {
             setValue('machine', undefined);
             setIsExtruderMachine(false);
             setIsCuttingMachine(false);
+            setIsSlittingMachine(false);
             setShouldTakeMaterial(false);
         }
         setMaterial({});
@@ -473,6 +476,13 @@ export default function ManageProductionEntry() {
                                                                         {...register("rejection", { required: false })} />
                                                                 </div>
                                                             </div>
+                                                        </>
+                                                        : null
+                                                }
+                                                {
+                                                    isSlittingMachine ?
+                                                        <>
+
                                                             <div className='col-lg-4'>
                                                                 <div className="mb-10">
                                                                     <label className="form-label ">Trimming</label>
