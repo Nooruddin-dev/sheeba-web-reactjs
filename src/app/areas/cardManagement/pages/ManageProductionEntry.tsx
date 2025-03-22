@@ -216,7 +216,7 @@ export default function ManageProductionEntry() {
             const payload = {
                 jobCardId: formValue.jobCard.id,
                 machineId: formValue.machine.id,
-                date: todayDate,
+                date: formValue.date ?? todayDate,
                 startTime: formValue.startTime,
                 endTime: formValue.endTime,
                 consumedMaterials,
