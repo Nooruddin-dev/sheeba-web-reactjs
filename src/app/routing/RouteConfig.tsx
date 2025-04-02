@@ -46,6 +46,7 @@ import ManageJobCardProductPage from '../areas/inventory/pages/ManageJobCardProd
 import StockReportPage from '../areas/inventory/pages/StockReportPage';
 import JobSummaryReportPage from '../areas/cardManagement/pages/JobSummaryReportPage';
 import MachineSummaryReport from '../areas/machines/pages/MachineSummaryReportPage';
+import GrnReport from '../areas/orders/pages/GrnReportPage';
 
 
 
@@ -210,6 +211,10 @@ export default function RouteConfig() {
 
         <Route path="/reports/machine-summary" element={
           <LoginProtectedRoute> <MachineSummaryReport /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/reports/grn" element={
+          <LoginProtectedRoute> <GrnReport /> </LoginProtectedRoute>
         } />
 
         {/* Common routes area starts here */}

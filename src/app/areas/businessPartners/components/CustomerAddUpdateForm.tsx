@@ -118,7 +118,6 @@ const CustomerAddUpdateForm: React.FC<CustomerAddUpdateFormInterface> = ({
                                     {errors.emailAddress && <SiteErrorMessage errorMsg='Enter valid email address' />}
                                 </div>
                             </div>
-                           
 
 
                             <div className='col-lg-6'>
@@ -138,8 +137,6 @@ const CustomerAddUpdateForm: React.FC<CustomerAddUpdateFormInterface> = ({
                                 </div>
                             </div>
 
-
-
                             <div className='col-lg-6'>
                                 <div className="mb-10">
                                     <label className="form-label required ">Mobile/Phone No</label>
@@ -155,11 +152,48 @@ const CustomerAddUpdateForm: React.FC<CustomerAddUpdateFormInterface> = ({
                                 </div>
                             </div>
 
-                        
-                        
+                            <div className='col-lg-6'>
+                                <div className="mb-10">
+                                    <label className="form-label">NTN</label>
+                                    <input
+                                        type="text"
 
+                                        className={`form-control form-control-solid ${formSubmitted ? (errors.ntn ? 'is-invalid' : 'is-valid') : ''}`}
+                                        id="ntn" {...register("ntn", { required: false })}
+                                        placeholder="Enter NTN"
+                                    />
+                                    {errors.ntn && <SiteErrorMessage errorMsg='Enter valid NTN' />}
+                                </div>
+                            </div>
+
+                            <div className='col-lg-6'>
+                                <div className="mb-10">
+                                    <label className="form-label">STN</label>
+                                    <input
+                                        type="text"
+
+                                        className={`form-control form-control-solid ${formSubmitted ? (errors.stn ? 'is-invalid' : 'is-valid') : ''}`}
+                                        id="stn" {...register("stn", { required: false })}
+                                        placeholder="Enter STN"
+                                    />
+                                    {errors.stn && <SiteErrorMessage errorMsg='Enter valid STN' />}
+                                </div>
+                            </div>
+
+                            <div className='col-lg-6'>
+                                <div className="mb-10">
+                                    <label className="form-label">Address</label>
+                                    <input
+                                        type="text"
+
+                                        className={`form-control form-control-solid ${formSubmitted ? (errors.address ? 'is-invalid' : 'is-valid') : ''}`}
+                                        id="address" {...register("address", { required: false })}
+                                        placeholder="Enter address"
+                                    />
+                                    {errors.address && <SiteErrorMessage errorMsg='Enter valid address' />}
+                                </div>
+                            </div>
                         </div>
-
                     </div>
 
                     <div className='admin-modal-footer'>

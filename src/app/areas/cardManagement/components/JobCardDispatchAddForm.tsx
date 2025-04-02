@@ -64,7 +64,9 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
             setValue("total_value", (convertToTwoDecimalFloat(net_weight_local) - convertToTwoDecimalFloat(tare_value_local)));
         }
 
-       
+        if (Boolean(defaultValues.official)) {
+            setValue("show_company_detail", true);
+        }
 
     } catch (error) {
         console.error("An error occured in calculating total value: ", error);

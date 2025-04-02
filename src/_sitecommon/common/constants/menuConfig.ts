@@ -108,6 +108,7 @@ export const menuConfig = [
       { to: '/reports/stock', title: 'Stock', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
       { to: '/reports/job-summary', title: 'Job Summary', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
       { to: '/reports/machine-summary', title: 'Machine Summary', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
+      { to: '/reports/grn', title: 'GRN', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
     ],
   },
 ];

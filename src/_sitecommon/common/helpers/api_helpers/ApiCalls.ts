@@ -244,3 +244,9 @@ export const getDispatchAutoComplete = (value: string) => {
         `${API_ENDPOINTS.GET_DISPATCH_AUTO_COMPLETE}?dispatchNo=${value}`
     );
 }
+
+export const getCustomerAutoComplete = (value: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_USER_AUTO_COMPLETE}?typeId=3&name=${value}`
+    );
+}

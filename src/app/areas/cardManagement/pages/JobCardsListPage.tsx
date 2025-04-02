@@ -166,6 +166,7 @@ export default function JobCardsListPage() {
             item_name: record.product_name,
             company_name: record.company_name,
             po_number: record.po_reference,
+            official: record.official,
         }
         setJobCardDispatchEditForm(dispatchInfoValues);
 

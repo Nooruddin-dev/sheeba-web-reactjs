@@ -183,7 +183,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
 
     const createUpdateJobCard = (data: any) => {
-        const { order_date, dispatch_date, company_name, product_name, weight_qty, job_size, micron, sealing_method, job_card_reference, po_reference, special_request, card_rate, card_amount, card_tax_amount, card_total_amount } = data;
+        const { order_date, dispatch_date, company_name, product_name, weight_qty, job_size, micron, sealing_method, job_card_reference, po_reference, special_request, card_rate, card_amount, card_tax_amount, card_total_amount, official } = data;
 
 
         if (stringIsNullOrWhiteSpace(order_date) || stringIsNullOrWhiteSpace(dispatch_date)
@@ -252,7 +252,8 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
             card_total_amount: card_total_amount,
 
-            jobCardAllProducts: jobCardAllProductsLocal
+            jobCardAllProducts: jobCardAllProductsLocal,
+            official: official,
         };
 
         createJobCardApi(formData)
@@ -291,10 +292,6 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                 console.error(err, "err");
                 showErrorMsg("An error occured. Please try again!");
             });
-
-
-
-
 
     };
 
@@ -868,6 +865,16 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
                                             placeholder="Amount (Quantity * Rate)"
                                         />
                                         {/* {errors.card_amount && <SiteErrorMessage errorMsg='Rate is required' />} */}
+                                    </div>
+                                </div>
+
+                                <div className='col-lg-4'>
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="checkbox" id="official"
+                                            {...register("official")} />
+                                        <label className="form-check-label">
+                                            Official
+                                        </label>
                                     </div>
                                 </div>
 

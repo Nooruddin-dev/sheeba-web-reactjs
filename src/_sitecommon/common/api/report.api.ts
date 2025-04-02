@@ -13,4 +13,8 @@ export class ReportApi {
     public static async stock(filter: any): Promise<AxiosResponse<any, any>> {
         return ApiHelper.get(`/reports/stock`, { ...filter });
     }
+
+    public static async grn(filter: any): Promise<AxiosResponse<any, any>> {
+        return ApiHelper.get(`/reports/grn`, { ...filter });
+    }
 }

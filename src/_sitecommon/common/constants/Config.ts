@@ -72,6 +72,7 @@ export const API_ENDPOINTS = {
   GET_MACHINE_BASED_REPORT_DATA: `/${controllerUrlExtensions.JOB_CARD}/get-machine-based-report-api`,
   GET_ALL_PRODUCTS_FOR_PRODUCTION: `/${controllerUrlExtensions.JOB_CARD}/get-all-products-for-production-entry`,
   GET_DISPATCH_AUTO_COMPLETE: `/${controllerUrlExtensions.JOB_CARD}/dispatch-auto-complete`,
+  GET_USER_AUTO_COMPLETE: `/${controllerUrlExtensions.USERS}/auto-complete`,
 
     //--Machines APIs urls
     GET_SALE_INVOICES: `/${controllerUrlExtensions.SALE_INVOICE}`,

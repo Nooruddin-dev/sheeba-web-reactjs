@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import AdminLayout from "../../common/components/layout/AdminLayout";
 import AdminPageHeader from "../../common/components/layout/AdminPageHeader";
-import { createSalesInvoice, getDispatchAutoComplete } from "../../../../_sitecommon/common/helpers/api_helpers/ApiCalls";
+import { createSalesInvoice, getCustomerAutoComplete, getDispatchAutoComplete } from "../../../../_sitecommon/common/helpers/api_helpers/ApiCalls";
 import { showErrorMsg, showSuccessMsg, stringIsNullOrWhiteSpace } from "../../../../_sitecommon/common/helpers/global/ValidationHelper";
 import { useNavigate } from "react-router";
 import SaleInvoiceReceipt from "../components/SalesInvoiceReceipt";
@@ -16,12 +16,14 @@ import { GetDeliveryChallanUnitName } from "../../../../_sitecommon/common/helpe
 
 export default function ManageSaleInvoicePage() {
 
-    const { watch, register, reset, getValues, trigger, formState: { errors } } = useForm({});
+    const { watch, register, reset, getValues, setValue, trigger, formState: { errors } } = useForm({});
     const navigate = useNavigate();
     const [dispatches, setDispatches] = useState<any[]>([])
+    const [customers, setCustomers] = useState<any[]>([])
     const [lineItems, setLineItems] = useState<any[]>([]);
     const [invoiceSummary, setInvoiceSummary] = useState<any>({});
     const [selectedDispatch, setSelectedDispatch] = useState<any>(undefined);
+    const [selectedCustomer, setSelectedCustomer] = useState<any>(undefined);
     const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
     const [invoiceIdForPrint, setInvoiceIdForPrint] = useState<number>();
     const official = watch('official');
@@ -40,6 +42,20 @@ export default function ManageSaleInvoicePage() {
             setLineItems([])
         }
     }, [selectedDispatch])
+
+    useEffect(() => {
+        if (selectedCustomer) {
+            setValue('customerName', `${selectedCustomer.firstName} ${selectedCustomer.lastName}`);
+            setValue('customerAddress', selectedCustomer.address);
+            setValue('customerNTN', selectedCustomer.ntn);
+            setValue('customerSTN', selectedCustomer.stn);
+        } else {
+            setValue('customerName', '');
+            setValue('customerAddress', '');
+            setValue('customerNTN', '');
+            setValue('customerSTN', '');
+        }
+    }, [selectedCustomer])
 
     useEffect(() => {
         setInvoiceSummary((prevSummary: any) => {
@@ -181,6 +197,20 @@ export default function ManageSaleInvoicePage() {
         setSelectedDispatch(data ? data.value : undefined);
     }
 
+    const onCustomerChange = (value: any) => {
+        getCustomerAutoComplete(value)
+            .then((resp) => {
+                const dropdownList = resp.data.map((data: any) => ({
+                    label: `${data.firstName} ${data.lastName}`, value: data
+                }));
+                setCustomers(dropdownList)
+            })
+    }
+
+    const onCustomerSelected = (data: any) => {
+        setSelectedCustomer(data ? data.value : undefined);
+    }
+
     const onAfterPrint = () => {
         setInvoiceIdForPrint(undefined);
         navigate('/sale-invoice/list');
@@ -205,10 +235,20 @@ export default function ManageSaleInvoicePage() {
                                         <div className='col-lg-4'>
                                             <div className="mb-10">
                                                 <label className="form-label ">Dispatch No</label>
-                                                <ReactSelect isMulti={false} isClearable={true} placeholder="Select Dispatch No"
+                                                <ReactSelect isMulti={false} isClearable={true} placeholder="Select dispatch no"
                                                     className="flex-grow-1"
                                                     onChange={onDispatchSelected}
                                                     options={dispatches} onInputChange={onDispatchChange} />
+                                            </div>
+                                        </div>
+
+                                        <div className='col-lg-4'>
+                                            <div className="mb-10">
+                                                <label className="form-label ">Customer</label>
+                                                <ReactSelect isMulti={false} isClearable={true} placeholder="Select customer"
+                                                    className="flex-grow-1"
+                                                    onChange={onCustomerSelected}
+                                                    options={customers} onInputChange={onCustomerChange} />
                                             </div>
                                         </div>
 
@@ -220,7 +260,7 @@ export default function ManageSaleInvoicePage() {
                                                     type="text"
                                                     disabled
                                                     value={selectedDispatch?.companyName}
-                                                    placeholder="Select Dispatch No"
+                                                    placeholder="Select dispatch no"
                                                     className='form-control form-control-solid'
                                                 />
                                             </div>
@@ -234,7 +274,7 @@ export default function ManageSaleInvoicePage() {
                                                     type="text"
                                                     disabled
                                                     value={selectedDispatch?.itemName}
-                                                    placeholder="Select Dispatch No"
+                                                    placeholder="Select dispatch no"
                                                     className='form-control form-control-solid'
                                                 />
                                             </div>

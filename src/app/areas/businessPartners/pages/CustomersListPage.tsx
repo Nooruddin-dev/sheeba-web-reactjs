@@ -148,10 +148,12 @@ export default function CustomersListPage() {
             isActive: isActive?.toString() == "1" ? 'true' : 'false',
             isVerified: true,
             countryId: 1,
-            addressOne: '',
+            addressOne: data.address,
             phoneNo: phoneNo ?? '',
             password: '123456' ?? '',
-            profilePictureId: null
+            profilePictureId: null,
+            stn: data.stn,
+            ntn: data.ntn,
         };
 
 
