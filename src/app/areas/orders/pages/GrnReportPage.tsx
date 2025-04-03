@@ -99,6 +99,7 @@ export default function GrnReport() {
                                                 <th className="ps-3 rounded-start">GRN Date</th>
                                                 <th>GRN Number</th>
                                                 <th>PO Number</th>
+                                                <th>Company</th>
                                                 <th>Product</th>
                                                 <th>Quantity</th>
                                                 <th className="rounded-end">Weight</th>
@@ -111,6 +112,7 @@ export default function GrnReport() {
                                                         <td className='ps-3'>{GetFormattedDate(item.grnDate)}</td>
                                                         <td>{item.grnNumber}</td>
                                                         <td>{item.poNumber}</td>
+                                                        <td>{item.companyName}</td>
                                                         <td>{item.productName} ({item.productSku})</td>
                                                         <td>{item.quantity}</td>
                                                         <td>{item.weight}</td>

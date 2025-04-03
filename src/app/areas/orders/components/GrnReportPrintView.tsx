@@ -42,6 +42,7 @@ const GrnReportPrintView: React.FC<{ afterPrint: any, report: any, startDate: an
                                     <th>GRN Date</th>
                                     <th>GRN Number</th>
                                     <th>PO Number</th>
+                                    <th>Company</th>
                                     <th>Product</th>
                                     <th>Quantity</th>
                                     <th>Weight</th>
@@ -54,6 +55,7 @@ const GrnReportPrintView: React.FC<{ afterPrint: any, report: any, startDate: an
                                             <td>{GetFormattedDate(item.grnDate)}</td>
                                             <td>{item.grnNumber}</td>
                                             <td>{item.poNumber}</td>
+                                            <td>{item.companyName}</td>
                                             <td>{item.productName} ({item.productSku})</td>
                                             <td>{item.quantity}</td>
                                             <td>{item.weight}</td>
