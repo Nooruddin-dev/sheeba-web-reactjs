@@ -38,6 +38,7 @@ export default function ManageSaleInvoicePage() {
                 unitId: selectedDispatch.unitId,
             };
             setLineItems([calculateLineItem(lineItem)])
+            setValue('official', Boolean(selectedDispatch.official));
         } else {
             setLineItems([])
         }

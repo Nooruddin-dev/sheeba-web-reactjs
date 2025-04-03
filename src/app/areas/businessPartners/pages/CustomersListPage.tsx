@@ -99,6 +99,9 @@ export default function CustomersListPage() {
 
             password: recordForEdit?.testWordHooP,
             confirmPassword: recordForEdit?.testWordHooP,
+            ntn: recordForEdit?.ntn,
+            stn: recordForEdit?.stn,   
+            address: recordForEdit?.busnPartnerAddressAssociationBusnPartners[0]?.addressOne,
         });
 
         setIsOpenAddNewForm(!isOpenAddNewForm);

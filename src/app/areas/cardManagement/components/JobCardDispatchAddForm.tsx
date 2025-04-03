@@ -305,7 +305,7 @@ const JobCardDispatchAddForm: React.FC<JobCardDispatchAddFormInterface> = ({
 
                             <div className='col-lg-4 mt-12'>
                                     <div className="form-check">
-                                        <input className="form-check-input" type="checkbox"
+                                        <input className="form-check-input" type="checkbox" disabled={['', undefined, null].includes(defaultValues?.official) ? false : true}
                                             id="show_company_detail" {...register("show_company_detail")}
                                         />
                                         <label className="form-check-label" htmlFor="flexCheckChecked">
