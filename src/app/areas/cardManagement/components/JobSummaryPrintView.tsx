@@ -89,7 +89,7 @@ const JobSummaryPrintView: React.FC<{ afterPrint: any, units: any, report: any, 
                                 {report.dispatches.map((dispatch: any, index: number) => (
                                     <tr key={index}>
                                         <td>{GetFormattedDate(dispatch.date)}</td>
-                                        <td>{dispatch.quantity} {GetUnitShortName(units, dispatch.unitId)}</td>
+                                        <td>{dispatch.quantity}</td>
                                         <td>{dispatch.gross}</td>
                                         <td>{dispatch.core}</td>
                                         <td>{dispatch.net}</td>
