@@ -92,6 +92,14 @@ export default function ManageProductionEntry() {
             setIsSlittingMachine(false);
             setShouldTakeMaterial(false);
         }
+        setValue('quantity', '');
+        setValue('grossWeight', '');
+        setValue('waste', '');
+        setValue('tare', '');
+        setValue('netWeight', '');
+        setValue('trimming', '');
+        setValue('rejection', '');
+        setValue('handleCutting', '');
         setMaterial({});
     }
 
@@ -162,6 +170,11 @@ export default function ManageProductionEntry() {
             const formValue = getValues();
             if (material.source === ProductSourceEnum.JobCard && formValue.jobCard.extruderProductId.toString() !== material.id.toString()) {
                 showErrorMsg('Selected material does not belongs to selected job card');
+                return;
+            }
+
+            if (parseFloat(formValue.netWeight) < 0) {
+                showErrorMsg('Net weight cannot be negative, please verify!');
                 return;
             }
 
@@ -252,7 +265,7 @@ export default function ManageProductionEntry() {
         const grossWeight = parseFloat(getValues('grossWeight') || 0);
         const waste = parseFloat(getValues('waste') || 0);
         const tare = parseFloat(getValues('tare') || 0);
-        return grossWeight - waste - tare;
+        return isExtruderMachine ? (grossWeight - tare) : (grossWeight - waste - tare);
     }
 
     function validateBatchItems(materials: any[]): boolean {
