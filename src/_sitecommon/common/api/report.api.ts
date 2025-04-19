@@ -17,4 +17,8 @@ export class ReportApi {
     public static async grn(filter: any): Promise<AxiosResponse<any, any>> {
         return ApiHelper.get(`/reports/grn`, { ...filter });
     }
+
+    public static async dispatch(filter: any): Promise<AxiosResponse<any, any>> {
+        return ApiHelper.get(`/reports/dispatch`, { ...filter });
+    }
 }

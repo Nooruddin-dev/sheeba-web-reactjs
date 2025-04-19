@@ -47,6 +47,7 @@ import StockReportPage from '../areas/inventory/pages/StockReportPage';
 import JobSummaryReportPage from '../areas/cardManagement/pages/JobSummaryReportPage';
 import MachineSummaryReport from '../areas/machines/pages/MachineSummaryReportPage';
 import GrnReport from '../areas/orders/pages/GrnReportPage';
+import DispatchReportPage from '../areas/cardManagement/pages/DispatchReportPage';
 
 
 
@@ -193,8 +194,8 @@ export default function RouteConfig() {
           <LoginProtectedRoute> <ManageSaleInvoicePage /> </LoginProtectedRoute>
         } />
 
-        <Route path="/reports/dispatch-info" element={
-          <LoginProtectedRoute> <CardDispatchInfoPage /> </LoginProtectedRoute>
+        <Route path="/reports/dispatch" element={
+          <LoginProtectedRoute> <DispatchReportPage /> </LoginProtectedRoute>
         } />
 
         <Route path="/reports/machine-based" element={

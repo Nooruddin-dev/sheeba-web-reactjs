@@ -3,6 +3,7 @@ import { useReactToPrint } from "react-to-print";
 import '../../../../../src/_sitecommon/assets/sass/components/invoice-print.scss';
 import { formatNumber } from "../../common/util";
 import { GetFormattedDate, GetUnitShortName } from "../../../../_sitecommon/common/helpers/global/ConversionHelper";
+import { MachineTypesEnum } from "../../../../_sitecommon/common/enums/GlobalEnums";
 
 const JobSummaryPrintView: React.FC<{ afterPrint: any, units: any, report: any, total: any, jobCardNo: string, productName: string }> = ({
     afterPrint,
@@ -45,6 +46,17 @@ const JobSummaryPrintView: React.FC<{ afterPrint: any, units: any, report: any, 
                                     <tr>
                                         <th>Date</th>
                                         <th>Machine</th>
+                                        {
+                                            item.machineTypeId === MachineTypesEnum.Slitting &&
+                                            <th>Trimming</th>
+                                        }
+                                        {
+                                            item.machineTypeId === MachineTypesEnum.Cutting &&
+                                            <>
+                                                <th>Handle Cutting</th>
+                                                <th>Rejection</th>
+                                            </>
+                                        }
                                         <th>Waste</th>
                                         <th>Gross</th>
                                         <th>Net</th>
@@ -55,6 +67,17 @@ const JobSummaryPrintView: React.FC<{ afterPrint: any, units: any, report: any, 
                                         <tr key={`${index1}-${index2}`}>
                                             <td>{GetFormattedDate(entry.date)}</td>
                                             <td>{entry.machineName}</td>
+                                            {
+                                                item.machineTypeId === MachineTypesEnum.Slitting &&
+                                                <td>{entry.trimming}</td>
+                                            }
+                                            {
+                                                item.machineTypeId === MachineTypesEnum.Cutting &&
+                                                <>
+                                                    <td>{entry.handleCutting}</td>
+                                                    <td>{entry.rejection}</td>
+                                                </>
+                                            }
                                             <td>{entry.waste}</td>
                                             <td>{entry.gross}</td>
                                             <td>{entry.net}</td>
@@ -64,6 +87,17 @@ const JobSummaryPrintView: React.FC<{ afterPrint: any, units: any, report: any, 
                                 <tfoot>
                                     <tr>
                                         <td colSpan={2}></td>
+                                        {
+                                            item.machineTypeId === MachineTypesEnum.Slitting &&
+                                            <td>{formatNumber(total[item.machineTypeId].trimming, 2)}</td>
+                                        }
+                                        {
+                                            item.machineTypeId === MachineTypesEnum.Cutting &&
+                                            <>
+                                                <td>{formatNumber(total[item.machineTypeId].handleCutting, 2)}</td>
+                                                <td>{formatNumber(total[item.machineTypeId].rejection, 2)}</td>
+                                            </>
+                                        }
                                         <td>{formatNumber(total[item.machineTypeId]?.waste, 2)}</td>
                                         <td>{formatNumber(total[item.machineTypeId]?.gross, 2)}</td>
                                         <td>{formatNumber(total[item.machineTypeId]?.net, 2)}</td>
@@ -99,10 +133,10 @@ const JobSummaryPrintView: React.FC<{ afterPrint: any, units: any, report: any, 
                             <tfoot>
                                 <tr>
                                     <td></td>
-                                    <td>{total.dispatch?.quantity}</td>
-                                    <td>{total.dispatch?.gross}</td>
-                                    <td>{total.dispatch?.core}</td>
-                                    <td>{total.dispatch?.net}</td>
+                                    <td>{formatNumber(total.dispatch?.quantity, 2)}</td>
+                                    <td>{formatNumber(total.dispatch?.gross, 2)}</td>
+                                    <td>{formatNumber(total.dispatch?.core, 2)}</td>
+                                    <td>{formatNumber(total.dispatch?.net, 2)}</td>
                                 </tr>
                             </tfoot>
                         </table>

@@ -11,6 +11,7 @@ import { InventoryApi } from '../../../../_sitecommon/common/api/inventory.api';
 import { toast } from 'react-toastify';
 import { formatNumber } from '../../common/util';
 import JobSummaryPrintView from '../components/JobSummaryPrintView';
+import { MachineTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
 
 
 export default function JobSummaryReportPage() {
@@ -86,12 +87,19 @@ export default function JobSummaryReportPage() {
 
     function getEntriesSum(entries: any[]): any {
         let sum = {
+            handleCutting: 0,
+            trimming: 0,
+            rejection: 0,
             waste: 0,
             core: 0,
             gross: 0,
             net: 0
         };
         entries.forEach(entry => {
+            sum.handleCutting += parseFloat(entry.handleCutting || 0);
+            sum.trimming += parseFloat(entry.trimming || 0);
+            sum.rejection += parseFloat(entry.rejection || 0);
+            sum.waste += parseFloat(entry.waste || 0);
             sum.waste += parseFloat(entry.waste || 0);
             sum.gross += parseFloat(entry.gross || 0);
             sum.net += parseFloat(entry.net || 0);
@@ -157,6 +165,17 @@ export default function JobSummaryReportPage() {
                                                 <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
                                                     <th className="ps-3 rounded-start">Date</th>
                                                     <th>Machine</th>
+                                                    {
+                                                        item.machineTypeId === MachineTypesEnum.Slitting &&
+                                                        <th>Trimming</th>
+                                                    }
+                                                    {
+                                                        item.machineTypeId === MachineTypesEnum.Cutting &&
+                                                        <>
+                                                            <th>Handle Cutting</th>
+                                                            <th>Rejection</th>
+                                                        </>
+                                                    }
                                                     <th>Waste</th>
                                                     <th>Gross</th>
                                                     <th className="rounded-end">Net</th>
@@ -168,6 +187,17 @@ export default function JobSummaryReportPage() {
                                                         <tr key={`${index1}-${index2}`}>
                                                             <td className='ps-3'>{GetFormattedDate(entry.date)}</td>
                                                             <td>{entry.machineName}</td>
+                                                            {
+                                                                item.machineTypeId === MachineTypesEnum.Slitting &&
+                                                                <td>{entry.trimming}</td>
+                                                            }
+                                                            {
+                                                                item.machineTypeId === MachineTypesEnum.Cutting &&
+                                                                <>
+                                                                    <td>{entry.handleCutting}</td>
+                                                                    <td>{entry.rejection}</td>
+                                                                </>
+                                                            }
                                                             <td>{entry.waste}</td>
                                                             <td>{entry.gross}</td>
                                                             <td>{entry.net}</td>
@@ -179,6 +209,17 @@ export default function JobSummaryReportPage() {
                                             <tfoot className='text-gray-600 fw-bold'>
                                                 <tr className='text-start text-muted fw-bolder fs-7 gs-0'>
                                                     <td colSpan={2} className='ps-3'></td>
+                                                    {
+                                                        item.machineTypeId === MachineTypesEnum.Slitting &&
+                                                        <td>{formatNumber(total[item.machineTypeId].trimming, 2)}</td>
+                                                    }
+                                                    {
+                                                        item.machineTypeId === MachineTypesEnum.Cutting &&
+                                                        <>
+                                                            <td>{formatNumber(total[item.machineTypeId].handleCutting,2)}</td>
+                                                            <td>{formatNumber(total[item.machineTypeId].rejection, 2)}</td>
+                                                        </>
+                                                    }
                                                     <td>{formatNumber(total[item.machineTypeId].waste, 2)}</td>
                                                     <td>{formatNumber(total[item.machineTypeId].gross, 2)}</td>
                                                     <td>{formatNumber(total[item.machineTypeId].net, 2)}</td>

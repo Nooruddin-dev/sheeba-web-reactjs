@@ -9,6 +9,7 @@ import { ReportApi } from '../../../../_sitecommon/common/api/report.api';
 import MachineSummaryReportPrintView from '../components/MachineSummaryReportPrintView';
 import { formatNumber } from '../../common/util';
 import { toast } from 'react-toastify';
+import { MachineTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
 
 
 export default function MachineSummaryReport() {
@@ -78,12 +79,18 @@ export default function MachineSummaryReport() {
         let sum = {
             waste: 0,
             gross: 0,
-            net: 0
+            net: 0,
+            trimming: 0,
+            handleCutting: 0,
+            rejection: 0
         };
         entries.forEach(entry => {
             sum.waste += parseFloat(entry.waste);
             sum.gross += parseFloat(entry.gross);
             sum.net += parseFloat(entry.net);
+            sum.trimming += parseFloat(entry.trimming);
+            sum.handleCutting += parseFloat(entry.handleCutting);
+            sum.rejection += parseFloat(entry.rejection);
         });
         return sum;
     }
@@ -115,6 +122,17 @@ export default function MachineSummaryReport() {
                                             <thead>
                                                 <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
                                                     <th className="ps-3 rounded-start">Machine</th>
+                                                    {
+                                                        item.machineTypeId === MachineTypesEnum.Slitting &&
+                                                        <th>Trimming</th>
+                                                    }
+                                                    {
+                                                        item.machineTypeId === MachineTypesEnum.Cutting &&
+                                                        <>
+                                                            <th>Handle Cutting</th>
+                                                            <th>Rejection</th>
+                                                        </>
+                                                    }
                                                     <th>Waste</th>
                                                     <th>Gross</th>
                                                     <th className="rounded-end">Net</th>
@@ -125,6 +143,17 @@ export default function MachineSummaryReport() {
                                                     item.machines.map((machine: any, index2: number) => (
                                                         <tr key={`${index1}-${index2}`}>
                                                             <td className='ps-3'>{machine.machineName}</td>
+                                                            {
+                                                                item.machineTypeId === MachineTypesEnum.Slitting &&
+                                                                <td>{machine.trimming}</td>
+                                                            }
+                                                            {
+                                                                item.machineTypeId === MachineTypesEnum.Cutting &&
+                                                                <>
+                                                                    <td>{machine.handleCutting}</td>
+                                                                    <td>{machine.rejection}</td>
+                                                                </>
+                                                            }
                                                             <td>{machine.waste}</td>
                                                             <td>{machine.gross}</td>
                                                             <td>{machine.net}</td>
@@ -135,6 +164,17 @@ export default function MachineSummaryReport() {
                                             <tfoot className='text-gray-600 fw-bold'>
                                                 <tr className='text-start text-muted fw-bolder fs-7 gs-0'>
                                                     <td className='ps-3'></td>
+                                                    {
+                                                        item.machineTypeId === MachineTypesEnum.Slitting &&
+                                                        <td>{formatNumber(total[item.machineTypeId]?.trimming, 2)}</td>
+                                                    }
+                                                    {
+                                                        item.machineTypeId === MachineTypesEnum.Cutting &&
+                                                        <>
+                                                            <td>{formatNumber(total[item.machineTypeId]?.handleCutting, 2)}</td>
+                                                            <td>{formatNumber(total[item.machineTypeId]?.rejection, 2)}</td>
+                                                        </>
+                                                    }
                                                     <td>{formatNumber(total[item.machineTypeId]?.waste, 2)}</td>
                                                     <td>{formatNumber(total[item.machineTypeId]?.gross, 2)}</td>
                                                     <td>{formatNumber(total[item.machineTypeId]?.net, 2)}</td>

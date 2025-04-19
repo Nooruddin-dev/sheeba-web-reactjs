@@ -3,6 +3,7 @@ import { useReactToPrint } from "react-to-print";
 import '../../../../../src/_sitecommon/assets/sass/components/invoice-print.scss';
 import { GetFormattedDate, GetFormattedDateFromSqlDate } from "../../../../_sitecommon/common/helpers/global/ConversionHelper";
 import { formatNumber } from "../../common/util";
+import { MachineTypesEnum } from "../../../../_sitecommon/common/enums/GlobalEnums";
 
 const MachineSummaryReportPrintView: React.FC<{ afterPrint: any, report: any, total: any, startDate: any, endDate: any }> = ({
     afterPrint,
@@ -43,6 +44,17 @@ const MachineSummaryReportPrintView: React.FC<{ afterPrint: any, report: any, to
                                 <thead>
                                     <tr>
                                         <th>Machine</th>
+                                        {
+                                            item.machineTypeId === MachineTypesEnum.Slitting &&
+                                            <th>Trimming</th>
+                                        }
+                                        {
+                                            item.machineTypeId === MachineTypesEnum.Cutting &&
+                                            <>
+                                                <th>Handle Cutting</th>
+                                                <th>Rejection</th>
+                                            </>
+                                        }
                                         <th>Waste</th>
                                         <th>Gross</th>
                                         <th>Net</th>
@@ -52,6 +64,17 @@ const MachineSummaryReportPrintView: React.FC<{ afterPrint: any, report: any, to
                                     {item.machines.map((machine: any, index2: number) => (
                                         <tr key={`${index1}-${index2}`}>
                                             <td>{machine.machineName}</td>
+                                            {
+                                                item.machineTypeId === MachineTypesEnum.Slitting &&
+                                                <td>{formatNumber(machine.trimming, 2)}</td>
+                                            }
+                                            {
+                                                item.machineTypeId === MachineTypesEnum.Cutting &&
+                                                <>  
+                                                    <td>{formatNumber(machine.handleCutting, 2)}</td>
+                                                    <td>{formatNumber(machine.rejection, 2)}</td>
+                                                </>
+                                            }
                                             <td>{machine.waste}</td>
                                             <td>{machine.gross}</td>
                                             <td>{machine.net}</td>
@@ -61,6 +84,17 @@ const MachineSummaryReportPrintView: React.FC<{ afterPrint: any, report: any, to
                                 <tfoot>
                                     <tr>
                                         <td></td>
+                                        {
+                                            item.machineTypeId === MachineTypesEnum.Slitting &&
+                                            <td>{formatNumber(total[item.machineTypeId]?.trimming, 2)}</td>
+                                        }
+                                        {
+                                            item.machineTypeId === MachineTypesEnum.Cutting &&
+                                            <>
+                                                <td>{formatNumber(total[item.machineTypeId]?.handleCutting, 2)}</td>
+                                                <td>{formatNumber(total[item.machineTypeId]?.rejection, 2)}</td>
+                                            </>
+                                        }
                                         <td>{formatNumber(total[item.machineTypeId]?.waste, 2)}</td>
                                         <td>{formatNumber(total[item.machineTypeId]?.gross, 2)}</td>
                                         <td>{formatNumber(total[item.machineTypeId]?.net, 2)}</td>
