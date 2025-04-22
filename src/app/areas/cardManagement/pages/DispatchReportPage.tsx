@@ -108,8 +108,8 @@ export default function DispatchReportPage() {
                                                     <tr key={`dispatch-${index}`}>
                                                         <td className='ps-3'>{GetFormattedDate(item.dispatchDate)}</td>
                                                         <td>{GetFormattedDate(item.jobCardDate)}</td>
-                                                        <td>{item.jobCardNo}</td>
                                                         <td>{item.dispatchNo}</td>
+                                                        <td>{item.jobCardNo}</td>
                                                         <td>{item.product}</td>
                                                         <td>{formatNumber(item.quantity, 2)}</td>
                                                         <td>{formatNumber(item.weight, 2)}</td>

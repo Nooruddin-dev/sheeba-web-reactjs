@@ -26,7 +26,7 @@ const DispatchReportPrintView: React.FC<{ afterPrint: any, report: any, startDat
     return (
         <div style={{ display: 'none' }}>
             <div ref={componentRef} className="print-view">
-                <h2>GRN Report</h2>
+                <h2>Dispatch Report</h2>
                 {report && (
                     <>
                         <div>
