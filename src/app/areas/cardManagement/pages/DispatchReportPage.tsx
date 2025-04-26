@@ -94,7 +94,6 @@ export default function DispatchReportPage() {
                                         <thead>
                                             <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
                                                 <th className="ps-3 rounded-start">Dispatch Date</th>
-                                                <th>Job Date</th>
                                                 <th>Dispatch No</th>
                                                 <th>Job Card No</th>
                                                 <th>Item</th>
@@ -107,7 +106,6 @@ export default function DispatchReportPage() {
                                                 report?.entries?.map((item: any, index: number) => (
                                                     <tr key={`dispatch-${index}`}>
                                                         <td className='ps-3'>{GetFormattedDate(item.dispatchDate)}</td>
-                                                        <td>{GetFormattedDate(item.jobCardDate)}</td>
                                                         <td>{item.dispatchNo}</td>
                                                         <td>{item.jobCardNo}</td>
                                                         <td>{item.product}</td>

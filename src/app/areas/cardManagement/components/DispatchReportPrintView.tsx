@@ -41,7 +41,6 @@ const DispatchReportPrintView: React.FC<{ afterPrint: any, report: any, startDat
                             <thead>
                                 <tr>
                                     <th>Dispatch Date</th>
-                                    <th>Job Date</th>
                                     <th>Dispatch No</th>
                                     <th>Job Card No</th>
                                     <th>Item</th>
@@ -54,7 +53,6 @@ const DispatchReportPrintView: React.FC<{ afterPrint: any, report: any, startDat
                                     report?.entries?.map((item: any, index: number) => (
                                         <tr key={`dispatch-${index}`}>
                                             <td>{GetFormattedDate(item.dispatchDate)}</td>
-                                            <td>{GetFormattedDate(item.jobCardDate)}</td>
                                             <td>{item.dispatchNo}</td>
                                             <td>{item.jobCardNo}</td>
                                             <td>{item.product}</td>
