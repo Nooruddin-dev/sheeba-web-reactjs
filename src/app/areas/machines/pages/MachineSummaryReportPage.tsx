@@ -134,8 +134,13 @@ export default function MachineSummaryReport() {
                                                         </>
                                                     }
                                                     <th>Waste</th>
-                                                    <th>Gross</th>
-                                                    <th className="rounded-end">Net</th>
+                                                    {
+                                                        ![MachineTypesEnum.Cutting, MachineTypesEnum.Slitting].includes(item.machineTypeId) &&
+                                                        <>
+                                                            <th>Gross</th>
+                                                            <th className="rounded-end">Net</th>
+                                                        </>
+                                                    }
                                                 </tr>
                                             </thead>
                                             <tbody className='text-gray-600 fw-bold'>
@@ -155,8 +160,13 @@ export default function MachineSummaryReport() {
                                                                 </>
                                                             }
                                                             <td>{machine.waste}</td>
-                                                            <td>{machine.gross}</td>
-                                                            <td>{machine.net}</td>
+                                                            {
+                                                                ![MachineTypesEnum.Cutting, MachineTypesEnum.Slitting].includes(item.machineTypeId) &&
+                                                                <>
+                                                                    <td>{machine.gross}</td>
+                                                                    <td>{machine.net}</td>
+                                                                </>
+                                                            }
                                                         </tr>
                                                     ))
                                                 }
@@ -176,8 +186,13 @@ export default function MachineSummaryReport() {
                                                         </>
                                                     }
                                                     <td>{formatNumber(total[item.machineTypeId]?.waste, 2)}</td>
-                                                    <td>{formatNumber(total[item.machineTypeId]?.gross, 2)}</td>
-                                                    <td>{formatNumber(total[item.machineTypeId]?.net, 2)}</td>
+                                                    {
+                                                        ![MachineTypesEnum.Cutting, MachineTypesEnum.Slitting].includes(item.machineTypeId) &&
+                                                        <>
+                                                            <td>{formatNumber(total[item.machineTypeId]?.gross, 2)}</td>
+                                                            <td>{formatNumber(total[item.machineTypeId]?.net, 2)}</td>
+                                                        </>
+                                                    }
                                                 </tr>
                                             </tfoot>
                                         </table>

@@ -119,14 +119,14 @@ export default function JobCardsListPage() {
             job_card_id: job_card_id,
             company_name: company_name,
             item_name: item_name,
-            show_company_detail: show_company_detail ?? true,
+            show_company_detail: [undefined, 'false', false, null].includes(show_company_detail) ? false : true,
             po_number: po_number,
             tr_number: tr_number,
             deliveryChallanLineItems: deliveryChallanLineItems,
         };
 
 
-
+        
 
         insertCardDispatchInfoApi(formData)
             .then((res: any) => {

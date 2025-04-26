@@ -180,7 +180,7 @@ export default function ManageProductionEntry() {
 
             let consumedMaterials: any[] = []
             let producedMaterials: any[] = []
-            const weightWithoutTare = (parseFloat(formValue.grossWeight) - parseFloat(formValue.tare));
+            const weightWithoutTare = (parseFloat(formValue.grossWeight || 0) - parseFloat(formValue.tare));
 
             if (isExtruderMachine) {
                 if (!validateBatchItems(extruderBatchItems)) {
@@ -202,7 +202,7 @@ export default function ManageProductionEntry() {
                 producedMaterials = [{
                     id: formValue.jobCard.extruderProductId,
                     quantity: formValue.quantity,
-                    grossWeight: formValue.grossWeight,
+                    grossWeight: formValue.grossWeight || 0,
                     wasteWeight: formValue.waste,
                     tareWeight: formValue.tare,
                     weightWithoutTare: (weightWithoutTare - parseFloat(formValue.waste)),
@@ -215,7 +215,7 @@ export default function ManageProductionEntry() {
                 consumedMaterials = [{
                     id: material.id,
                     quantity: formValue.quantity,
-                    grossWeight: formValue.grossWeight,
+                    grossWeight: formValue.grossWeight || 0,
                     wasteWeight: formValue.waste,
                     tareWeight: formValue.tare,
                     weightWithoutTare: weightWithoutTare,
@@ -265,6 +265,9 @@ export default function ManageProductionEntry() {
         const grossWeight = parseFloat(getValues('grossWeight') || 0);
         const waste = parseFloat(getValues('waste') || 0);
         const tare = parseFloat(getValues('tare') || 0);
+        if (isCuttingMachine || isSlittingMachine) {
+            return 0;
+        };
         return isExtruderMachine ? (grossWeight - tare) : (grossWeight - waste - tare);
     }
 
@@ -428,18 +431,22 @@ export default function ManageProductionEntry() {
                                                         {errors.quantity && <SiteErrorMessage errorMsg='Quantity is required' />}
                                                     </div>
                                                 </div>
-                                                <div className='col-lg-4'>
-                                                    <div className="mb-10">
-                                                        <label className="form-label ">Gross Weight</label>
-                                                        <input
-                                                            id="gross-weight"
-                                                            type="number"
-                                                            step="0.1"
-                                                            className={`form-control form-control-solid ${formSubmitted ? (errors.grossWeight ? 'is-invalid' : 'is-valid') : ''}`}
-                                                            {...register("grossWeight", { required: true })} />
-                                                        {errors.grossWeight && <SiteErrorMessage errorMsg='Gross Weight is required' />}
+                                                {
+                                                    !(isSlittingMachine || isCuttingMachine) &&
+                                                    <div className='col-lg-4'>
+                                                        <div className="mb-10">
+                                                            <label className="form-label ">Gross Weight</label>
+                                                            <input
+                                                                id="gross-weight"
+                                                                type="number"
+                                                                step="0.1"
+                                                                className={`form-control form-control-solid ${formSubmitted ? (errors.grossWeight ? 'is-invalid' : 'is-valid') : ''}`}
+                                                                {...register("grossWeight", { required: true })} />
+                                                            {errors.grossWeight && <SiteErrorMessage errorMsg='Gross Weight is required' />}
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                }
+
                                                 <div className='col-lg-4'>
                                                     <div className="mb-10">
                                                         <label className="form-label ">Waste</label>
@@ -510,17 +517,21 @@ export default function ManageProductionEntry() {
                                                         </>
                                                         : null
                                                 }
-                                                <div className='col-lg-4'>
-                                                    <div className="mb-10">
-                                                        <label className="form-label ">Net Weight</label>
-                                                        <input
-                                                            id="end-time"
-                                                            type="number"
-                                                            readOnly={true}
-                                                            className='form-control form-control-solid'
-                                                            {...register("netWeight", { required: true })} />
+                                                {
+                                                    !(isSlittingMachine || isCuttingMachine) &&
+                                                    <div className='col-lg-4'>
+                                                        <div className="mb-10">
+                                                            <label className="form-label ">Net Weight</label>
+                                                            <input
+                                                                id="end-time"
+                                                                type="number"
+                                                                readOnly={true}
+                                                                className='form-control form-control-solid'
+                                                                {...register("netWeight", { required: true })} />
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                }
+
                                             </>
                                             : null
                                     }
