@@ -64,7 +64,7 @@ const DispatchReportPrintView: React.FC<{ afterPrint: any, report: any, startDat
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colSpan={5}>Total</td>
+                                    <td colSpan={4}>Total</td>
                                     <td>{formatNumber(report?.summary?.totalQuantity, 2)} PCS</td>
                                     <td>{formatNumber(report?.summary?.totalWeight, 2)} KG</td>
                                 </tr>

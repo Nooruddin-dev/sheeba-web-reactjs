@@ -117,7 +117,7 @@ export default function DispatchReportPage() {
                                         </tbody>
                                         <tfoot className='text-gray-600 fw-bold'>
                                             <tr className='text-start text-muted fw-bolder fs-7 gs-0'>
-                                                <td className='ps-3' colSpan={5}>Total</td>
+                                                <td className='ps-3' colSpan={4}>Total</td>
                                                 <td>{formatNumber(report?.summary?.totalQuantity, 2)} PCS</td>
                                                 <td>{formatNumber(report?.summary?.totalWeight, 2)} KG</td>
                                             </tr>
