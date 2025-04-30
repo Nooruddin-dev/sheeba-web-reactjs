@@ -57,6 +57,10 @@ const JobSummaryPrintView: React.FC<{ afterPrint: any, units: any, report: any, 
                                                 <th>Rejection</th>
                                             </>
                                         }
+                                        {
+                                            ![MachineTypesEnum.Slitting, MachineTypesEnum.Cutting].includes(item.machineTypeId) &&
+                                            <th>Quantity</th>
+                                        }
                                         <th>Waste</th>
                                         <th>Gross</th>
                                         <th>Net</th>
@@ -78,6 +82,10 @@ const JobSummaryPrintView: React.FC<{ afterPrint: any, units: any, report: any, 
                                                     <td>{entry.rejection}</td>
                                                 </>
                                             }
+                                            {
+                                                ![MachineTypesEnum.Slitting, MachineTypesEnum.Cutting].includes(item.machineTypeId) &&
+                                                <td>{entry.quantity}</td>
+                                            }
                                             <td>{entry.waste}</td>
                                             <td>{entry.gross}</td>
                                             <td>{entry.net}</td>
@@ -97,6 +105,10 @@ const JobSummaryPrintView: React.FC<{ afterPrint: any, units: any, report: any, 
                                                 <td>{formatNumber(total[item.machineTypeId].handleCutting, 2)}</td>
                                                 <td>{formatNumber(total[item.machineTypeId].rejection, 2)}</td>
                                             </>
+                                        }
+                                        {
+                                            ![MachineTypesEnum.Slitting, MachineTypesEnum.Cutting].includes(item.machineTypeId) &&
+                                            <td>{formatNumber(total[item.machineTypeId]?.quantity, 2)}</td>
                                         }
                                         <td>{formatNumber(total[item.machineTypeId]?.waste, 2)}</td>
                                         <td>{formatNumber(total[item.machineTypeId]?.gross, 2)}</td>

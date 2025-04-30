@@ -87,6 +87,7 @@ export default function JobSummaryReportPage() {
 
     function getEntriesSum(entries: any[]): any {
         let sum = {
+            quantity: 0,
             handleCutting: 0,
             trimming: 0,
             rejection: 0,
@@ -96,10 +97,10 @@ export default function JobSummaryReportPage() {
             net: 0
         };
         entries.forEach(entry => {
+            sum.quantity += parseFloat(entry.quantity || 0);
             sum.handleCutting += parseFloat(entry.handleCutting || 0);
             sum.trimming += parseFloat(entry.trimming || 0);
             sum.rejection += parseFloat(entry.rejection || 0);
-            sum.waste += parseFloat(entry.waste || 0);
             sum.waste += parseFloat(entry.waste || 0);
             sum.gross += parseFloat(entry.gross || 0);
             sum.net += parseFloat(entry.net || 0);
@@ -176,6 +177,10 @@ export default function JobSummaryReportPage() {
                                                             <th>Rejection</th>
                                                         </>
                                                     }
+                                                    {
+                                                        ![MachineTypesEnum.Slitting, MachineTypesEnum.Cutting].includes(item.machineTypeId) &&
+                                                        <th>Quantity</th>
+                                                    }
                                                     <th>Waste</th>
                                                     <th>Gross</th>
                                                     <th className="rounded-end">Net</th>
@@ -198,6 +203,10 @@ export default function JobSummaryReportPage() {
                                                                     <td>{entry.rejection}</td>
                                                                 </>
                                                             }
+                                                            {
+                                                                ![MachineTypesEnum.Slitting, MachineTypesEnum.Cutting].includes(item.machineTypeId) &&
+                                                                <td>{entry.quantity}</td>
+                                                            }
                                                             <td>{entry.waste}</td>
                                                             <td>{entry.gross}</td>
                                                             <td>{entry.net}</td>
@@ -216,9 +225,13 @@ export default function JobSummaryReportPage() {
                                                     {
                                                         item.machineTypeId === MachineTypesEnum.Cutting &&
                                                         <>
-                                                            <td>{formatNumber(total[item.machineTypeId].handleCutting,2)}</td>
+                                                            <td>{formatNumber(total[item.machineTypeId].handleCutting, 2)}</td>
                                                             <td>{formatNumber(total[item.machineTypeId].rejection, 2)}</td>
                                                         </>
+                                                    }
+                                                    {
+                                                        ![MachineTypesEnum.Slitting, MachineTypesEnum.Cutting].includes(item.machineTypeId) &&
+                                                        <td>{formatNumber(total[item.machineTypeId].quantity, 2)}</td>
                                                     }
                                                     <td>{formatNumber(total[item.machineTypeId].waste, 2)}</td>
                                                     <td>{formatNumber(total[item.machineTypeId].gross, 2)}</td>

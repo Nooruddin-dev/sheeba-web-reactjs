@@ -109,6 +109,7 @@ export default function JobCardProductsListPage() {
                                             <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
                                                 <th className="min-w-125px ps-3 rounded-start">SKU</th>
                                                 <th className="min-w-125px">Name</th>
+                                                <th className="min-w-125px">Quantity</th>
                                                 <th className="min-w-125px">Weight</th>
                                                 <th className="min-w-125px">Width</th>
                                                 <th className="min-w-125px">Micron</th>
@@ -123,6 +124,7 @@ export default function JobCardProductsListPage() {
                                                             <tr id={product?.id} key={'product-' + index}>
                                                                 <td className="ps-3">{product.sku}</td>
                                                                 <td>{product.name}</td>
+                                                                <td>{product.quantity}</td>
                                                                 <td>{product.weight}</td>
                                                                 <td>{product.width}</td>
                                                                 <td>{product.micron}</td>

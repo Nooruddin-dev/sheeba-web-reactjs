@@ -10,6 +10,7 @@ import TableListLoading from '../../common/components/shared/TableListLoading';
 import { GetFormattedDate, GetFormattedTime } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { ProductionEntryApi } from '../../../../_sitecommon/common/api/production-entry.api';
 import { showErrorMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
+import { formatNumber } from '../../common/util';
 
 
 export default function ProductionEntriesPage() {
@@ -99,6 +100,7 @@ export default function ProductionEntriesPage() {
                                                 <th className="min-w-125px">Entry Date</th>
                                                 <th className="min-w-125px">Machine</th>
                                                 <th className="min-w-200px">Material</th>
+                                                <th className="min-w-125px">Quantity</th>
                                                 <th className="min-w-125px">Gross</th>
                                                 <th className="min-w-125px">Waste</th>
                                                 <th className="min-w-125px">Tare</th>
@@ -118,6 +120,7 @@ export default function ProductionEntriesPage() {
                                                                 </td>
                                                                 <td>{entry.machineName}</td>
                                                                 <td>{entry.productSku} -- {entry.productName}</td>
+                                                                <td>{formatNumber(entry.quantity, 2)}</td>
                                                                 <td>{entry.grossWeight}</td>
                                                                 <td>{entry.wasteWeight}</td>
                                                                 <td>{entry.tareWeight}</td>

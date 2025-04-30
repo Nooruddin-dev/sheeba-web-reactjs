@@ -77,6 +77,7 @@ export default function MachineSummaryReport() {
 
     function getSum(entries: any[]): any {
         let sum = {
+            quantity: 0,
             waste: 0,
             gross: 0,
             net: 0,
@@ -85,6 +86,7 @@ export default function MachineSummaryReport() {
             rejection: 0
         };
         entries.forEach(entry => {
+            sum.quantity += parseFloat(entry.quantity);
             sum.waste += parseFloat(entry.waste);
             sum.gross += parseFloat(entry.gross);
             sum.net += parseFloat(entry.net);
@@ -133,6 +135,10 @@ export default function MachineSummaryReport() {
                                                             <th>Rejection</th>
                                                         </>
                                                     }
+                                                    {
+                                                        ![MachineTypesEnum.Cutting, MachineTypesEnum.Slitting].includes(item.machineTypeId) &&
+                                                        <th>Quantity</th>
+                                                    }
                                                     <th>Waste</th>
                                                     {
                                                         ![MachineTypesEnum.Cutting, MachineTypesEnum.Slitting].includes(item.machineTypeId) &&
@@ -159,6 +165,10 @@ export default function MachineSummaryReport() {
                                                                     <td>{machine.rejection}</td>
                                                                 </>
                                                             }
+                                                            {
+                                                                ![MachineTypesEnum.Cutting, MachineTypesEnum.Slitting].includes(item.machineTypeId) &&
+                                                                <td>{machine.quantity}</td>
+                                                            }
                                                             <td>{machine.waste}</td>
                                                             {
                                                                 ![MachineTypesEnum.Cutting, MachineTypesEnum.Slitting].includes(item.machineTypeId) &&
@@ -184,6 +194,10 @@ export default function MachineSummaryReport() {
                                                             <td>{formatNumber(total[item.machineTypeId]?.handleCutting, 2)}</td>
                                                             <td>{formatNumber(total[item.machineTypeId]?.rejection, 2)}</td>
                                                         </>
+                                                    }
+                                                    {
+                                                        ![MachineTypesEnum.Cutting, MachineTypesEnum.Slitting].includes(item.machineTypeId) &&
+                                                        <td>{formatNumber(total[item.machineTypeId]?.quantity, 2)}</td>
                                                     }
                                                     <td>{formatNumber(total[item.machineTypeId]?.waste, 2)}</td>
                                                     {

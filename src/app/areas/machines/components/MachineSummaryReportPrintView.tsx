@@ -55,6 +55,10 @@ const MachineSummaryReportPrintView: React.FC<{ afterPrint: any, report: any, to
                                                 <th>Rejection</th>
                                             </>
                                         }
+                                        {
+                                            ![MachineTypesEnum.Cutting, MachineTypesEnum.Slitting].includes(item.machineTypeId) &&
+                                            <th>Quantity</th>
+                                        }
                                         <th>Waste</th>
                                         <th>Gross</th>
                                         <th>Net</th>
@@ -70,10 +74,14 @@ const MachineSummaryReportPrintView: React.FC<{ afterPrint: any, report: any, to
                                             }
                                             {
                                                 item.machineTypeId === MachineTypesEnum.Cutting &&
-                                                <>  
+                                                <>
                                                     <td>{formatNumber(machine.handleCutting, 2)}</td>
                                                     <td>{formatNumber(machine.rejection, 2)}</td>
                                                 </>
+                                            }
+                                            {
+                                                ![MachineTypesEnum.Cutting, MachineTypesEnum.Slitting].includes(item.machineTypeId) &&
+                                                <td>{machine.waste}</td>
                                             }
                                             <td>{machine.waste}</td>
                                             <td>{machine.gross}</td>
@@ -94,6 +102,10 @@ const MachineSummaryReportPrintView: React.FC<{ afterPrint: any, report: any, to
                                                 <td>{formatNumber(total[item.machineTypeId]?.handleCutting, 2)}</td>
                                                 <td>{formatNumber(total[item.machineTypeId]?.rejection, 2)}</td>
                                             </>
+                                        }
+                                        {
+                                            ![MachineTypesEnum.Cutting, MachineTypesEnum.Slitting].includes(item.machineTypeId) &&
+                                            <td>{formatNumber(total[item.machineTypeId]?.quantity, 2)}</td>
                                         }
                                         <td>{formatNumber(total[item.machineTypeId]?.waste, 2)}</td>
                                         <td>{formatNumber(total[item.machineTypeId]?.gross, 2)}</td>
