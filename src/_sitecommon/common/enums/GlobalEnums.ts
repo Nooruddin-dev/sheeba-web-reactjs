@@ -102,3 +102,8 @@ export enum MachineTypesEnum {
   Lamination = 4,
   Slitting = 5
 }
+
+export enum GrnVoucherStatus {
+  Issued = "Issued",
+  Cancelled = "Cancelled",
+}

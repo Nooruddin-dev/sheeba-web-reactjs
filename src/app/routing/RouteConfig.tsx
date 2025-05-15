@@ -146,7 +146,7 @@ export default function RouteConfig() {
           <VendorOrderDetailsPage />
         } />
 
-        <Route path="/grn/vochers-list" element={
+        <Route path="/grn/vouchers-list" element={
           <LoginProtectedRoute> <GrnVoucherListPage /> </LoginProtectedRoute>
         } />
 

@@ -6,276 +6,204 @@ import { KTCard, KTCardBody, KTIcon } from '../../../../_sitecommon/helpers'
 import CommonListSearchHeader from '../../common/components/layout/CommonListSearchHeader'
 import CommonListPagination from '../../common/components/layout/CommonListPagination'
 import TableListLoading from '../../common/components/shared/TableListLoading'
-import { APP_BASIC_CONSTANTS } from '../../../../_sitecommon/common/constants/Config'
 import { HtmlSearchFieldConfig } from '../../../models/common/HtmlSearchFieldConfig'
-import { buildUrlParamsForSearch } from '../../../../_sitecommon/common/helpers/global/GlobalHelper'
-import { stringIsNullOrWhiteSpace } from '../../../../_sitecommon/common/helpers/global/ValidationHelper'
-import { getDateCommonFormatFromJsonDate } from '../../../../_sitecommon/common/helpers/global/ConversionHelper'
-import { Link } from 'react-router-dom'
-import { getGrnVouchersListApi } from '../../../../_sitecommon/common/helpers/api_helpers/ApiCalls'
 import { formatNumber } from '../../common/util'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import ConfirmationModal from '../../common/components/layout/ConfirmationModal'
+import { GetFormattedDate } from '../../../../_sitecommon/common/helpers/global/ConversionHelper'
+import { GrnVoucherStatus } from '../../../../_sitecommon/common/enums/GlobalEnums'
+import { VoucherApi } from '../../../../_sitecommon/common/api/voucher.api'
+import { showErrorMsg, showSuccessMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper'
+import { Link } from 'react-router-dom'
 
 export default function GrnVoucherListPage() {
-  const isLoading = false;
-  const [allMachineTypes, setAllMachineTypes] = useState<any>([]);
 
-  // ✅-- Starts: necessary varaibles for the page
-  const [isOpenAddNewForm, setIsOpenAddNewForm] = useState<boolean>(false);
-  const [listRefreshCounter, setListRefreshCounter] = useState<number>(0);
-  const [pageBasicInfo, setPageBasicInfo] = useState<any>(
-    {
-      pageNo: 1,
-      pageSize: APP_BASIC_CONSTANTS.ITEMS_PER_PAGE,
-      totalRecords: 0
-    }
-  );
-
-  const [searchFormQueryParams, setSearchFormQueryParams] = useState<string>('');
-  const [allGrnVouchersList, setAllGrnVouchersList] = useState<any>([]);
-  const [searchFieldValues, setSearchFieldValues] = useState<{ [key: string]: string }>({});
-
-  const HtmlSearchFields: HtmlSearchFieldConfig[] = [
-    { inputId: 'voucher_numberSearch', inputName: 'voucher_numberSearch', labelName: 'Voucher Number', placeHolder: 'Voucher Number', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
-    { inputId: 'po_numberSearch', inputName: 'po_numberSearch', labelName: 'PO Number', placeHolder: 'PO Number', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
-    { inputId: 'receiver_nameSearch', inputName: 'receiver_nameSearch', labelName: 'Receiver Name', placeHolder: 'Receiver Name', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
-
+  const searchFields: HtmlSearchFieldConfig[] = [
+    { inputId: 'voucherNumber', inputName: 'voucherNumber', labelName: 'Voucher Number', placeHolder: 'Voucher Number', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
+    { inputId: 'poNumber', inputName: 'poNumber', labelName: 'PO Number', placeHolder: 'PO Number', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
+    { inputId: 'receiverName', inputName: 'receiverName', labelName: 'Receiver Name', placeHolder: 'Receiver Name', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
   ];
-  const [userEditForm, setUserEditForm] = useState<any>(null); // Data of the user being edited
-  // ✅-- Ends: necessary varaibles for the page
 
-
-  const handleSearchForm = (updatedSearchFields: HtmlSearchFieldConfig) => {
-    const queryUrl = buildUrlParamsForSearch(updatedSearchFields);
-    setSearchFormQueryParams(queryUrl);
-
-    //--reset pageNo to 1
-    setPageBasicInfo((prevPageBasicInfo: any) => ({
-      ...prevPageBasicInfo,
-      pageNo: 1 // Update only the pageNo property
-    }));
-
-    setTimeout(() => {
-      setListRefreshCounter(prevCounter => prevCounter + 1);
-    }, 300);
-
-  }
-
-  const handleSearchFormReset = (e: Event) => {
-    if (e) {
-      e.preventDefault();
-    }
-    //--reset pageNo to 1
-    setPageBasicInfo((prevPageBasicInfo: any) => ({
-      ...prevPageBasicInfo,
-      pageNo: 1 // Update only the pageNo property
-    }));
-
-    setSearchFormQueryParams('');
-    setListRefreshCounter(prevCounter => prevCounter + 1);
-  }
-
-
-
-
-
-  const handleOpenCloseAddModal = () => {
-    setIsOpenAddNewForm(!isOpenAddNewForm);
-    setUserEditForm(null);
-  }
-
-
-  const handleGoToPage = (page: number) => {
-
-    //--reset pageNo to param page value
-    setPageBasicInfo((prevPageBasicInfo: any) => ({
-      ...prevPageBasicInfo,
-      pageNo: page // Update only the pageNo property
-    }));
-    setListRefreshCounter(prevCounter => prevCounter + 1);
-  };
-
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [filterValues, setFilterValues] = useState<any[]>([]);
+  const [vouchers, setVouchers] = useState<any[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize] = useState<number>(25);
+  const [totalRecords, setTotalRecords] = useState<number>(0);
+  const [isCancelConfirmationModalOpen, setIsCancelConfirmationModalOpen] = useState(false);
+  const [voucherForCancel, setVoucherForCancel] = useState<any | null>(null);
 
 
   useEffect(() => {
-    getGrnVouchersListService();
-  }, [listRefreshCounter]);
+    getVouchers();
+  }, [filterValues, page])
 
-  const getGrnVouchersListService = () => {
+  const onSearch = (param: any) => {
+    setPage(1);
+    setFilterValues(param);
+  }
 
-    let pageBasicInfoParams = new URLSearchParams(pageBasicInfo).toString();
-    if (!stringIsNullOrWhiteSpace(searchFormQueryParams)) {
-      pageBasicInfoParams = `${pageBasicInfoParams}&${searchFormQueryParams}`;
-    }
+  const onSearchReset = () => {
+    setPage(1);
+    setFilterValues([]);
+  }
 
-    getGrnVouchersListApi(pageBasicInfoParams)
-      .then((res: any) => {
+  const onGotoPage = (page: number) => {
+    console.log(page);
+    setPage(page);
+  }
 
-        const { data } = res;
-        if (data && data.length > 0) {
-          const totalRecords = data[0]?.totalRecords;
-          setPageBasicInfo((prevPageBasicInfo: any) => ({
-            ...prevPageBasicInfo,
-            totalRecords: totalRecords
-          }));
-          setAllGrnVouchersList(res?.data);
-
-        } else {
-          setAllGrnVouchersList([]);
-          setPageBasicInfo((prevPageBasicInfo: any) => ({
-            ...prevPageBasicInfo,
-            totalRecords: 0
-          }));
-        }
-
-
-      })
-      .catch((err: any) => console.log(err, "err"));
+  const onCancelVoucher = (voucher: any) => {
+    setVoucherForCancel(voucher);
+    setIsCancelConfirmationModalOpen(true);
   };
 
+  const onCancelVoucherConfirm = (data: any) => {
+    if (voucherForCancel) {
+      VoucherApi.cancel(voucherForCancel.voucherId)
+        .then(() => {
+          showSuccessMsg('Voucher cancelled successfully');
+          getVouchers();
+        })
+        .catch((error) => {
+          showErrorMsg(error);
+        });
+    }
+    setIsCancelConfirmationModalOpen(false);
+    setVoucherForCancel(null);
+  }
 
-
+  function getVouchers(): void {
+    setIsLoading(true);
+    let filter = {
+      page: (page - 1) * pageSize,
+      pageSize,
+    }
+    filterValues.forEach(field => {
+      filter = {
+        ...filter,
+        [field.inputName]: field.defaultValue
+      }
+    });
+    VoucherApi.get(filter)
+      .then(({ data: { data, totalRecords } }) => {
+        setTotalRecords(totalRecords);
+        setVouchers(data);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      })
+  }
 
   return (
     <AdminLayout>
       <AdminPageHeader
         title='GRN Vouchers'
-        pageDescription='GRN Vouchers'
-        addNewClickType={'modal'}
-        newLink={''}
-        onAddNewClick={undefined}
-        additionalInfo={{
-          showAddNewButton: false
-        }
-        }
+        pageDescription='List of GRN vouchers'
+        addNewClickType={'link'}
+        newLink='/grn-vouchers'
+        additionalInfo={{ showAddNewButton: false }}
       />
-
       <Content>
         <KTCard>
-
           <CommonListSearchHeader
-            searchFields={HtmlSearchFields}
-            onSearch={handleSearchForm}
-            onSearchReset={handleSearchFormReset}
+            searchFields={searchFields}
+            onSearch={onSearch}
+            onSearchReset={onSearchReset}
           />
-          {/* <UsersTable /> */}
-          <KTCardBody className='py-4'>
-            <div className='table-responsive'>
-              <table
-                id='kt_table_users'
-                className='table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer'
-
-              >
-                <thead>
-                  <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
-                    <th colSpan={1} role="columnheader" className="min-w-125px ps-3 rounded-start" style={{ cursor: 'pointer' }}>Voucher Number</th>
-                    <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>PO No</th>
-                    <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>GRN Date</th>
-                    <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Receiver Name</th>
-                    <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Receiver Contact</th>
-  
-                    <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Total</th>
-
-                    <th colSpan={1} role="columnheader" className="text-end min-w-100px pe-3 rounded-end" style={{ cursor: 'pointer' }}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody className='text-gray-600 fw-bold'>
-
-                  {
-                    allGrnVouchersList != undefined && allGrnVouchersList.length > 0
-                      ?
-                      allGrnVouchersList?.map((record: any, index: number) => (
-                        <tr role='row' key={index}>
-                          
-                          <td className="ps-3">
-                            <div className="d-flex align-items-center">
-                              <div className="ms-5">
-
-                                <a href="#" className="text-gray-800 text-hover-primary fs-5 fw-bold" data-kt-ecommerce-product-filter="product_name">
-
-                                {record.voucher_number}
-                                </a>
-
-                              </div>
-                            </div>
-                          </td>
-
-                        
-                          <td role="cell" className="ps-3">{record.po_number}</td>
-                          <td role="cell" className="ps-3"> {getDateCommonFormatFromJsonDate(record.grn_date)}</td>
-
-                        
-
-
-                          <td role="cell">
-                            <div className=''>{record?.receiver_name}</div>
-                          </td>
-                          <td role="cell">
-                            <div className=''>{record?.receiver_contact}</div>
-                          </td>
-
-
-
-
-                          <td className='text-gray-900 fw-bold text-hover-primary fs-6'>{formatNumber(record.total, 2)}</td>
-
-
-
-
-                          <td className='text-end pe-3'>
-
-
-
-                            <Link
-                              to={`/site/grn-voucher-detail/${record.voucher_id}`}
-                              className='btn btn-bg-light btn-color-muted btn-active-color-primary btn-sm px-4 me-2'
-                            >
-                              <KTIcon iconName='eye' className='fs-3' />
-
-                              View
-                            </Link>
-
-                          </td>
-                        </tr>
-
-                      ))
-                      :
-                      <tr>
-                        <td colSpan={20}>
-                          <div className='d-flex text-center w-100 align-content-center justify-content-center'>
-                            No matching records found
-                          </div>
-                        </td>
+          <KTCardBody>
+            {
+              isLoading ?
+                <TableListLoading /> :
+                <div className='table-responsive'>
+                  <table
+                    id='sales-invoices-table'
+                    className='table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer'>
+                    <thead>
+                      <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
+                        <th className="min-w-125px ps-3 rounded-start">Voucher No</th>
+                        <th className="min-w-125px">PO No</th>
+                        <th className="min-w-125px">Date</th>
+                        <th className="min-w-125px">Receiver</th>
+                        <th className="min-w-125px">Total</th>
+                        <th className="min-w-125px">Status</th>
+                        <th className="min-w-125px ps-3 rounded-end">Action</th>
                       </tr>
+                    </thead>
+                    <tbody className='text-gray-600 fw-bold'>
+                      {
+                        vouchers && vouchers.length ?
+                          vouchers.map((voucher: any, index: number) => {
+                            return (
+                              <tr id={voucher?.id} key={'voucher-' + index}>
+                                <td className="ps-3">{voucher.voucherNumber}</td>
+                                <td>{voucher.poNumber}</td>
+                                <td>{GetFormattedDate(voucher.createdOn)}</td>
+                                <td>
+                                  <div>{voucher.receiverName}</div>
+                                  <div>{voucher.receiverContact}</div>
+                                </td>
+                                <td>{formatNumber(voucher.total, 2)}</td>
+                                <td>
+                                  <div className={voucher.status === GrnVoucherStatus.Issued ? 'badge fw-bolder badge-light-success' : 'badge fw-bolder badge-light-danger'}>
+                                    {voucher.status}
+                                  </div>
+                                </td>
+                                <td>
+                                  <Link
+                                    to={`/site/grn-voucher-detail/${voucher.voucherId}`}
+                                    className='btn btn-bg-light btn-color-muted btn-active-color-primary btn-sm px-4 me-2'>
+                                    <FontAwesomeIcon icon={faEye} className='fa-solid' />
+                                  </Link>
+                                  <button type='button' className='btn btn-sm'>
+                                  </button>
+                                  <button type='button' className='btn btn-sm btn-secondary' onClick={() => onCancelVoucher(voucher)}>
+                                    <FontAwesomeIcon icon={faTimesCircle} className='fa-solid' />
+                                  </button>
+                                </td>
+                              </tr>
+                            )
+                          }) :
+                          <tr>
+                            <td colSpan={9}>
+                              <div className='d-flex text-center w-100 align-content-center justify-content-center'>
+                                No records found
+                              </div>
+                            </td>
+                          </tr>
 
-                  }
-
-
-
-
-
-
-
-                </tbody>
-              </table>
-            </div>
-            <CommonListPagination
-              pageNo={pageBasicInfo.pageNo}
-              pageSize={pageBasicInfo.pageSize}
-              totalRecords={pageBasicInfo.totalRecords}
-              goToPage={handleGoToPage}
-            />
-            {isLoading && <TableListLoading />}
-
-
-
-
-
-
+                      }
+                    </tbody>
+                  </table>
+                </div>
+            }
+            {
+              vouchers && vouchers.length ?
+                <CommonListPagination
+                  pageNo={page}
+                  pageSize={pageSize}
+                  totalRecords={totalRecords}
+                  goToPage={onGotoPage}
+                />
+                :
+                <> </>
+            }
           </KTCardBody>
         </KTCard>
+        {
+          isCancelConfirmationModalOpen &&
+          <ConfirmationModal
+            title='Cancel Voucher'
+            description={`Are you sure you want to cancel voucher # ${voucherForCancel?.voucherNumber}?`}
+            confirmLabel='Yes, Cancel'
+            cancelLabel='No, Keep'
+            isOpen={isCancelConfirmationModalOpen}
+            closeModal={() => setIsCancelConfirmationModalOpen(false)}
+            onConfirm={onCancelVoucherConfirm}
+          />
+        }
       </Content>
-
-
-    </AdminLayout>
-  )
+    </AdminLayout >
+  );
 }

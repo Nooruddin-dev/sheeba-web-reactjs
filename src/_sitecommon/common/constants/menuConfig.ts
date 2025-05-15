@@ -76,7 +76,7 @@ export const menuConfig = [
     fontIcon: 'bi-archive',
     roles: [userRoles.Admin, userRoles.Accounts],
     children: [
-      { to: '/grn/vochers-list', title: 'GRN Vouchers List', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
+      { to: '/grn/vouchers-list', title: 'GRN Vouchers List', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
       { to: '/grn/create-voucher', title: 'Create GRN Voucher', hasBullet: true, roles: [userRoles.Admin, userRoles.Accounts, userRoles.Factory] },
     ],
   },
