@@ -61,14 +61,19 @@ export default function GrnVoucherListPage() {
 
   const onCancelVoucherConfirm = (data: any) => {
     if (voucherForCancel) {
+      setIsLoading(true);
       VoucherApi.cancel(voucherForCancel.voucherId)
         .then(() => {
           showSuccessMsg('Voucher cancelled successfully');
           getVouchers();
         })
         .catch((error) => {
-          showErrorMsg(error);
-        });
+          console.log(error);
+          showErrorMsg(error?.response?.data?.message || 'Something went wrong');
+        })
+        .finally(() => {
+          setIsLoading(false);
+        })
     }
     setIsCancelConfirmationModalOpen(false);
     setVoucherForCancel(null);
@@ -156,11 +161,15 @@ export default function GrnVoucherListPage() {
                                     className='btn btn-bg-light btn-color-muted btn-active-color-primary btn-sm px-4 me-2'>
                                     <FontAwesomeIcon icon={faEye} className='fa-solid' />
                                   </Link>
-                                  <button type='button' className='btn btn-sm'>
-                                  </button>
-                                  <button type='button' className='btn btn-sm btn-secondary' onClick={() => onCancelVoucher(voucher)}>
-                                    <FontAwesomeIcon icon={faTimesCircle} className='fa-solid' />
-                                  </button>
+                                  {
+                                    voucher.status === GrnVoucherStatus.Issued &&
+                                    <button type='button'
+                                      className='btn btn-sm btn-secondary'
+                                      onClick={() => onCancelVoucher(voucher)}>
+                                      <FontAwesomeIcon icon={faTimesCircle} className='fa-solid' />
+                                    </button>
+                                  }
+
                                 </td>
                               </tr>
                             )
