@@ -71,6 +71,13 @@ export enum InventoryUnits {
   METRE = '6',
 }
 
+export enum UserRole {
+  Admin = 'admin',
+  Accounts = 'accounts',
+  Office = 'office',
+  Factory = 'factory',
+}
+
 export enum ProductTypeEnum {
   Solvent = '1',
   Granule = '2',

@@ -11,6 +11,12 @@ import { GetFormattedDate, GetFormattedTime } from '../../../../_sitecommon/comm
 import { ProductionEntryApi } from '../../../../_sitecommon/common/api/production-entry.api';
 import { showErrorMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 import { formatNumber } from '../../common/util';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import ConfirmationModal from '../../common/components/layout/ConfirmationModal';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../globalStore/rootReducer';
+import { UserRole } from '../../../../_sitecommon/common/enums/GlobalEnums';
 
 
 export default function ProductionEntriesPage() {
@@ -20,13 +26,15 @@ export default function ProductionEntriesPage() {
         { inputId: 'product-name-sku', inputName: 'productName', labelName: 'Product Name or SKU', placeHolder: 'Product Name or SKU', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
     ];
 
+    const { role_type: roleType } = useSelector((state: RootState) => state.userData.userData);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [filterValues, setFilterValues] = useState<any[]>([]);
     const [entries, setEntries] = useState<any[]>([]);
     const [page, setPage] = useState<number>(1);
     const [pageSize] = useState<number>(25);
     const [totalRecords, setTotalRecords] = useState<number>(0);
-
+    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState<boolean>(false);
+    const [deleteEntryId, setDeleteEntryId] = useState<number | null>(null);
 
     useEffect(() => {
         getEntries();
@@ -45,6 +53,23 @@ export default function ProductionEntriesPage() {
     const onGotoPage = (page: number) => {
         console.log(page);
         setPage(page);
+    }
+
+    const onDelete = (id: number) => {
+        debugger;
+        setDeleteEntryId(id);
+        setIsConfirmDeleteOpen(true);
+    }
+
+    const onDeleteConfirm = () => {
+        if (deleteEntryId) {
+            ProductionEntryApi.delete(deleteEntryId)
+                .then(() => {
+                    setIsConfirmDeleteOpen(false);
+                    getEntries();
+                })
+                .catch((error) => showErrorMsg(error.response.data.message))
+        }
     }
 
     function getEntries(): void {
@@ -104,7 +129,15 @@ export default function ProductionEntriesPage() {
                                                 <th className="min-w-125px">Gross</th>
                                                 <th className="min-w-125px">Waste</th>
                                                 <th className="min-w-125px">Tare</th>
-                                                <th className="min-w-125px ps-3 rounded-end">Net</th>
+                                                {
+                                                    roleType === UserRole.Admin ?
+                                                        <>
+                                                            <th className="min-w-125pxd">Net</th>
+                                                            <th className="min-w-125px ps-3 rounded-end">Action</th>
+                                                        </>
+                                                        :
+                                                        <th className="min-w-125px rounded-end">Net</th>
+                                                }
                                             </tr>
                                         </thead>
                                         <tbody className='text-gray-600 fw-bold'>
@@ -125,6 +158,16 @@ export default function ProductionEntriesPage() {
                                                                 <td>{entry.wasteWeight}</td>
                                                                 <td>{entry.tareWeight}</td>
                                                                 <td>{entry.netWeight}</td>
+                                                                {
+                                                                    roleType === UserRole.Admin &&
+                                                                    <td>
+                                                                        <button type='button'
+                                                                            className='btn btn-sm btn-secondary'
+                                                                            onClick={() => onDelete(entry.id)}>
+                                                                            <FontAwesomeIcon icon={faTimesCircle} className='fa-solid' />
+                                                                        </button>
+                                                                    </td>
+                                                                }
                                                             </tr>
                                                         )
                                                     }) :
@@ -154,6 +197,19 @@ export default function ProductionEntriesPage() {
                     </KTCardBody>
                 </KTCard>
             </Content>
+            {
+                isConfirmDeleteOpen && (
+                    <ConfirmationModal
+                        title='Delete Production Entry'
+                        description='Are you sure you want to delete this production entry?'
+                        confirmLabel='Yes, Delete'
+                        cancelLabel='No, Keep It'
+                        isOpen={isConfirmDeleteOpen}
+                        closeModal={() => setIsConfirmDeleteOpen(false)}
+                        onConfirm={onDeleteConfirm}
+                    />
+                )
+            }
         </AdminLayout>
     );
 }

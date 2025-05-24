@@ -13,4 +13,8 @@ export class ProductionEntryApi {
     public static async getLastConsumedProducts(jobCardId: any): Promise<AxiosResponse<any, any>> {
         return ApiHelper.get('/production-entries/latest-consumed-products', { jobCardId });
     }
+
+    public static async delete(id: number): Promise<AxiosResponse<any, any>> {
+        return ApiHelper.delete(`/production-entries/${id}`);
+    }
 }

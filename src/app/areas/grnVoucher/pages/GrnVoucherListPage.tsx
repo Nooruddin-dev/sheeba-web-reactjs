@@ -12,10 +12,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import ConfirmationModal from '../../common/components/layout/ConfirmationModal'
 import { GetFormattedDate } from '../../../../_sitecommon/common/helpers/global/ConversionHelper'
-import { GrnVoucherStatus } from '../../../../_sitecommon/common/enums/GlobalEnums'
+import { GrnVoucherStatus, UserRole } from '../../../../_sitecommon/common/enums/GlobalEnums'
 import { VoucherApi } from '../../../../_sitecommon/common/api/voucher.api'
 import { showErrorMsg, showSuccessMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../globalStore/rootReducer'
 
 export default function GrnVoucherListPage() {
 
@@ -25,6 +27,7 @@ export default function GrnVoucherListPage() {
     { inputId: 'receiverName', inputName: 'receiverName', labelName: 'Receiver Name', placeHolder: 'Receiver Name', type: 'text', defaultValue: '', iconClass: 'fa fa-search' },
   ];
 
+  const { role_type: roleType } = useSelector((state: RootState) => state.userData.userData);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [filterValues, setFilterValues] = useState<any[]>([]);
   const [vouchers, setVouchers] = useState<any[]>([]);
@@ -132,8 +135,15 @@ export default function GrnVoucherListPage() {
                         <th className="min-w-125px">Date</th>
                         <th className="min-w-125px">Receiver</th>
                         <th className="min-w-125px">Total</th>
-                        <th className="min-w-125px">Status</th>
-                        <th className="min-w-125px ps-3 rounded-end">Action</th>
+                        {
+                          roleType === UserRole.Admin ?
+                            <>
+                              <th className="min-w-125px">Status</th>
+                              <th className="min-w-125px ps-3 rounded-end">Action</th>
+                            </>
+                            :
+                            <th className="min-w-125px ps-3 rounded-end">Status</th>
+                        }
                       </tr>
                     </thead>
                     <tbody className='text-gray-600 fw-bold'>
@@ -162,7 +172,7 @@ export default function GrnVoucherListPage() {
                                     <FontAwesomeIcon icon={faEye} className='fa-solid' />
                                   </Link>
                                   {
-                                    voucher.status === GrnVoucherStatus.Issued &&
+                                    roleType === UserRole.Admin && voucher.status === GrnVoucherStatus.Issued &&
                                     <button type='button'
                                       className='btn btn-sm btn-secondary'
                                       onClick={() => onCancelVoucher(voucher)}>
