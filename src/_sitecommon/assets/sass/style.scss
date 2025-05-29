@@ -15,14 +15,14 @@
 
 
 .global-stamp-sign {
-    margin-top: 100px;
-    display: flex;
-    justify-content: flex-end;
-    .line {
-      border-top: 2px solid #000;
-      width: 20%;
-      text-align: center;
-      padding-top: 10px;
-      font-weight: bold;
-    }
+  margin-top: 100px;
+  display: flex;
+  justify-content: flex-end;
+  .line {
+    border-top: 2px solid #000;
+    width: 20%;
+    text-align: center;
+    padding-top: 10px;
+    font-weight: bold;
   }
+}

@@ -55,15 +55,15 @@ export default function ProductionEntriesPage() {
         setPage(page);
     }
 
-    const onDelete = (id: number) => {
+    const onCancel = (id: number) => {
         debugger;
         setDeleteEntryId(id);
         setIsConfirmDeleteOpen(true);
     }
 
-    const onDeleteConfirm = () => {
+    const onCancelConfirm = () => {
         if (deleteEntryId) {
-            ProductionEntryApi.delete(deleteEntryId)
+            ProductionEntryApi.cancel(deleteEntryId)
                 .then(() => {
                     setIsConfirmDeleteOpen(false);
                     getEntries();
@@ -152,20 +152,32 @@ export default function ProductionEntriesPage() {
                                                                     <div>{GetFormattedTime(entry.date)}</div>
                                                                 </td>
                                                                 <td>{entry.machineName}</td>
-                                                                <td>{entry.productSku} -- {entry.productName}</td>
+                                                                <td>
+                                                                    <div>{entry.productName}</div>
+                                                                    <div>SKU: {entry.productSku}</div>
+                                                                </td>
                                                                 <td>{formatNumber(entry.quantity, 2)}</td>
-                                                                <td>{entry.grossWeight}</td>
-                                                                <td>{entry.wasteWeight}</td>
-                                                                <td>{entry.tareWeight}</td>
-                                                                <td>{entry.netWeight}</td>
+                                                                <td>{formatNumber(entry.grossWeight, 2)}</td>
+                                                                <td>{formatNumber(entry.wasteWeight, 2)}</td>
+                                                                <td>{formatNumber(entry.tareWeight, 2)}</td>
+                                                                <td>{formatNumber(entry.netWeight, 2)}</td>
                                                                 {
-                                                                    roleType === UserRole.Admin &&
+                                                                    roleType === UserRole.Admin && entry.cancelled === 0 && (
+                                                                        <td>
+                                                                            <button type='button'
+                                                                                className='btn btn-sm btn-secondary'
+                                                                                onClick={() => onCancel(entry.id)}>
+                                                                                <FontAwesomeIcon icon={faTimesCircle} className='fa-solid' />
+                                                                            </button>
+                                                                        </td>
+                                                                    )
+                                                                }
+                                                                {
+                                                                    entry.cancelled === 1 &&
                                                                     <td>
-                                                                        <button type='button'
-                                                                            className='btn btn-sm btn-secondary'
-                                                                            onClick={() => onDelete(entry.id)}>
-                                                                            <FontAwesomeIcon icon={faTimesCircle} className='fa-solid' />
-                                                                        </button>
+                                                                        <div className='badge fw-bolder badge-light-danger'>
+                                                                            Cancelled
+                                                                        </div>
                                                                     </td>
                                                                 }
                                                             </tr>
@@ -200,13 +212,13 @@ export default function ProductionEntriesPage() {
             {
                 isConfirmDeleteOpen && (
                     <ConfirmationModal
-                        title='Delete Production Entry'
-                        description='Are you sure you want to delete this production entry?'
-                        confirmLabel='Yes, Delete'
+                        title='Cancel Production Entry'
+                        description='Are you sure you want to cancel this production entry?'
+                        confirmLabel='Yes, Cancel'
                         cancelLabel='No, Keep It'
                         isOpen={isConfirmDeleteOpen}
                         closeModal={() => setIsConfirmDeleteOpen(false)}
-                        onConfirm={onDeleteConfirm}
+                        onConfirm={onCancelConfirm}
                     />
                 )
             }
