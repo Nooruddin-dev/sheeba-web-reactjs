@@ -9,7 +9,7 @@ import CommonListPagination from '../../common/components/layout/CommonListPagin
 import TableListLoading from '../../common/components/shared/TableListLoading';
 import { GetFormattedDate, GetFormattedTime } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { ProductionEntryApi } from '../../../../_sitecommon/common/api/production-entry.api';
-import { showErrorMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
+import { showErrorMsg, showSuccessMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 import { formatNumber } from '../../common/util';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
@@ -56,19 +56,23 @@ export default function ProductionEntriesPage() {
     }
 
     const onCancel = (id: number) => {
-        debugger;
         setDeleteEntryId(id);
         setIsConfirmDeleteOpen(true);
     }
 
     const onCancelConfirm = () => {
-        if (deleteEntryId) {
+        if (deleteEntryId && !isLoading) {
+            setIsLoading(true);
             ProductionEntryApi.cancel(deleteEntryId)
-                .then(() => {
+                .then((response) => {
+                    showSuccessMsg(response.data.message);
                     setIsConfirmDeleteOpen(false);
                     getEntries();
                 })
                 .catch((error) => showErrorMsg(error.response.data.message))
+                .finally(() => {
+                    setIsLoading(false);
+                });
         }
     }
 
