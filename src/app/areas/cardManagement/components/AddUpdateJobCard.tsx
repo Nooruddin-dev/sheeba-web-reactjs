@@ -134,41 +134,9 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
     };
 
     const handleDeleteFieldDispatchPlace = (index: number) => {
-
-        const requiredRow = jobDistributionFields[index];
-        if (requiredRow && requiredRow.dispatch_info_id > 0) {
-            //--make api call
-            const deleteParam = {
-                entityName: 'job_card_dispatch_info',
-                entityColumnName: 'dispatch_info_id',
-                entityRowId: requiredRow.dispatch_info_id,
-                sqlDeleteTypeId: sqlDeleteTypesConst.foreignKeyDelete
-            }
-            deletAnyRecordApi(deleteParam)
-                .then((res: any) => {
-                    if (res?.data?.response && res?.data?.response?.success == true && res?.data?.response?.responseMessage == "Deleted Successfully!") {
-                        showSuccessMsg("Deleted Successfully!");
-
-                    } else {
-                        showErrorMsg("An error occured. Please try again!");
-                    }
-
-
-                })
-                .catch((err: any) => {
-                    console.error(err, "err");
-                    showErrorMsg("An error occured. Please try again!");
-                });
-        } else {
-            showSuccessMsg("Deleted Successfully!");
-        }
-
         const newFields = jobDistributionFields.filter((_: any, i: number) => i !== index);
         setJobDistributionFields(newFields);
         setUnique_key('');
-
-
-
     };
 
 
@@ -352,42 +320,7 @@ export default function AddUpdateJobCard(props: { jobCardDetailForEdit: any }) {
 
     const removeProductFromCart = (e: any, productid: number) => {
         e.preventDefault();
-
-        const requiredRow = jobCardAllProducts.find((product: { productid: number; }) => product.productid == productid)
-        if (requiredRow && requiredRow.job_card_product_id > 0) {
-            //--make api call
-            const deleteParam = {
-                entityName: 'job_card_products',
-                entityColumnName: 'job_card_product_id',
-                entityRowId: requiredRow.job_card_product_id,
-                sqlDeleteTypeId: sqlDeleteTypesConst.foreignKeyDelete
-            }
-            deletAnyRecordApi(deleteParam)
-                .then((res: any) => {
-                    if (res?.data?.response && res?.data?.response?.success == true && res?.data?.response?.responseMessage == "Deleted Successfully!") {
-                        showSuccessMsg("Deleted Successfully!");
-
-                        setJobCardAllProducts((prevProducts: any) => prevProducts.filter((product: { productid: number; }) => product.productid !== productid));
-
-
-
-                    } else {
-                        showErrorMsg("An error occured. Please try again!");
-                    }
-
-
-                })
-                .catch((err: any) => {
-                    console.error(err, "err");
-                    showErrorMsg("An error occured. Please try again!");
-                });
-        } else {
-            showSuccessMsg("Deleted Successfully!");
-            setJobCardAllProducts((prevProducts: any) => prevProducts.filter((product: { productid: number; }) => product.productid !== productid));
-
-        }
-
-
+        setJobCardAllProducts((prevProducts: any) => prevProducts.filter((product: { productid: number; }) => product.productid !== productid))
 
     };
 
