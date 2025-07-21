@@ -61,7 +61,7 @@ export const menuConfig = [
     roles: [UserRole.Admin, UserRole.Accounts, UserRole.Factory],
     children: [
       { to: '/site/purchase-orders-list', title: 'Purchase Orders List', hasBullet: true, roles: [UserRole.Admin, UserRole.Accounts, UserRole.Factory, UserRole.Office] },
-      { to: '/site/create-order', title: 'Create Order', hasBullet: true, roles: [UserRole.Admin, UserRole.Accounts, UserRole.Factory] },
+      { to: '/site/create-order', title: 'Create Order', hasBullet: true, roles: [UserRole.Admin, UserRole.Accounts, UserRole.Factory, UserRole.Office] },
     ],
   },
   {
