@@ -18,8 +18,12 @@ import { faAdd, faList } from '@fortawesome/free-solid-svg-icons'
 import JobCardDispatchAddForm from '../components/JobCardDispatchAddForm'
 import { slideDown } from '../../../../_sitecommon/assets/ts/_utils'
 import JobCardDispatchInvoice from '../components/JobCardDispatchInvoice'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../globalStore/rootReducer'
+import { UserRole } from '../../../../_sitecommon/common/enums/GlobalEnums'
 
 export default function JobCardsListPage() {
+    let loginUser = useSelector((state: RootState) => state.userData.userData);
     const isLoading = false;
 
 
@@ -126,7 +130,7 @@ export default function JobCardsListPage() {
         };
 
 
-        
+
 
         insertCardDispatchInfoApi(formData)
             .then((res: any) => {
@@ -261,9 +265,11 @@ export default function JobCardsListPage() {
 
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Created At</th>
                                         <th colSpan={1} role="columnheader" className="min-w-125px" style={{ cursor: 'pointer' }}>Updated At</th>
+                                        {
+                                            (loginUser?.role_type === UserRole.Admin || loginUser?.role_type === UserRole.Factory) &&
+                                            <th colSpan={1} role="columnheader" className="text-end min-w-100px pe-3 rounded-end" style={{ cursor: 'pointer' }}>Actions</th>
+                                        }
 
-
-                                        <th colSpan={1} role="columnheader" className="text-end min-w-100px pe-3 rounded-end" style={{ cursor: 'pointer' }}>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className='text-gray-600 fw-bold'>
@@ -300,29 +306,17 @@ export default function JobCardsListPage() {
                                                     <td role="cell" >   {getDateCommonFormatFromJsonDate(record.created_on)} </td>
                                                     <td role="cell" >   {getDateCommonFormatFromJsonDate(record.updated_on)} </td>
 
-
-
-
-
-
-
-
-                                                    <td className='text-end pe-3'>
-
-
-                                                        <Link
-                                                            to={`/job-management/edit-card/${record.job_card_id}`}
-                                                            className='btn btn-bg-light btn-color-muted btn-active-color-primary btn-sm px-4 me-2'
-                                                        >
-                                                            <KTIcon iconName='pencil' className='fs-3' />
-
-                                                            Edit
-                                                        </Link>
-
-
-
-                                                    </td>
-
+                                                    {
+                                                        (loginUser?.role_type === UserRole.Admin || loginUser?.role_type === UserRole.Factory) &&
+                                                        <td className='text-end pe-3'>
+                                                            <Link
+                                                                to={`/job-management/edit-card/${record.job_card_id}`}
+                                                                className='btn btn-bg-light btn-color-muted btn-active-color-primary btn-sm px-4 me-2'>
+                                                                <KTIcon iconName='pencil' className='fs-3' />
+                                                                Edit
+                                                            </Link>
+                                                        </td>
+                                                    }
 
                                                 </tr>
 
