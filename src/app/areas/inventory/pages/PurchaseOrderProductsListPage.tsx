@@ -14,6 +14,8 @@ import { InventoryApi } from '../../../../_sitecommon/common/api/inventory.api';
 import { toast } from 'react-toastify';
 import { GetFormattedDate, GetFormattedTime, GetProductTypeName, GetStatus, GetUnitShortName } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { ProductSourceEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
+import ConfirmationModal from '../../common/components/layout/ConfirmationModal';
+import { showSuccessMsg, showErrorMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
 
 
 export default function PurchaseOrderProductsListPage() {
@@ -29,6 +31,8 @@ export default function PurchaseOrderProductsListPage() {
     const [page, setPage] = useState<number>(1);
     const [pageSize] = useState<number>(25);
     const [totalRecords, setTotalRecords] = useState<number>(0);
+    const [deleteId, setDeleteId] = useState<number>();
+    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState<boolean>(false);
 
 
     useEffect(() => {
@@ -49,6 +53,27 @@ export default function PurchaseOrderProductsListPage() {
     const onGotoPage = (page: number) => {
         console.log(page);
         setPage(page);
+    }
+
+    const onDelete = (id: number) => {
+        setDeleteId(id);
+        setIsConfirmDeleteOpen(true);
+    }
+
+    const onDeleteConfirm = () => {
+        if (deleteId && !isLoading) {
+            setIsLoading(true);
+            InventoryApi.inactive(deleteId)
+                .then((response) => {
+                    showSuccessMsg(response.data.message);
+                    setIsConfirmDeleteOpen(false);
+                    getProducts();
+                })
+                .catch((error) => showErrorMsg(error.response.data.message))
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        }
     }
 
     function getProducts(): void {
@@ -139,14 +164,19 @@ export default function PurchaseOrderProductsListPage() {
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                    <button type='button' className='btn btn-sm'>
-                                                                        <Link to={"/inventory/purchase-order/" + product.id}>
-                                                                            <FontAwesomeIcon icon={faEdit} className='fa-solid' />
-                                                                        </Link>
-                                                                    </button>
-                                                                    <button type='button' className='btn btn-sm'>
-                                                                        <FontAwesomeIcon icon={faTrashAlt} className='fa-solid' />
-                                                                    </button>
+                                                                    {
+                                                                        product.status ?
+                                                                            <>
+                                                                                <button type='button' className='btn btn-sm'>
+                                                                                    <Link to={"/inventory/purchase-order/" + product.id}>
+                                                                                        <FontAwesomeIcon icon={faEdit} className='fa-solid' />
+                                                                                    </Link>
+                                                                                </button>
+                                                                                <button type='button' className='btn btn-sm' onClick={() => onDelete(product.id)}>
+                                                                                    <FontAwesomeIcon icon={faTrashAlt} className='fa-solid' />
+                                                                                </button>
+                                                                            </> : null
+                                                                    }
                                                                 </td>
                                                             </tr>
                                                         )
@@ -177,6 +207,19 @@ export default function PurchaseOrderProductsListPage() {
                     </KTCardBody>
                 </KTCard>
             </Content>
+            {
+                isConfirmDeleteOpen && (
+                    <ConfirmationModal
+                        title='Inactive Purchase Order Product'
+                        description='Are you sure you want to inactive this purchase order product? This action cannot be undone.'
+                        confirmLabel='Yes, Inactive'
+                        cancelLabel='No, Keep Active'
+                        isOpen={isConfirmDeleteOpen}
+                        closeModal={() => setIsConfirmDeleteOpen(false)}
+                        onConfirm={onDeleteConfirm}
+                    />
+                )
+            }
         </AdminLayout>
     );
 }

@@ -19,8 +19,8 @@ export class InventoryApi {
         return ApiHelper.put(`/inventory/${id}/stock`, payload);
     }
 
-    public static async delete(id: number): Promise<AxiosResponse<any, any>> {
-        return ApiHelper.delete(`/inventory/${id}`);
+    public static async inactive(id: number): Promise<AxiosResponse<any, any>> {
+        return ApiHelper.patch(`/inventory/${id}/inactive`, {});
     }
 
     public static async getById(id: number): Promise<AxiosResponse<any, any>> {

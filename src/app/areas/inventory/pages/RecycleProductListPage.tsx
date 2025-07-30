@@ -15,6 +15,8 @@ import { toast } from 'react-toastify';
 import { GetFormattedDate, GetFormattedTime, GetProductTypeName, GetStatus, GetUnitShortName } from '../../../../_sitecommon/common/helpers/global/ConversionHelper';
 import { ProductSourceEnum } from '../../../../_sitecommon/common/enums/GlobalEnums';
 import ReceiveRecycleProductModal from '../modals/ReceiveRecycleProductModal';
+import { showErrorMsg, showSuccessMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper';
+import ConfirmationModal from '../../common/components/layout/ConfirmationModal';
 
 
 export default function RecycleProductsListPage() {
@@ -32,6 +34,8 @@ export default function RecycleProductsListPage() {
     const [totalRecords, setTotalRecords] = useState<number>(0);
     const [receiveModalData, setReceiveModalData] = useState<any>();
     const [isReceiveModalOpen, setIsReceiveModalOpen] = useState<boolean>(false);
+    const [deleteId, setDeleteId] = useState<number>();
+    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState<boolean>(false);
 
 
     useEffect(() => {
@@ -55,7 +59,7 @@ export default function RecycleProductsListPage() {
     }
 
     const onOpenReceiveModal = (data: any) => {
-        setReceiveModalData(data);
+        debugger;
         setIsReceiveModalOpen(true);
     }
 
@@ -63,6 +67,27 @@ export default function RecycleProductsListPage() {
         setIsReceiveModalOpen(false);
         setReceiveModalData(undefined);
         getProducts();
+    }
+
+    const onDelete = (id: number) => {
+        setDeleteId(id);
+        setIsConfirmDeleteOpen(true);
+    }
+
+    const onDeleteConfirm = () => {
+        if (deleteId && !isLoading) {
+            setIsLoading(true);
+            InventoryApi.inactive(deleteId)
+                .then((response) => {
+                    showSuccessMsg(response.data.message);
+                    setIsConfirmDeleteOpen(false);
+                    getProducts();
+                })
+                .catch((error) => showErrorMsg(error.response.data.message))
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        }
     }
 
     function getProducts(): void {
@@ -153,17 +178,24 @@ export default function RecycleProductsListPage() {
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                    <button type='button' className='btn btn-sm'>
-                                                                        <Link to={"/inventory/recycle/" + product.id}>
-                                                                            <FontAwesomeIcon icon={faEdit} className='fa-solid' />
-                                                                        </Link>
-                                                                    </button>
-                                                                    <button type='button' className='btn btn-sm'>
-                                                                        <FontAwesomeIcon icon={faTrashAlt} className='fa-solid' />
-                                                                    </button>
-                                                                    <button type='button' className='btn btn-sm' onClick={() => onOpenReceiveModal(product)}>
-                                                                        <FontAwesomeIcon icon={faTruck} className='fa-solid' />
-                                                                    </button>
+                                                                    {
+                                                                        product.status ?
+                                                                            <>
+                                                                                <button type='button' className='btn btn-sm'>
+                                                                                    <Link to={"/inventory/recycle/" + product.id}>
+                                                                                        <FontAwesomeIcon icon={faEdit} className='fa-solid' />
+                                                                                    </Link>
+                                                                                </button>
+
+                                                                                <button type='button' className='btn btn-sm' onClick={() => onDelete(product.id)}>
+                                                                                    <FontAwesomeIcon icon={faTrashAlt} className='fa-solid' />
+                                                                                </button>
+
+                                                                                <button type='button' className='btn btn-sm' onClick={() => onOpenReceiveModal(product)}>
+                                                                                    <FontAwesomeIcon icon={faTruck} className='fa-solid' />
+                                                                                </button>
+                                                                            </> : null
+                                                                    }
                                                                 </td>
                                                             </tr>
                                                         )
@@ -195,6 +227,19 @@ export default function RecycleProductsListPage() {
                 </KTCard>
                 {isReceiveModalOpen && <ReceiveRecycleProductModal onClose={onCloseReceiveModal} data={receiveModalData} />}
             </Content>
+            {
+                isConfirmDeleteOpen && (
+                    <ConfirmationModal
+                        title='Inactive Recycle Product'
+                        description='Are you sure you want to inactive this recycled product? This action cannot be undone.'
+                        confirmLabel='Yes, Inactive'
+                        cancelLabel='No, Keep Active'
+                        isOpen={isConfirmDeleteOpen}
+                        closeModal={() => setIsConfirmDeleteOpen(false)}
+                        onConfirm={onDeleteConfirm}
+                    />
+                )
+            }
         </AdminLayout>
     );
 }
