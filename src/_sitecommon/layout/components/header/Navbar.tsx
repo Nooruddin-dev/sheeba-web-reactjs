@@ -52,9 +52,8 @@ const Navbar = () => {
           // data-kt-menu-trigger="{default: 'click'}"
           data-kt-menu-trigger="{default:'click', lg: 'hover'}"
           data-kt-menu-attach='parent'
-          data-kt-menu-placement='bottom-end'
-        >
-          <img src={toAbsoluteUrl('media/avatars/300-3.jpg')} alt='' />
+          data-kt-menu-placement='bottom-end'>
+          <img src={toAbsoluteUrl('media/avatars/blank.png')} alt='' />
         </div>
         <HeaderUserMenu />
       </div>
