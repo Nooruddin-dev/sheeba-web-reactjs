@@ -59,7 +59,7 @@ export default function RecycleProductsListPage() {
     }
 
     const onOpenReceiveModal = (data: any) => {
-        debugger;
+        setReceiveModalData(data);
         setIsReceiveModalOpen(true);
     }
 
