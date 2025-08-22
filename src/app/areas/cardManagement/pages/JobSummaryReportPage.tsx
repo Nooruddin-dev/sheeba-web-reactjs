@@ -16,15 +16,17 @@ import { MachineTypesEnum } from '../../../../_sitecommon/common/enums/GlobalEnu
 
 export default function JobSummaryReportPage() {
     const searchFields: HtmlSearchFieldConfig[] = [
-        { inputId: 'job-card-no', inputName: 'jobCardNo', labelName: 'Job Card No', placeHolder: 'Job Card No', type: 'text', defaultValue: '', additionalClasses: 'width-100' }
+        { inputId: 'job-card-no', inputName: 'jobCardNo', labelName: 'Job Card No', placeHolder: 'Job Card No', type: 'text', defaultValue: '', additionalClasses: 'width-100' },
+        { inputId: 'job-card-no-start', inputName: 'startJobCardNo', labelName: 'Start Job Card No', placeHolder: 'Start Job Card No', type: 'text', defaultValue: '', additionalClasses: 'width-100' },
+        { inputId: 'job-card-no-end', inputName: 'endJobCardNo', labelName: 'End Job Card No', placeHolder: 'End Job Card No', type: 'text', defaultValue: '', additionalClasses: 'width-100' }
     ];
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [print, setPrint] = useState<boolean>(false);
     const [filterValues, setFilterValues] = useState<any[]>([]);
-    const [report, setReport] = useState<any>();
+    const [jobCards, setJobCards] = useState<any>();
     const [units, setUnits] = useState<any[]>([]);
-    const [total, setTotal] = useState<any>({});
+    const [total, setTotal] = useState<Record<number, any>>({});
 
     useEffect(() => {
         getUnits();
@@ -39,7 +41,7 @@ export default function JobSummaryReportPage() {
     const onSearch = (param: any) => {
         setFilterValues(param);
         setTotal({});
-        setReport([]);
+        setJobCards([]);
     }
 
     const onSearchReset = () => {
@@ -73,12 +75,18 @@ export default function JobSummaryReportPage() {
         ReportApi.jobSummary(filter)
             .then(({ data }) => {
                 const total: any = {};
-                data.machines.forEach((item: any) => {
-                    total[item.machineTypeId] = getEntriesSum(item.entries);
+                data.forEach((jobCard: any) => {
+                    total[jobCard.id] = {};
+                    jobCard.machines.forEach((machine: any) => {
+                        total[jobCard.id][machine.machineTypeId] = getEntriesSum(machine.entries);
+                    });
+                    total[jobCard.id]['dispatch'] = getDispatchesSum(jobCard.dispatches);
                 });
-                total['dispatch'] = getDispatchesSum(data.dispatches);
                 setTotal(total);
-                setReport(data);
+                setJobCards(data);
+            })
+            .catch(({ response }) => {
+                toast.error(response?.data?.message);
             })
             .finally(() => {
                 setIsLoading(false);
@@ -145,143 +153,146 @@ export default function JobSummaryReportPage() {
                         />
                         <KTCardBody>
                             {
-                                report &&
-                                <>
-                                    <h3>
-                                        Job Card: <b>{filterValues?.[0]?.defaultValue || ''}</b>
-                                    </h3>
-                                    <h3 className=' mb-5'>
-                                        Product Name: <b>{report.machines?.[0]?.entries[0]?.productName || ''}</b>
-                                    </h3>
-                                    <hr />
-                                </>
-                            }
-                            {
-                                report?.machines?.length > 0 &&
-                                report?.machines.map((item: any, index1: number) => (
-                                    <div className='table-responsive mb-10'>
-                                        <h3 className='text-mid mb-5'>{item.machineTypeName}</h3>
-                                        <table className='table align-middle table-row-dashed fs-6 gy-5 dataTable'>
-                                            <thead>
-                                                <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
-                                                    <th className="ps-3 rounded-start">Date</th>
-                                                    <th>Machine</th>
-                                                    {
-                                                        item.machineTypeId === MachineTypesEnum.Slitting &&
-                                                        <th>Trimming</th>
-                                                    }
-                                                    {
-                                                        item.machineTypeId === MachineTypesEnum.Cutting &&
-                                                        <>
-                                                            <th>Handle Cutting</th>
-                                                            <th>Rejection</th>
-                                                        </>
-                                                    }
-                                                    {
-                                                        ![MachineTypesEnum.Slitting, MachineTypesEnum.Cutting].includes(item.machineTypeId) &&
-                                                        <th>Quantity</th>
-                                                    }
-                                                    <th>Waste</th>
-                                                    <th>Gross</th>
-                                                    <th className="rounded-end">Net</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className='text-gray-600 fw-bold'>
-                                                {
-                                                    item.entries.map((entry: any, index2: number) => (
-                                                        <tr key={`${index1}-${index2}`}>
-                                                            <td className='ps-3'>{GetFormattedDate(entry.date)}</td>
-                                                            <td>{entry.machineName}</td>
-                                                            {
-                                                                item.machineTypeId === MachineTypesEnum.Slitting &&
-                                                                <td>{entry.trimming}</td>
-                                                            }
-                                                            {
-                                                                item.machineTypeId === MachineTypesEnum.Cutting &&
-                                                                <>
-                                                                    <td>{entry.handleCutting}</td>
-                                                                    <td>{entry.rejection}</td>
-                                                                </>
-                                                            }
-                                                            {
-                                                                ![MachineTypesEnum.Slitting, MachineTypesEnum.Cutting].includes(item.machineTypeId) &&
-                                                                <td>{entry.quantity}</td>
-                                                            }
-                                                            <td>{entry.waste}</td>
-                                                            <td>{entry.gross}</td>
-                                                            <td>{entry.net}</td>
-                                                        </tr>
-                                                    ))
-
-                                                }
-                                            </tbody>
-                                            <tfoot className='text-gray-600 fw-bold'>
-                                                <tr className='text-start text-muted fw-bolder fs-7 gs-0'>
-                                                    <td colSpan={2} className='ps-3'></td>
-                                                    {
-                                                        item.machineTypeId === MachineTypesEnum.Slitting &&
-                                                        <td>{formatNumber(total[item.machineTypeId].trimming, 2)}</td>
-                                                    }
-                                                    {
-                                                        item.machineTypeId === MachineTypesEnum.Cutting &&
-                                                        <>
-                                                            <td>{formatNumber(total[item.machineTypeId].handleCutting, 2)}</td>
-                                                            <td>{formatNumber(total[item.machineTypeId].rejection, 2)}</td>
-                                                        </>
-                                                    }
-                                                    {
-                                                        ![MachineTypesEnum.Slitting, MachineTypesEnum.Cutting].includes(item.machineTypeId) &&
-                                                        <td>{formatNumber(total[item.machineTypeId].quantity, 2)}</td>
-                                                    }
-                                                    <td>{formatNumber(total[item.machineTypeId].waste, 2)}</td>
-                                                    <td>{formatNumber(total[item.machineTypeId].gross, 2)}</td>
-                                                    <td>{formatNumber(total[item.machineTypeId].net, 2)}</td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                ))
-                            }
-                            {
-                                report?.dispatches?.length > 0 &&
-                                <div className='table-responsive'>
-                                    <h3 className='text-mid mb-5'>Dispatch</h3>
-                                    <table className='table align-middle table-row-dashed fs-6 gy-5 dataTable'>
-                                        <thead>
-                                            <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
-                                                <th className="ps-3 rounded-start">Date</th>
-                                                <th>Quantity</th>
-                                                <th>Gross</th>
-                                                <th>Core</th>
-                                                <th className="rounded-end">Net</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className='text-gray-600 fw-bold'>
+                                jobCards?.map((jobCard: any) => {
+                                    return (
+                                        <div key={jobCard.id} className='mb-20'>
+                                            <hr />
+                                            <h3>
+                                                Job Card: <b>{jobCard.jobCardNo}</b>
+                                            </h3>
+                                            <h3 className=' mb-5'>
+                                                Product Name: <b>{jobCard.productName}</b>
+                                            </h3>
+                                            <hr />
                                             {
-                                                report.dispatches.map((dispatch: any, index: number) => (
-                                                    <tr key={index}>
-                                                        <td className='ps-3'>{GetFormattedDate(dispatch.date)}</td>
-                                                        <td>{dispatch.quantity}</td>
-                                                        <td>{dispatch.gross}</td>
-                                                        <td>{dispatch.core}</td>
-                                                        <td>{dispatch.net}</td>
-                                                    </tr>
+                                                jobCard.machines?.map((item: any, index1: number) => (
+                                                    <div className='table-responsive mb-10'>
+                                                        <h3 className='text-mid mb-5'>{item.machineTypeName}</h3>
+                                                        <table className='table align-middle table-row-dashed fs-6 gy-5 dataTable'>
+                                                            <thead>
+                                                                <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
+                                                                    <th className="ps-3 rounded-start">Date</th>
+                                                                    <th>Machine</th>
+                                                                    {
+                                                                        item.machineTypeId === MachineTypesEnum.Slitting &&
+                                                                        <th>Trimming</th>
+                                                                    }
+                                                                    {
+                                                                        item.machineTypeId === MachineTypesEnum.Cutting &&
+                                                                        <>
+                                                                            <th>Handle Cutting</th>
+                                                                            <th>Rejection</th>
+                                                                        </>
+                                                                    }
+                                                                    {
+                                                                        ![MachineTypesEnum.Slitting, MachineTypesEnum.Cutting].includes(item.machineTypeId) &&
+                                                                        <th>Quantity</th>
+                                                                    }
+                                                                    <th>Waste</th>
+                                                                    <th>Gross</th>
+                                                                    <th className="rounded-end">Net</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody className='text-gray-600 fw-bold'>
+                                                                {
+                                                                    item.entries?.map((entry: any, index2: number) => (
+                                                                        <tr key={`${index1}-${index2}`}>
+                                                                            <td className='ps-3'>{GetFormattedDate(entry.date)}</td>
+                                                                            <td>{entry.machineName}</td>
+                                                                            {
+                                                                                item.machineTypeId === MachineTypesEnum.Slitting &&
+                                                                                <td>{entry.trimming}</td>
+                                                                            }
+                                                                            {
+                                                                                item.machineTypeId === MachineTypesEnum.Cutting &&
+                                                                                <>
+                                                                                    <td>{entry.handleCutting}</td>
+                                                                                    <td>{entry.rejection}</td>
+                                                                                </>
+                                                                            }
+                                                                            {
+                                                                                ![MachineTypesEnum.Slitting, MachineTypesEnum.Cutting].includes(item.machineTypeId) &&
+                                                                                <td>{entry.quantity}</td>
+                                                                            }
+                                                                            <td>{entry.waste}</td>
+                                                                            <td>{entry.gross}</td>
+                                                                            <td>{entry.net}</td>
+                                                                        </tr>
+                                                                    ))
+
+                                                                }
+                                                            </tbody>
+                                                            <tfoot className='text-gray-600 fw-bold'>
+                                                                <tr className='text-start text-muted fw-bolder fs-7 gs-0'>
+                                                                    <td colSpan={2} className='ps-3'></td>
+                                                                    {
+                                                                        item.machineTypeId === MachineTypesEnum.Slitting &&
+                                                                        <td>{formatNumber(total[jobCard.id][item.machineTypeId].trimming, 2)}</td>
+                                                                    }
+                                                                    {
+                                                                        item.machineTypeId === MachineTypesEnum.Cutting &&
+                                                                        <>
+                                                                            <td>{formatNumber(total[jobCard.id][item.machineTypeId].handleCutting, 2)}</td>
+                                                                            <td>{formatNumber(total[jobCard.id][item.machineTypeId].rejection, 2)}</td>
+                                                                        </>
+                                                                    }
+                                                                    {
+                                                                        ![MachineTypesEnum.Slitting, MachineTypesEnum.Cutting].includes(item.machineTypeId) &&
+                                                                        <td>{formatNumber(total[jobCard.id][item.machineTypeId].quantity, 2)}</td>
+                                                                    }
+                                                                    <td>{formatNumber(total[jobCard.id][item.machineTypeId].waste, 2)}</td>
+                                                                    <td>{formatNumber(total[jobCard.id][item.machineTypeId].gross, 2)}</td>
+                                                                    <td>{formatNumber(total[jobCard.id][item.machineTypeId].net, 2)}</td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                    </div>
                                                 ))
-
                                             }
+                                            {
+                                                jobCard.dispatches?.length > 0 &&
+                                                <div className='table-responsive'>
+                                                    <h3 className='text-mid mb-5'>Dispatch</h3>
+                                                    <table className='table align-middle table-row-dashed fs-6 gy-5 dataTable'>
+                                                        <thead>
+                                                            <tr className='text-start text-muted fw-bolder fs-7 gs-0 bg-light'>
+                                                                <th className="ps-3 rounded-start">Date</th>
+                                                                <th>Quantity</th>
+                                                                <th>Gross</th>
+                                                                <th>Core</th>
+                                                                <th className="rounded-end">Net</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className='text-gray-600 fw-bold'>
+                                                            {
+                                                                jobCards.dispatches?.map((dispatch: any, index: number) => (
+                                                                    <tr key={index}>
+                                                                        <td className='ps-3'>{GetFormattedDate(dispatch.date)}</td>
+                                                                        <td>{dispatch.quantity}</td>
+                                                                        <td>{dispatch.gross}</td>
+                                                                        <td>{dispatch.core}</td>
+                                                                        <td>{dispatch.net}</td>
+                                                                    </tr>
+                                                                ))
 
-                                        </tbody>
-                                        <tfoot className='text-gray-600 fw-bold'>
-                                            <tr className='text-start text-muted fw-bolder fs-7 gs-0'>
-                                                <td className='ps-3'></td>
-                                                <td>{formatNumber(total['dispatch'].quantity, 2)}</td>
-                                                <td>{formatNumber(total['dispatch'].gross, 2)}</td>
-                                                <td>{formatNumber(total['dispatch'].core, 2)}</td>
-                                                <td>{formatNumber(total['dispatch'].net, 2)}</td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
+                                                            }
+
+                                                        </tbody>
+                                                        <tfoot className='text-gray-600 fw-bold'>
+                                                            <tr className='text-start text-muted fw-bolder fs-7 gs-0'>
+                                                                <td className='ps-3'></td>
+                                                                <td>{formatNumber(total[jobCard.id]['dispatch'].quantity, 2)}</td>
+                                                                <td>{formatNumber(total[jobCard.id]['dispatch'].gross, 2)}</td>
+                                                                <td>{formatNumber(total[jobCard.id]['dispatch'].core, 2)}</td>
+                                                                <td>{formatNumber(total[jobCard.id]['dispatch'].net, 2)}</td>
+                                                            </tr>
+                                                        </tfoot>
+                                                    </table>
+                                                </div>
+                                            }
+                                        </div>
+                                    );
+                                })
                             }
                         </KTCardBody>
                     </KTCard>
@@ -291,11 +302,8 @@ export default function JobSummaryReportPage() {
                 print &&
                 <JobSummaryPrintView
                     afterPrint={onAfterPrint}
-                    report={report}
-                    total={total}
-                    units={units}
-                    jobCardNo={filterValues?.[0]?.defaultValue || ''}
-                    productName={report.machines?.[0]?.entries[0]?.productName || ''} />
+                    jobCards={jobCards}
+                    total={total} />
             }
         </>
     );
