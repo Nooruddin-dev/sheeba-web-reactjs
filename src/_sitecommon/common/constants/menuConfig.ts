@@ -71,7 +71,7 @@ export const menuConfig = [
     roles: [UserRole.Admin, UserRole.Accounts, UserRole.Office],
     children: [
       { to: '/grn/vouchers-list', title: 'GRN Vouchers List', hasBullet: true, roles: [UserRole.Admin, UserRole.Accounts, UserRole.Office, UserRole.Factory] },
-      { to: '/grn/create-voucher', title: 'Create GRN Voucher', hasBullet: true, roles: [UserRole.Admin, UserRole.Accounts, UserRole.Factory] },
+      { to: '/grn/create', title: 'Create GRN Voucher', hasBullet: true, roles: [UserRole.Admin, UserRole.Accounts, UserRole.Factory] },
     ],
   },
   {
@@ -89,7 +89,7 @@ export const menuConfig = [
     title: 'Sale Invoice',
     icon: 'abstract-43',
     fontIcon: 'bi-archive',
-    roles: [UserRole.Admin, UserRole.Office],
+    roles: [UserRole.Admin, UserRole.Office, UserRole.Factory],
   },
   {
     title: 'Reports',

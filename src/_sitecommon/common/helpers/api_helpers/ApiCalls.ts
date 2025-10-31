@@ -250,3 +250,15 @@ export const getCustomerAutoComplete = (value: string) => {
         `${API_ENDPOINTS.GET_USER_AUTO_COMPLETE}?typeId=3&name=${value}`
     );
 }
+
+export const getApprovedPurchaseOrderAutoComplete = (value: string) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_PURCHASE_ORDER_AUTO_COMPLETE}?statusId=4&poNumber=${value}`
+    );
+}
+
+export const getPurchaseOrderById = (id: number) => {
+    return apiRequest.get(
+        `${API_ENDPOINTS.GET_PURCHASE_ORDER_BY_ID.replace(':id', id.toString())}`
+    );
+}

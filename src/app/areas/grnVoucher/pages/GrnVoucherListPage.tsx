@@ -9,12 +9,10 @@ import TableListLoading from '../../common/components/shared/TableListLoading'
 import { HtmlSearchFieldConfig } from '../../../models/common/HtmlSearchFieldConfig'
 import { formatNumber } from '../../common/util'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import ConfirmationModal from '../../common/components/layout/ConfirmationModal'
+import { faEye, faPencil } from '@fortawesome/free-solid-svg-icons'
 import { GetFormattedDate } from '../../../../_sitecommon/common/helpers/global/ConversionHelper'
 import { GrnVoucherStatus, UserRole } from '../../../../_sitecommon/common/enums/GlobalEnums'
 import { VoucherApi } from '../../../../_sitecommon/common/api/voucher.api'
-import { showErrorMsg, showSuccessMsg } from '../../../../_sitecommon/common/helpers/global/ValidationHelper'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../globalStore/rootReducer'
@@ -57,41 +55,21 @@ export default function GrnVoucherListPage() {
     setPage(page);
   }
 
-  const onCancelVoucher = (voucher: any) => {
-    setVoucherForCancel(voucher);
-    setIsCancelConfirmationModalOpen(true);
+  const onEditVoucher = (voucher: any) => {
+    //
   };
-
-  const onCancelVoucherConfirm = (data: any) => {
-    if (voucherForCancel) {
-      setIsLoading(true);
-      VoucherApi.cancel(voucherForCancel.voucherId)
-        .then(() => {
-          showSuccessMsg('Voucher cancelled successfully');
-          getVouchers();
-        })
-        .catch((error) => {
-          console.log(error);
-          showErrorMsg(error?.response?.data?.message || 'Something went wrong');
-        })
-        .finally(() => {
-          setIsLoading(false);
-        })
-    }
-    setIsCancelConfirmationModalOpen(false);
-    setVoucherForCancel(null);
-  }
 
   function getVouchers(): void {
     setIsLoading(true);
     let filter = {
       page: (page - 1) * pageSize,
       pageSize,
+      status: GrnVoucherStatus.Issued,
     }
     filterValues.forEach(field => {
       filter = {
         ...filter,
-        [field.inputName]: field.defaultValue
+        [field.inputName]: field.defaultValue,
       }
     });
     VoucherApi.get(filter)
@@ -135,15 +113,7 @@ export default function GrnVoucherListPage() {
                         <th className="min-w-125px">Date</th>
                         <th className="min-w-125px">Receiver</th>
                         <th className="min-w-125px">Total</th>
-                        {
-                          roleType === UserRole.Admin ?
-                            <>
-                              <th className="min-w-125px">Status</th>
-                              <th className="min-w-125px ps-3 rounded-end">Action</th>
-                            </>
-                            :
-                            <th className="min-w-125px ps-3 rounded-end">Status</th>
-                        }
+                        <th className="min-w-125px ps-3 rounded-end">Action</th>
                       </tr>
                     </thead>
                     <tbody className='text-gray-600 fw-bold'>
@@ -161,11 +131,6 @@ export default function GrnVoucherListPage() {
                                 </td>
                                 <td>{formatNumber(voucher.total, 2)}</td>
                                 <td>
-                                  <div className={voucher.status === GrnVoucherStatus.Issued ? 'badge fw-bolder badge-light-success' : 'badge fw-bolder badge-light-danger'}>
-                                    {voucher.status}
-                                  </div>
-                                </td>
-                                <td>
                                   <Link
                                     to={`/site/grn-voucher-detail/${voucher.voucherId}`}
                                     className='btn btn-bg-light btn-color-muted btn-active-color-primary btn-sm px-4 me-2'>
@@ -173,11 +138,11 @@ export default function GrnVoucherListPage() {
                                   </Link>
                                   {
                                     roleType === UserRole.Admin && voucher.status === GrnVoucherStatus.Issued &&
-                                    <button type='button'
-                                      className='btn btn-sm btn-secondary'
-                                      onClick={() => onCancelVoucher(voucher)}>
-                                      <FontAwesomeIcon icon={faTimesCircle} className='fa-solid' />
-                                    </button>
+                                    <Link
+                                      to={`/grn/${voucher.voucherId}`}
+                                      className='btn btn-bg-light btn-color-muted btn-active-color-primary btn-sm px-4 me-2'>
+                                      <FontAwesomeIcon icon={faPencil} className='fa-solid' />
+                                    </Link>
                                   }
 
                                 </td>
@@ -210,18 +175,6 @@ export default function GrnVoucherListPage() {
             }
           </KTCardBody>
         </KTCard>
-        {
-          isCancelConfirmationModalOpen &&
-          <ConfirmationModal
-            title='Cancel Voucher'
-            description={`Are you sure you want to cancel voucher # ${voucherForCancel?.voucherNumber}?`}
-            confirmLabel='Yes, Cancel'
-            cancelLabel='No, Keep'
-            isOpen={isCancelConfirmationModalOpen}
-            closeModal={() => setIsCancelConfirmationModalOpen(false)}
-            onConfirm={onCancelVoucherConfirm}
-          />
-        }
       </Content>
     </AdminLayout >
   );

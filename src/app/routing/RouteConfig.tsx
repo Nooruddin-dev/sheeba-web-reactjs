@@ -48,6 +48,7 @@ import JobSummaryReportPage from '../areas/cardManagement/pages/JobSummaryReport
 import MachineSummaryReport from '../areas/machines/pages/MachineSummaryReportPage';
 import GrnReport from '../areas/orders/pages/GrnReportPage';
 import DispatchReportPage from '../areas/cardManagement/pages/DispatchReportPage';
+import ManageGrnVoucherPage from '../areas/grnVoucher/pages/ManageGrnVoucherPage';
 
 
 
@@ -152,6 +153,14 @@ export default function RouteConfig() {
 
         <Route path="/grn/create-voucher" element={
           <LoginProtectedRoute> <CreateGrnVoucherPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/grn/create" element={
+          <LoginProtectedRoute> <ManageGrnVoucherPage /> </LoginProtectedRoute>
+        } />
+
+        <Route path="/grn/:id" element={
+          <LoginProtectedRoute> <ManageGrnVoucherPage isEditMode={true} /> </LoginProtectedRoute>
         } />
 
         <Route path="/site/grn-voucher-detail/:voucher_id" element={
