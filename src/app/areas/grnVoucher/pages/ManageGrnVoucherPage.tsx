@@ -13,10 +13,11 @@ import { getApprovedPurchaseOrderAutoComplete, getPurchaseOrderById } from "../.
 import { showErrorMsg, showSuccessMsg } from "../../../../_sitecommon/common/helpers/global/ValidationHelper";
 import { formatNumber } from "../../common/util";
 import { VoucherApi } from "../../../../_sitecommon/common/api/voucher.api";
+import GrnVoucherReceiptModal from "../components/GrnVoucherReceiptModal";
 
 export default function ManageGrnVoucherPage(props: { isEditMode?: boolean }) {
 
-    const { register, reset, getValues, setValue, trigger, formState: { errors } } = useForm({});
+    const { register, reset, getValues, trigger, formState: { errors } } = useForm({});
     const navigate = useNavigate();
     const param = useParams();
     const [voucherId, setVoucherId] = useState<number | undefined>(undefined);
@@ -25,6 +26,8 @@ export default function ManageGrnVoucherPage(props: { isEditMode?: boolean }) {
     const [summary, setSummary] = useState<any>(undefined);
     const [lineItems, setLineItems] = useState<any[]>([]);
     const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
+    const [isOpenReceiptModal, setIsOpenReceiptModal] = useState<boolean>(false);
+    const [printVoucherId, setPrintVoucherId] = useState<number | undefined>(undefined);
 
     useEffect(() => {
         if (props.isEditMode && param.id) {
@@ -90,6 +93,11 @@ export default function ManageGrnVoucherPage(props: { isEditMode?: boolean }) {
         });
     }, [lineItems]);
 
+    const afterPrint = () => {
+        setIsOpenReceiptModal(false)
+        navigate('/grn/vouchers-list');
+    }
+
     const onSubmit = async () => {
         setFormSubmitted(true);
         const isValid = await trigger();
@@ -127,7 +135,8 @@ export default function ManageGrnVoucherPage(props: { isEditMode?: boolean }) {
             VoucherApi.put(body)
                 .then((res) => {
                     showSuccessMsg(res.data.message || 'GRN voucher saved successfully');
-                    navigate('/grn/vouchers-list');
+                    setPrintVoucherId(res.data.primaryKeyValue);
+                    setIsOpenReceiptModal(!isOpenReceiptModal);
                 })
                 .catch((err) => {
                     showErrorMsg(err.response?.data?.message || 'Failed to save GRN voucher');
@@ -406,6 +415,13 @@ export default function ManageGrnVoucherPage(props: { isEditMode?: boolean }) {
                     }
                 </Content>
             </AdminLayout>
+            {
+                isOpenReceiptModal === true
+                &&
+                <GrnVoucherReceiptModal
+                    afterPrint={afterPrint}
+                    voucherId={printVoucherId} />
+            }
         </>
     )
 }
