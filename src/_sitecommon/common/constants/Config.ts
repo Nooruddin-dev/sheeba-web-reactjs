@@ -57,6 +57,8 @@ export const API_ENDPOINTS = {
   CREATE_GRN_VOUCHER_API: `/${controllerUrlExtensions.VOUCHER}/create-grn-voucher`,
   GET_GRN_VOUCHERS_LIST_API: `/${controllerUrlExtensions.VOUCHER}/get-grn-vouchers-list`,
   GET_GRN_VOUCHER_DETAIL_BY_ID_API: `/${controllerUrlExtensions.VOUCHER}/get-grn-voucher-detail-by-id`,
+  GET_PURCHASE_ORDER_AUTO_COMPLETE: `/${controllerUrlExtensions.ORDERS}/auto-complete`,
+  GET_PURCHASE_ORDER_BY_ID: `/${controllerUrlExtensions.ORDERS}/:id`,
 
   //--Job Card APIs urls
   GET_PRODUCTS_LIST_FOR_JOB_CARD_BY_SEARCH_TERM: `/${controllerUrlExtensions.JOB_CARD}/get-products-list-for-job-card-by-search-term`,
