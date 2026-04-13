@@ -81,7 +81,7 @@ const MachineSummaryReportPrintView: React.FC<{ afterPrint: any, report: any, to
                                             }
                                             {
                                                 ![MachineTypesEnum.Cutting, MachineTypesEnum.Slitting].includes(item.machineTypeId) &&
-                                                <td>{machine.waste}</td>
+                                                <td>{machine.quantity}</td>
                                             }
                                             <td>{machine.waste}</td>
                                             <td>{machine.gross}</td>
